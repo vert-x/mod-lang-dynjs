@@ -92,7 +92,7 @@ test {
   // If we don't do this then the system classloader will load them which can cause issues with loading resources
   // from inside JS verticles
   classpath = files( classpath.findAll {
-    (!( it.toString() ==~ /.+build\/(classes|resources)\/main$/ )) && !(it.toString().contains("org.mozilla"))
+    (!( it.toString() ==~ /.+build\/(classes|resources)\/main$/ )) && !(it.toString().contains("org.dynjs"))
   } )
 
   outputs.upToDateWhen { false }

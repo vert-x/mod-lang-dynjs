@@ -1,1 +1,1 @@
-# Vert.x Rhino JavaScript Language Implementation Module
+# Vert.x DynJS JavaScript Language Implementation Module
