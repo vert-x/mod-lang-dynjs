@@ -5,13 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.dynjs</groupId>
-    <artifactId>vertx-module</artifactId>
+    <artifactId>dynjs-vertx-module</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>dynjs vertx module</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.vertx>2.0.0-SNAPSHOT</version.vertx>
+        <!--
+        <version.dynjs>1.0-SNAPSHOT</version.dynjs>
+        -->
+        <version.dynjs>1.x.incremental.555</version.dynjs>
     </properties>
 
     <developers>
@@ -81,7 +85,7 @@
         <dependency>
             <groupId>org.dynjs</groupId>
             <artifactId>dynjs</artifactId>
-            <version>1.x.incremental.550</version>
+            <version>${version.dynjs}</version>
             <scope>compile</scope>
         </dependency>
 

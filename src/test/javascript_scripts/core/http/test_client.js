@@ -204,6 +204,8 @@ function httpMethod(ssl, method, chunked) {
       tu.checkContext();
       body.appendBuffer(data);
     });
+    print( "REQ: " + req );
+    print( "REQ.RESP: " + req.response );
     req.response.setChunked(chunked);
     req.endHandler(function() {
       tu.checkContext();
