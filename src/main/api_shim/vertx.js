@@ -29,5 +29,5 @@
     load('core/deploy.js');
     load('core/logger.js');
     load('core/env.js');
-    (this.module && module.exports) ? module.exports = vertx : this.vertx = vertx;
+    return (this.module && module.exports) ? this.module.exports = vertx : this.vertx = vertx;
 })();
