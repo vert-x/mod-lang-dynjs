@@ -26,6 +26,7 @@ public class JavaScriptRouteMatcherTest extends TestBase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
+    System.err.println( getClass().getClassLoader().getResource( "core/routematcher/test_client.js" ) );
     startApp("core/routematcher/test_client.js");
   }
 

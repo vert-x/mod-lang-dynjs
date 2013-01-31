@@ -57,6 +57,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
 
     @Override
     public Verticle createVerticle(String main) throws Exception {
+    	System.err.println( "CREATE: " + main );
         Verticle app = new DynJSVerticle(main);
         return app;
     }
