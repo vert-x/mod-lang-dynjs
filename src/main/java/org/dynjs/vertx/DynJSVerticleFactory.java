@@ -22,10 +22,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 import org.dynjs.Config;
-import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynObject;
@@ -33,27 +31,22 @@ import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.GlobalObjectFactory;
 import org.dynjs.runtime.Runner;
+import org.vertx.java.core.Vertx;
 import org.vertx.java.core.logging.Logger;
-import org.vertx.java.deploy.Verticle;
-import org.vertx.java.deploy.impl.ModuleClassLoader;
-import org.vertx.java.deploy.impl.VerticleFactory;
-import org.vertx.java.deploy.impl.VerticleManager;
+import org.vertx.java.platform.Container;
+import org.vertx.java.platform.Verticle;
+import org.vertx.java.platform.VerticleFactory;
 
 /**
  * @author Lance Ball lball@redhat.com
  */
 public class DynJSVerticleFactory implements VerticleFactory {
 
-	private VerticleManager mgr;
-	private ModuleClassLoader mcl;
-
-	public DynJSVerticleFactory() {
-	}
-
+	private ClassLoader mcl;
+    
 	@Override
-	public void init(VerticleManager mgr, ModuleClassLoader mcl) {
-		this.mgr = mgr;
-		this.mcl = mcl;
+    public void init(Vertx vertx, Container container, ClassLoader classloader) {
+		this.mcl = classloader;
 	}
 
 	@Override
@@ -64,8 +57,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
 	}
 
 	@Override
-	public void reportException(Throwable t) {
-		Logger logger = mgr.getLogger();
+    public void reportException(Logger logger, Throwable t) {
 		logger.error("Exception in DynJS JavaScript verticle", t);
 	}
 
@@ -159,4 +151,5 @@ public class DynJSVerticleFactory implements VerticleFactory {
 	@Override
 	public void close() {
 	}
+
 }
