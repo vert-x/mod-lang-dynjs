@@ -43,15 +43,16 @@ import org.vertx.java.platform.VerticleFactory;
 public class DynJSVerticleFactory implements VerticleFactory {
 
 	private ClassLoader mcl;
+    public static Vertx vertx;
     
 	@Override
     public void init(Vertx vertx, Container container, ClassLoader classloader) {
 		this.mcl = classloader;
+        DynJSVerticleFactory.vertx = vertx;
 	}
 
 	@Override
 	public Verticle createVerticle(String main) throws Exception {
-		System.err.println("CREATE: " + main);
 		Verticle app = new DynJSVerticle(main);
 		return app;
 	}

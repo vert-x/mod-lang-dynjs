@@ -1,12 +1,22 @@
 var TestUtils = function() {
 
+  var syserr = java.lang.System.err
   var that = this;
-  var jutils = new org.vertx.java.testframework.TestUtils(org.vertx.java.platform.impl.RhinoVerticleFactory.vertx);
+  var jutils = new org.vertx.java.testframework.TestUtils(org.dynjs.vertx.DynJSVerticleFactory.vertx);
 
   that.azzert = function(result, message) {
     if (message) {
       jutils.azzert(result, message);
     } else {
+      syserr.println("TEST UTILS: " + jutils.toString());
+      methods = jutils.class.methods;
+      for (i=0; i < methods.length; i++) {
+        var name = methods[i].getName();
+        if (name.match(/azzert/)) {
+          syserr.println("TEST UTILS METHOD: " + methods[i].toString());
+        }
+      }
+      syserr.println("RESULT: " + result);
       jutils.azzert(result);
     }
   }
@@ -67,3 +77,4 @@ var TestUtils = function() {
         return instance;
     };
 }).call((this.module && module.exports)? module.exports : this.TestUtils);
+
