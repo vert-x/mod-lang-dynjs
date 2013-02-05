@@ -42,115 +42,109 @@ import org.vertx.java.platform.VerticleFactory;
  */
 public class DynJSVerticleFactory implements VerticleFactory {
 
-	private ClassLoader mcl;
+    private DynJS runtime;
+    private ClassLoader mcl;
     public static Vertx vertx;
-    
-	@Override
+
+    @Override
     public void init(Vertx vertx, Container container, ClassLoader classloader) {
-		this.mcl = classloader;
+        this.mcl = classloader;
         DynJSVerticleFactory.vertx = vertx;
-	}
+        Config config = new Config();
+        config.setGlobalObjectFactory(new GlobalObjectFactory() {
+            @Override
+            public GlobalObject newGlobalObject(DynJS runtime) {
+                final GlobalObject globalObject = new GlobalObject(runtime);
+                globalObject.defineGlobalProperty("__dirname", System.getProperty("user.dir"));
+                globalObject.defineGlobalProperty("vertx", new DynObject(globalObject));
+                globalObject.defineGlobalProperty("load", new AbstractNativeFunction(globalObject) {
+                    @Override
+                    public Object call(ExecutionContext context, Object self, Object... args) {
+                        try {
+                            return loadScript(context, (String) args[0]);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+                });
+                return globalObject;
+            }
+        });
+        runtime = new DynJS(config);
+    }
 
-	@Override
-	public Verticle createVerticle(String main) throws Exception {
-		Verticle app = new DynJSVerticle(main);
-		return app;
-	}
+    @Override
+    public Verticle createVerticle(String main) throws Exception {
+        Verticle app = new DynJSVerticle(main);
+        return app;
+    }
 
-	@Override
+    @Override
     public void reportException(Logger logger, Throwable t) {
-		logger.error("Exception in DynJS JavaScript verticle", t);
-	}
+        logger.error("Exception in DynJS JavaScript verticle", t);
+    }
 
-	private class DynJSVerticle extends Verticle {
+    public Object loadScript(ExecutionContext context, String scriptName)
+            throws FileNotFoundException {
+        if (scriptName == null) {
+            return null;
+        }
+        Runner runner = context.getGlobalObject().getRuntime().newRunner();
+        File scriptFile = new File(scriptName);
+        ExecutionContext parent = context.getParent();
+        while (parent != null) {
+            context = parent;
+            parent = context.getParent();
+        }
+        if (scriptFile.exists()) {
+            return runner.withContext(context).withSource(scriptFile).execute();
+        } else {
+            InputStream is = mcl.getResourceAsStream(scriptName);
+            if (is == null) {
+                throw new FileNotFoundException("Cannot find script: " + scriptName);
+            }
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            ClassLoader old = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(mcl);
+            try {
+                Object ret = runner.withContext(context).withSource(reader).execute();
+                try {
+                    is.close();
+                } catch (IOException ignore) {
+                }
+                return ret;
+            } finally {
+                Thread.currentThread().setContextClassLoader(old);
+            }
+        }
+    }
 
-		private final String scriptName;
+    private class DynJSVerticle extends Verticle {
 
-		DynJSVerticle(String scriptName) {
-			this.scriptName = scriptName;
-		}
+        private final String scriptName;
 
-		@Override
-		public void start() throws Exception {
-			Config config = new Config();
-			config.setGlobalObjectFactory(new GlobalObjectFactory() {
-				@Override
-				public GlobalObject newGlobalObject(DynJS runtime) {
-					final GlobalObject globalObject = new GlobalObject(runtime);
-					globalObject.defineGlobalProperty("__dirname",
-							System.getProperty("user.dir"));
-					globalObject.defineGlobalProperty("vertx", new DynObject(
-							globalObject));
-					globalObject.defineGlobalProperty("load",
-							new AbstractNativeFunction(globalObject) {
-								@Override
-								public Object call(ExecutionContext context,
-										Object self, Object... args) {
-									try {
-										return loadScript(context,
-												(String) args[0]);
-									} catch (FileNotFoundException e) {
-										e.printStackTrace();
-									}
-									return null;
-								}
-							});
-					return globalObject;
-				}
-			});
-			DynJS runtime = new DynJS(config);
-			loadScript(runtime.getExecutionContext(), this.scriptName);
-		}
+        DynJSVerticle(String scriptName) {
+            this.scriptName = scriptName;
+        }
 
-		public Object loadScript(ExecutionContext context, String scriptName)
-				throws FileNotFoundException {
-			if (scriptName == null) {
-				return null;
-			}
-			System.err.println("Loading javascript: " + scriptName);
-			Runner runner = context.getGlobalObject().getRuntime().newRunner();
-			File scriptFile = new File(scriptName);
-			ExecutionContext parent = context.getParent();
-			while (parent != null) {
-				context = parent;
-				parent = context.getParent();
-			}
-			if (scriptFile.exists()) {
-				return runner.withContext(context).withSource(scriptFile)
-						.execute();
-			} else {
-				InputStream is = mcl.getResourceAsStream(scriptName);
-				if (is == null) {
-					throw new FileNotFoundException("Cannot find script: "
-							+ scriptName);
-				}
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(is));
-				ClassLoader old = Thread.currentThread()
-						.getContextClassLoader();
-				Thread.currentThread().setContextClassLoader(mcl);
-				try {
-					Object ret = runner.withContext(context).withSource(reader)
-							.execute();
-					try {
-						is.close();
-					} catch (IOException ignore) {
-					}
-					return ret;
-				} finally {
-					Thread.currentThread().setContextClassLoader(old);
-				}
-			}
-		}
+        @Override
+        public void start() throws Exception {
+            loadScript(runtime.getExecutionContext(), this.scriptName);
+        }
 
-		@Override
-		public void stop() throws Exception {
-			// What should go here?
-		}
-	}
+        @Override
+        public void stop() throws Exception {
+            try {
+                runtime.evaluate("vertxStop()");
+            } catch (Exception e) {
+                // If not defined in global scope, we get an exception
+            }
+        }
+    }
 
-	@Override
-	public void close() {
-	}
+    @Override
+    public void close() {
+    }
 
 }
