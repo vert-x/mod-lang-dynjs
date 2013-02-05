@@ -158,7 +158,7 @@ if (!vertx.createHttpServer) {
 
     vertx.createHttpServer = function() {
 
-      var j_server = org.vertx.java.deploy.impl.VertxLocator.vertx.createHttpServer();
+      var j_server = org.dynjs.vertx.DynJSVerticleFactory.vertx.createHttpServer();
 
       var that = {};
 
@@ -304,7 +304,7 @@ if (!vertx.createHttpServer) {
     }
 
     vertx.createHttpClient = function() {
-      var j_client = org.vertx.java.deploy.impl.VertxLocator.vertx.createHttpClient();
+      var j_client = org.dynjs.vertx.DynJSVerticleFactory.vertx.createHttpClient();
 
       function wrapResponseHandler(handler) {
         var wrapperHandler = function(j_resp) {

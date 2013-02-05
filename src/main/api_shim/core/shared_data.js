@@ -19,19 +19,19 @@ var vertx = vertx || {};
 if (!vertx.getMap) {
 
   vertx.getMap = function(name) {
-    return org.vertx.java.deploy.impl.VertxLocator.vertx.sharedData().getMap(name);
+    return org.dynjs.vertx.DynJSVerticleFactory.vertx.sharedData().getMap(name);
   }
 
   vertx.getSet = function(name) {
-    return org.vertx.java.deploy.impl.VertxLocator.vertx.sharedData().getSet(name);
+    return org.dynjs.vertx.DynJSVerticleFactory.vertx.sharedData().getSet(name);
   }
 
   vertx.removeMap = function(name) {
-    return org.vertx.java.deploy.impl.VertxLocator.vertx.sharedData().removeMap(name);
+    return org.dynjs.vertx.DynJSVerticleFactory.vertx.sharedData().removeMap(name);
   }
 
   vertx.removeSet = function(name) {
-    return org.vertx.java.deploy.impl.VertxLocator.vertx.sharedData().removeSet(name);
+    return org.dynjs.vertx.DynJSVerticleFactory.vertx.sharedData().removeSet(name);
   }
 }
 

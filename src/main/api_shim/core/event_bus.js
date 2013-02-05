@@ -22,7 +22,7 @@ if (!vertx.eventBus) {
 
     var handlerMap = {};
 
-    var jEventBus = org.vertx.java.deploy.impl.VertxLocator.vertx.eventBus();
+    var jEventBus = org.dynjs.vertx.DynJSVerticleFactory.vertx.eventBus();
 
     function checkHandlerParams(address, handler) {
       if (!address) {

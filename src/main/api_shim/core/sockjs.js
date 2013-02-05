@@ -24,7 +24,7 @@ if (!vertx.createSockJSServer) {
       throw "Please construct a vertx.SockJSServer with an instance of vert.HttpServer"
     }
 
-    var vertx = org.vertx.java.deploy.impl.VertxLocator.vertx;
+    var vertx = org.dynjs.vertx.DynJSVerticleFactory.vertx;
 
     var jserver = vertx.createSockJSServer(httpServer._to_java_server());
 

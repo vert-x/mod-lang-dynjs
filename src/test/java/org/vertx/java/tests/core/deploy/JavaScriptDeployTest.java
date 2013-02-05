@@ -26,6 +26,8 @@ public class JavaScriptDeployTest extends TestBase {
 
   @Override
   protected void setUp() throws Exception {
+    final String basePath = System.getProperty("user.dir") + "/src/test/javascript_scripts";
+    System.setProperty("dynjs.require.path", basePath + ":" + basePath+"/core/commonjs");
     super.setUp();
     startApp("core/deploy/test_client.js");
   }

@@ -44,11 +44,13 @@ public class DynJSVerticleFactory implements VerticleFactory {
 
     private DynJS runtime;
     private ClassLoader mcl;
+    public static Container container;
     public static Vertx vertx;
 
     @Override
     public void init(Vertx vertx, Container container, ClassLoader classloader) {
         this.mcl = classloader;
+        DynJSVerticleFactory.container = container;
         DynJSVerticleFactory.vertx = vertx;
         Config config = new Config();
         config.setGlobalObjectFactory(new GlobalObjectFactory() {
@@ -104,6 +106,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
             if (is == null) {
                 throw new FileNotFoundException("Cannot find script: " + scriptName);
             }
+            System.err.println("Loading script: " + scriptName);
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             ClassLoader old = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(mcl);
@@ -136,7 +139,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
         @Override
         public void stop() throws Exception {
             try {
-                runtime.evaluate("vertxStop()");
+                runtime.evaluate("(vertxStop ? vertxStop() : null)");
             } catch (Exception e) {
                 // If not defined in global scope, we get an exception
             }

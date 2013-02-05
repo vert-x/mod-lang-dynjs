@@ -17,7 +17,7 @@
 var vertx = vertx || {};
 
 if (!vertx.logger) {
-  vertx.logger = org.vertx.java.deploy.impl.VertxLocator.container.getLogger();
+  vertx.logger = org.dynjs.vertx.DynJSVerticleFactory.container.getLogger();
 
   // Add a console object which will be familiar to JavaScript devs
   var console = {

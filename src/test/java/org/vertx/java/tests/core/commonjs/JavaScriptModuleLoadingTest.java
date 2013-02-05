@@ -23,13 +23,11 @@ import org.vertx.java.testframework.TestBase;
  * @author <a href="http://about.me/nelson.silva">Nelson Silva</a>
  */
 public class JavaScriptModuleLoadingTest extends TestBase {
-    static {
-        final String basePath = System.getProperty("user.dir") + "/src/test/javascript_scripts";
-        System.setProperty("dynjs.require.path", basePath + ":" + basePath+"/core/commonjs");
-    }
 
     @Override
     protected void setUp() throws Exception {
+        final String basePath = System.getProperty("user.dir") + "/src/test/javascript_scripts";
+        System.setProperty("dynjs.require.path", basePath + ":" + basePath+"/core/commonjs");
         super.setUp();
     }
 
