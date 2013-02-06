@@ -26,6 +26,8 @@ public class JavaScriptScriptLoadingTest extends TestBase {
 
   @Override
   protected void setUp() throws Exception {
+    final String basePath = System.getProperty("user.dir") + "/src/test/javascript_scripts";
+    System.setProperty("dynjs.require.path", basePath + ":" + basePath+"/core/scriptloading");
     super.setUp();
   }
 

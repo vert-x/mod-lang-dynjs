@@ -23,71 +23,73 @@ import org.vertx.java.testframework.TestBase;
  */
 public class JavaScriptEventBusTest extends TestBase {
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    startApp("core/eventbus/test_client.js");
-  }
+    @Override
+    protected void setUp() throws Exception {
+        final String basePath = System.getProperty("user.dir") + "/src/test/javascript_scripts";
+        System.setProperty("dynjs.require.path", basePath + ":" + basePath + "/core/eventbus");
+        super.setUp();
+        startApp("core/eventbus/test_client.js");
+    }
 
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-  public void testSimple() {
-    startTest(getMethodName());
-  }
+    public void testSimple() {
+        startTest(getMethodName());
+    }
 
-  public void testUnregister() {
-    startTest(getMethodName());
-  }
+    public void testUnregister() {
+        startTest(getMethodName());
+    }
 
-  public void testWithReply() {
-    startTest(getMethodName());
-  }
+    public void testWithReply() {
+        startTest(getMethodName());
+    }
 
-  public void testEmptyReply() {
-    startTest(getMethodName());
-  }
+    public void testEmptyReply() {
+        startTest(getMethodName());
+    }
 
-  public void testEmptyMessage() {
-    startTest(getMethodName());
-  }
+    public void testEmptyMessage() {
+        startTest(getMethodName());
+    }
 
-  public void testEchoString() {
-    startTest(getMethodName());
-  }
+    public void testEchoString() {
+        startTest(getMethodName());
+    }
 
-  public void testEchoNumber1() {
-    startTest(getMethodName());
-  }
+    public void testEchoNumber1() {
+        startTest(getMethodName());
+    }
 
-  public void testEchoNumber2() {
-    startTest(getMethodName());
-  }
+    public void testEchoNumber2() {
+        startTest(getMethodName());
+    }
 
-  public void testEchoBooleanTrue() {
-    startTest(getMethodName());
-  }
+    public void testEchoBooleanTrue() {
+        startTest(getMethodName());
+    }
 
-  public void testEchoBooleanFalse() {
-    startTest(getMethodName());
-  }
+    public void testEchoBooleanFalse() {
+        startTest(getMethodName());
+    }
 
-  public void testEchoJson() {
-    startTest(getMethodName());
-  }
+    public void testEchoJson() {
+        startTest(getMethodName());
+    }
 
-  public void testEchoBuffer() {
-    startTest(getMethodName());
-  }
+    public void testEchoBuffer() {
+        startTest(getMethodName());
+    }
 
-  public void testEchoNull() {
-    startTest(getMethodName());
-  }
+    public void testEchoNull() {
+        startTest(getMethodName());
+    }
 
-  public void testReplyOfReplyOfReply() {
-    startTest(getMethodName());
-  }
+    public void testReplyOfReplyOfReply() {
+        startTest(getMethodName());
+    }
 
 }

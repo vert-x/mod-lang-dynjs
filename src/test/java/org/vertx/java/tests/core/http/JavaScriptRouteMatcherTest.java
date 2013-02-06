@@ -25,8 +25,9 @@ public class JavaScriptRouteMatcherTest extends TestBase {
 
   @Override
   protected void setUp() throws Exception {
+    final String basePath = System.getProperty("user.dir") + "/src/test/javascript_scripts";
+    System.setProperty("dynjs.require.path", basePath + ":" + basePath+"/core/filesystem");
     super.setUp();
-    System.err.println( getClass().getClassLoader().getResource( "core/routematcher/test_client.js" ) );
     startApp("core/routematcher/test_client.js");
   }
 

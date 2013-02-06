@@ -25,6 +25,8 @@ public class JavaScriptRecordParserTest extends TestBase {
 
   @Override
   protected void setUp() throws Exception {
+    final String basePath = System.getProperty("user.dir") + "/src/test/javascript_scripts";
+    System.setProperty("dynjs.require.path", basePath + ":" + basePath+"/core/parsetools");
     super.setUp();
     startApp("core/parsetools/test_client.js");
   }

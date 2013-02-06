@@ -28,7 +28,7 @@ var TestUtils = function() {
   }
 
   that.registerTests = function(obj) {
-    for(var key in obj){
+    for(var key in obj) {
       var val = obj[key];
       if (typeof val === 'function' && key.substring(0, 4) === 'test') {
         jutils.register(key, val);

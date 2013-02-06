@@ -24,28 +24,29 @@ import org.vertx.java.testframework.TestBase;
  */
 public class JavaScriptIsolationTest extends TestBase {
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-
-  @Test
-  public void testIsolation() throws Exception {
-    int numInstances = 10;
-    for (int i = 0; i < numInstances; i++) {
-      startApp("core/isolation/test_client.js");
+    @Override
+    protected void setUp() throws Exception {
+        final String basePath = System.getProperty("user.dir") + "/src/test/javascript_scripts";
+        System.setProperty("dynjs.require.path", basePath + ":" + basePath + "/core/isloation");
+        super.setUp();
     }
-    startApp("core/isolation/test_client.js", numInstances);
-    startTest(getMethodName(), false);
-    for (int i = 0; i < numInstances * 2; i++) {
-      waitTestComplete();
-    }
-  }
 
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    @Test
+    public void testIsolation() throws Exception {
+        int numInstances = 10;
+        for (int i = 0; i < numInstances; i++) {
+            startApp("core/isolation/test_client.js");
+        }
+        startApp("core/isolation/test_client.js", numInstances);
+        startTest(getMethodName(), false);
+        for (int i = 0; i < numInstances * 2; i++) {
+            waitTestComplete();
+        }
+    }
 
 }
