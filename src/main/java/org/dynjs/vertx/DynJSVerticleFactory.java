@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.dynjs.Config;
+import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
 import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.DynObject;
@@ -65,9 +66,8 @@ public class DynJSVerticleFactory implements VerticleFactory {
                         try {
                             return loadScript(context, (String) args[0]);
                         } catch (FileNotFoundException e) {
-                            e.printStackTrace();
+                            throw new ThrowException(context, e);
                         }
-                        return null;
                     }
                 });
                 return globalObject;

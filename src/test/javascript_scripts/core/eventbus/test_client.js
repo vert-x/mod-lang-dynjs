@@ -25,8 +25,8 @@ var eb = vertx.eventBus;
 var address = 'foo-address';
 
 var sent = {
-  price : 23.45,
-  name : 'tim'
+  price: 23.45,
+  name: 'tim'
 };
 
 var emptySent = {
