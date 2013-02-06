@@ -46,17 +46,11 @@ if (!vertx.eventBus) {
       return new org.vertx.java.core.Handler({
         handle: function(jMsg) {
           var body = jMsg.body;
-
-          if (typeof body === 'object') {
-            var clazz = body.getClass();
-            if (clazz === jsonObjectClass || clazz === jsonArrayClass) {
+          if (body && body.getClass().name === "org.vertx.java.core.json.JsonObject") {
               // Convert to JS JSON
-              if (jMsg.body) {
-                body = JSON.parse(jMsg.body.encode());
-              } else {
-                body = undefined;
-              }
-            }
+              body = JSON.parse(body.encode());
+          } else {
+              body = undefined;
           }
 
           handler(body, function(reply, replyHandler) {
