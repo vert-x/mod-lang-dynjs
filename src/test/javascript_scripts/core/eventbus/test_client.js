@@ -87,7 +87,7 @@ function testEmptyMessage() {
 function testUnregister() {
 
   var handled = false;
-  eb.registerHandler(address, function MyHandler(msg, replier) {
+  var MyHandler = function(msg, replier) {
     tu.checkContext();
     tu.azzert(!handled);
     assertSent(msg);
@@ -98,8 +98,9 @@ function testUnregister() {
     // Wait a little while to allow any other messages to arrive
     vertx.setTimer(100, function() {
       tu.testComplete();
-    })
-  });
+    });
+  }
+  eb.registerHandler(address, MyHandler);
 
   for (var i = 0; i < 2; i++) {
     eb.send(address, sent);
