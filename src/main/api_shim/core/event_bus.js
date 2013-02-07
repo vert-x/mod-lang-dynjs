@@ -39,18 +39,13 @@ if (!vertx.eventBus) {
       }
     }
 
-    var jsonObjectClass = new org.vertx.java.core.json.JsonObject().getClass();
-    var jsonArrayClass = new org.vertx.java.core.json.JsonArray().getClass();
-
     function wrappedHandler(handler) {
       return new org.vertx.java.core.Handler({
         handle: function(jMsg) {
           var body = jMsg.body;
-          if (body && body.getClass().name === "org.vertx.java.core.json.JsonObject") {
+          if (body.getClass && body.getClass().name === "org.vertx.java.core.json.JsonObject") {
               // Convert to JS JSON
               body = JSON.parse(body.encode());
-          } else {
-              body = undefined;
           }
 
           handler(body, function(reply, replyHandler) {
