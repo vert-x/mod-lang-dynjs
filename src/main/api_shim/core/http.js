@@ -20,16 +20,6 @@ if (!vertx.createHttpServer) {
 
   (function() {
 
-    function convertMap(j_map) {
-      var map = {};
-      var j_iter = j_map.entrySet().iterator();
-      while (j_iter.hasNext()) {
-        var entry = j_iter.next();
-        map[entry.getKey()] = entry.getValue();
-      }
-      return map;
-    }
-
     function wrappedRequestHandler(handler) {
       return function(j_req) {
 
@@ -42,13 +32,13 @@ if (!vertx.createHttpServer) {
 
           headers: function() {
             if (!reqHeaders) {
-              reqHeaders = convertMap(j_req.headers());
+              reqHeaders = j_req.headers();
             }
             return reqHeaders;
           },
           params: function() {
             if (!reqParams) {
-              reqParams = convertMap(j_req.params());
+              reqParams = j_req.params();
             }
             return reqParams;
           }
@@ -316,13 +306,13 @@ if (!vertx.createHttpServer) {
 
             headers: function() {
               if (!respHeaders) {
-                respHeaders = convertMap(j_resp.headers());
+                respHeaders = j_resp.headers();
               }
               return respHeaders;
             },
             trailers: function() {
               if (!respTrailers) {
-                respTrailers = convertMap(j_resp.trailers());
+                respTrailers = j_resp.trailers();
               }
               return respTrailers;
             }
@@ -354,7 +344,7 @@ if (!vertx.createHttpServer) {
         var wrapped = {
           headers: function() {
             if (!reqHeaders) {
-              reqHeaders = convertMap(j_req.headers());
+              reqHeaders = j_req.headers();
             }
             return reqHeaders;
           },

@@ -20,7 +20,7 @@ load('vertx.js')
 var tu = new TestUtils();
 
 var server = vertx.createHttpServer();
-var client = vertx.createHttpClient().setPort(8080);
+var client = vertx.createHttpClient().setPort(9090);
 var logger = vertx.logger;
 
 // This is just a basic test. Most testing occurs in the Java tests
