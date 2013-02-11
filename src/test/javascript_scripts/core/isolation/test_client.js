@@ -22,7 +22,7 @@ var tu = new TestUtils();
 var myglobal;
 
 function testIsolation() {
-  tu.azzert(myglobal == undefined);
+  tu.azzert(myglobal == undefined, "Expected undefined but got: " + myglobal);
   myglobal = 123;
   tu.testComplete();
 }

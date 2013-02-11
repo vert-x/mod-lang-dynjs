@@ -104,9 +104,13 @@ if (!vertx.eventBus) {
         case 'string':
         case 'boolean':
         case 'undefined':
+        case 'org.vertx.java.core.buffer.Buffer':
           break;
         case 'number':
-          message = new java.lang.Double(message);
+          // Are we dealing with a floaty thing or an integery thing?
+          java.lang.System.err.println("NUMBER: " + message)
+          message = (message % 1 === 0) ? message : java.lang.Double.parseDouble(message.toString())
+          java.lang.System.err.println("NUMBER IS NOW: " + message)
           break;
         case 'object':
           // If null then we just wrap it as an empty JSON message
@@ -118,6 +122,7 @@ if (!vertx.eventBus) {
           }
           break;
         default:
+          java.lang.System.err.println("CANNOT CONVERT MESSAGE OF TYPE " + msgType)
           throw 'Invalid type for message: ' + msgType;
       }
       return message;

@@ -190,7 +190,7 @@ function testEchoJson() {
 }
 
 function testEchoBuffer() {
-  echo(new org.vertx.java.core.buffer.Buffer);
+  echo(new org.vertx.java.core.buffer.Buffer());
 }
 
 function testEchoNull() {
@@ -208,6 +208,8 @@ function echo(msg) {
 
     if (msg != null) {
       if (typeof msg != 'object') {
+        java.lang.System.err.println("MESSAGE: " + typeof msg);
+        java.lang.System.err.println("REPLY  : " + typeof reply);
         tu.azzert(msg === reply);
       } else {
         //Json object

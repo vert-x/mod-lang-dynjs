@@ -126,20 +126,23 @@ public class DynJSVerticleFactory implements VerticleFactory {
     private class DynJSVerticle extends Verticle {
 
         private final String scriptName;
+        private final ExecutionContext context;
 
         DynJSVerticle(String scriptName) {
             this.scriptName = scriptName;
+            this.context = ExecutionContext.createGlobalExecutionContext(runtime);
         }
 
         @Override
         public void start() throws Exception {
-            loadScript(runtime.getExecutionContext(), this.scriptName);
+            loadScript(this.context, this.scriptName);
         }
 
         @Override
         public void stop() throws Exception {
             try {
-                runtime.evaluate("(vertxStop ? vertxStop() : null)");
+                Runner runner = this.context.getGlobalObject().getRuntime().newRunner();
+                runner.withContext(this.context).withSource("(vertxStop ? vertxStop() : null)").execute();
             } catch (Exception e) {
                 // If not defined in global scope, we get an exception
             }

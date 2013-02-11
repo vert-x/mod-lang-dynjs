@@ -38,7 +38,7 @@ public class JavaScriptIsolationTest extends TestBase {
 
     @Test
     public void testIsolation() throws Exception {
-        int numInstances = 10;
+        int numInstances = 3;
         for (int i = 0; i < numInstances; i++) {
             startApp("core/isolation/test_client.js");
         }
