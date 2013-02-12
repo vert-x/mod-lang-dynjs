@@ -18,8 +18,6 @@ load('test_utils.js')
 load('vertx.js')
 
 var tu = new TestUtils();
-
-
 var server = vertx.createHttpServer();
 var rm = new vertx.RouteMatcher();
 server.requestHandler(rm);

@@ -29,7 +29,5 @@ if (!vertx.createHttpClient) {
 }
 
 if (!vertx.RouteMatcher) {
-    vertx.RouteMatcher = function() {
-      return new org.vertx.java.core.http.RouteMatcher();
-    }
+    vertx.RouteMatcher = org.vertx.java.core.http.RouteMatcher;
 }
