@@ -106,7 +106,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
             if (is == null) {
                 throw new FileNotFoundException("Cannot find script: " + scriptName);
             }
-            System.err.println("Loading script: " + scriptName);
+//            System.err.println("Loading script: " + scriptName);
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             ClassLoader old = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(mcl);
