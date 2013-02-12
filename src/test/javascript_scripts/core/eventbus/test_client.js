@@ -28,7 +28,7 @@ var sent = {
   price : 23,
   // TODO: Message passing gives us a float with too great of 
   // a precision for some reason.
-  // price : 23.45,
+  //price : 23.45,
   name : 'tim'
 };
 

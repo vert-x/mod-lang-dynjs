@@ -18,9 +18,9 @@ load('test_utils.js')
 load('vertx.js')
 
 var tu = new TestUtils();
-
+var port = 9090
 var server = vertx.createHttpServer();
-var client = vertx.createHttpClient().setPort(9090);
+var client = vertx.createHttpClient().setPort(port);
 var logger = vertx.logger;
 
 // This is just a basic test. Most testing occurs in the Java tests
@@ -171,6 +171,10 @@ function testPATCHSSLChunked() {
   httpMethod(true, "PATCH", true)
 }
 
+function expected(expects, gets) {
+  return "Expected [" + expects.toString() + "] but got [" + gets + "]."
+}
+
 function httpMethod(ssl, method, chunked) {
 
   if (ssl) {
@@ -184,14 +188,14 @@ function httpMethod(ssl, method, chunked) {
 
   var path = "/someurl/blah.html";
   var query = "param1=vparam1&param2=vparam2";
-  var uri = (ssl ? "https" : "http") +"://localhost:8080" + path + "?" + query;
+  var uri = (ssl ? "https" : "http") +"://localhost:" + port + path + "?" + query;
 
   server.requestHandler(function(req) {
     tu.checkContext()
-    tu.azzert(uri === req.uri);
-    tu.azzert(req.method === method);
-    tu.azzert(req.path === path);
-    tu.azzert(req.query === query);
+    tu.azzert(req.method === method, expected(method, req.method));
+    tu.azzert(uri === req.uri, expected(uri, req.uri));
+    tu.azzert(req.path === path, expected(path, req.path));
+    tu.azzert(req.query === query, expected(query, req.query));
 
     tu.azzert(req.headers()['header1'] === 'vheader1');
     tu.azzert(req.headers()['header2'] === 'vheader2');
@@ -222,7 +226,7 @@ function httpMethod(ssl, method, chunked) {
       req.response.end();
     });
   });
-  server.listen(8080);
+  server.listen(port);
 
   if (ssl) {
     client.setSSL(true);
