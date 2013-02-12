@@ -171,10 +171,6 @@ function testPATCHSSLChunked() {
   httpMethod(true, "PATCH", true)
 }
 
-function expected(expects, gets) {
-  return "Expected [" + expects.toString() + "] but got [" + gets + "]."
-}
-
 function httpMethod(ssl, method, chunked) {
 
   if (ssl) {
@@ -192,10 +188,10 @@ function httpMethod(ssl, method, chunked) {
 
   server.requestHandler(function(req) {
     tu.checkContext()
-    tu.azzert(req.method === method, expected(method, req.method));
-    tu.azzert(uri === req.uri, expected(uri, req.uri));
-    tu.azzert(req.path === path, expected(path, req.path));
-    tu.azzert(req.query === query, expected(query, req.query));
+    tu.azzert(req.method === method, tu.expected(method, req.method));
+    tu.azzert(uri === req.uri, tu.expected(uri, req.uri));
+    tu.azzert(req.path === path, tu.expected(path, req.path));
+    tu.azzert(req.query === query, tu.expected(query, req.query));
 
     tu.azzert(req.headers()['header1'] === 'vheader1');
     tu.azzert(req.headers()['header2'] === 'vheader2');

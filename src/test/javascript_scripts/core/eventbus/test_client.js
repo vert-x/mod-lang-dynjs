@@ -25,10 +25,7 @@ var eb = vertx.eventBus;
 var address = 'foo-address';
 
 var sent = {
-  price : 23,
-  // TODO: Message passing gives us a float with too great of 
-  // a precision for some reason.
-  //price : 23.45,
+  price : 23.45,
   name : 'tim'
 };
 
@@ -42,8 +39,6 @@ var reply = {
 }
 
 function assertSent(msg) {
-//  java.lang.System.err.println("SENT PRICE: " + sent.price);
-//  java.lang.System.err.println("MSG PRICE: " + msg.price);
   tu.azzert(sent.price === msg.price);
   tu.azzert(sent.name === msg.name);
 }
@@ -206,22 +201,13 @@ function echo(msg) {
   });
   eb.send(address, msg, function (reply){
 
-    if (msg != null) {
-      if (typeof msg != 'object') {
-        java.lang.System.err.println("MESSAGE: " + typeof msg);
-        java.lang.System.err.println("REPLY  : " + typeof reply);
-        tu.azzert(msg === reply);
-      } else {
-        //Json object
-        for (field in reply) {
-          tu.azzert(msg.field === reply.field);
-        }
-      }
-    } else {
-      tu.azzert(reply == null);
+  if (msg != null) {
+    for (field in reply) {
+      tu.azzert(msg.field === reply.field);
     }
+  }
 
-    tu.testComplete();
+  tu.testComplete();
   });
 }
 

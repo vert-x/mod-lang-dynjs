@@ -3,6 +3,10 @@ var TestUtils = function() {
   var that = this;
   var jutils = new org.vertx.java.testframework.TestUtils(org.dynjs.vertx.DynJSVerticleFactory.vertx);
 
+  that.expected = function(expects, gets) {
+    return "Expected [" + expects + "] but got [" + gets + "]."
+  }
+
   that.azzert = function(result, message) {
     if (message) {
       jutils.azzert(result, message);
