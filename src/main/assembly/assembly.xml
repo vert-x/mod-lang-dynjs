@@ -8,14 +8,18 @@
     <fileSets>
         <fileSet>
             <directory>${project.build.directory}/classes</directory>
-            <outputDirectory>${project.artifactId}-${project.version}/lib</outputDirectory>
+            <outputDirectory>${artifactId}-${project.version}/lib</outputDirectory>
         </fileSet>
     </fileSets>
-  <dependencySets>
-    <dependencySet>
-      <outputDirectory>${project.artifactId}-${project.version}/lib</outputDirectory>
-      <unpack>true</unpack>
-      <scope>runtime</scope>
-    </dependencySet>
-  </dependencySets>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>${artifactId}-${project.version}/lib</outputDirectory>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>org.vert-x:vertx-core</exclude>
+                <exclude>org.vert-x:vertx-platform</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
 </assembly>
