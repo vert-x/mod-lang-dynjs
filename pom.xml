@@ -6,7 +6,7 @@
 
     <groupId>org.dynjs</groupId>
     <artifactId>dynjs-vertx-module</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>dynjs vertx module</name>
 
     <properties>
@@ -19,6 +19,12 @@
     </properties>
 
     <developers>
+      <developer>
+        <name>Lance Ball</name>
+        <email>lball@redhat.com</email>
+        <organization>Project Odd</organization>
+        <organizationUrl>http://projectodd.org</organizationUrl>
+      </developer>
     </developers>
 
     <licenses>
@@ -141,24 +147,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                    <show>private</show>
-                    <nohelp>true</nohelp>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
@@ -176,23 +164,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.9.0</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <header>${project.basedir}/etc/dynjs-license.txt</header>
-                    <excludes>
-                        <exclude>src/main/java/org/dynalang/**</exclude>
-                        <exclude>src/main/resources/org/dynjs/dynjs-license.txt</exclude>
-                    </excludes>
-                    <includes>
-                        <include>src/**</include>
-                    </includes>
-                    <strictCheck>true</strictCheck>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
                 <artifactId>maven-java-formatter-plugin</artifactId>
                 <version>0.3.1</version>
@@ -200,6 +171,38 @@
                     <configFile>${project.basedir}/support/eclipse-formatting.xml</configFile>
                     <lineEnding>LF</lineEnding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.13</version>
+                <configuration>
+                    <disableXmlReport>true</disableXmlReport>
+                    <argLine>-Xss2048k</argLine><!-- -XX:ClassMetaspaceSize=128m</argLine> -->
+                    <verbose>true</verbose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <finalName>lang-dynjs-${project.version}</finalName>
+                    <descriptors>
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                    <attach>true</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -217,30 +220,6 @@
                                     <version>3.0.0</version>
                                 </requireMavenVersion>
                             </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedArtifactId>dynjs-all</shadedArtifactId>
-                            <finalName>dynjs-all</finalName>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.dynjs.cli.Main</mainClass>
-                                </transformer>
-                            </transformers>
                         </configuration>
                     </execution>
                 </executions>

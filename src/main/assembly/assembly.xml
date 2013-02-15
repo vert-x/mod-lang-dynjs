@@ -1,0 +1,21 @@
+<assembly>
+  <id>lang-dynjs-${project.version}</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <baseDirectory>target</baseDirectory>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.directory}/classes</directory>
+            <outputDirectory>${project.artifactId}-${project.version}/lib</outputDirectory>
+        </fileSet>
+    </fileSets>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>${project.artifactId}-${project.version}/lib</outputDirectory>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+  </dependencySets>
+</assembly>
