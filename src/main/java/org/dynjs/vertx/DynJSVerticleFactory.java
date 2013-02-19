@@ -44,16 +44,18 @@ import org.vertx.java.platform.VerticleFactory;
 public class DynJSVerticleFactory implements VerticleFactory {
 
     private DynJS runtime;
+    private Config config;
     private ClassLoader mcl;
     public static Container container;
     public static Vertx vertx;
 
     @Override
     public void init(Vertx vertx, Container container, ClassLoader classloader) {
+        System.err.println("Initializing DynJSVerticleFactory.");
         this.mcl = classloader;
         DynJSVerticleFactory.container = container;
         DynJSVerticleFactory.vertx = vertx;
-        Config config = new Config();
+        config = new Config(this.mcl);
         config.setGlobalObjectFactory(new GlobalObjectFactory() {
             @Override
             public GlobalObject newGlobalObject(DynJS runtime) {
@@ -99,28 +101,33 @@ public class DynJSVerticleFactory implements VerticleFactory {
             context = parent;
             parent = context.getParent();
         }
-        if (scriptFile.exists()) {
-            return runner.withContext(context).withSource(scriptFile).execute();
-        } else {
-            InputStream is = mcl.getResourceAsStream(scriptName);
-            if (is == null) {
-                throw new FileNotFoundException("Cannot find script: " + scriptName);
-            }
-//            System.err.println("Loading script: " + scriptName);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            ClassLoader old = Thread.currentThread().getContextClassLoader();
-            Thread.currentThread().setContextClassLoader(mcl);
-            try {
-                Object ret = runner.withContext(context).withSource(reader).execute();
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(config.getClassLoader());
+        Object ret = null;
+        try {
+            if (scriptFile.exists()) {
+                System.err.println("Found script file: " + scriptFile.getAbsolutePath());
+                ret = runner.withContext(context).withSource(scriptFile).execute();
+                System.err.println("Script [" + scriptName + "] loaded.");
+            } else {
+                InputStream is = mcl.getResourceAsStream(scriptName);
+                if (is == null) {
+                    throw new FileNotFoundException("Cannot find script: " + scriptName);
+                }
+                System.err.println("Loading script: " + scriptName);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                ret = runner.withContext(context).withSource(reader).execute();
+                System.err.println("Script [" + scriptName + "] loaded.");
                 try {
                     is.close();
-                } catch (IOException ignore) {
+                } catch (IOException e) {
+                    // ignore
                 }
-                return ret;
-            } finally {
-                Thread.currentThread().setContextClassLoader(old);
             }
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
+        return ret;
     }
 
     private class DynJSVerticle extends Verticle {
@@ -135,6 +142,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
 
         @Override
         public void start() throws Exception {
+            System.err.println("Starting DynJSVerticle with script: " + this.scriptName);
             loadScript(this.context, this.scriptName);
         }
 

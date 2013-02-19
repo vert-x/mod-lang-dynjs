@@ -16,7 +16,6 @@
         <!--
         <version.dynjs>1.x.incremental.555</version.dynjs>
         -->
-        <vertx.descriptor>${groupId}.${artifactId}-${project.version}</vertx.descriptor>
     </properties>
 
     <developers>
