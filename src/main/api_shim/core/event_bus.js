@@ -21,10 +21,6 @@ if (!vertx.eventBus) {
     var that = this;
 
     var handlerMap = {};
-    java.lang.System.err.println("Factory: " + org.dynjs.vertx.DynJSVerticleFactory);
-    java.lang.System.err.println("Vertx: " + org.dynjs.vertx.DynJSVerticleFactory.vertx);
-    java.lang.System.err.println("Event bus: " + org.dynjs.vertx.DynJSVerticleFactory.vertx.eventBus);
-
     var jEventBus = org.dynjs.vertx.DynJSVerticleFactory.vertx.eventBus();
 
     function checkHandlerParams(address, handler) {

@@ -51,7 +51,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
 
     @Override
     public void init(Vertx vertx, Container container, ClassLoader classloader) {
-        System.err.println("Initializing DynJSVerticleFactory.");
+//        System.err.println("Initializing DynJSVerticleFactory.");
         this.mcl = classloader;
         DynJSVerticleFactory.container = container;
         DynJSVerticleFactory.vertx = vertx;
@@ -106,18 +106,18 @@ public class DynJSVerticleFactory implements VerticleFactory {
         Object ret = null;
         try {
             if (scriptFile.exists()) {
-                System.err.println("Found script file: " + scriptFile.getAbsolutePath());
+//                System.err.println("Found script file: " + scriptFile.getAbsolutePath());
                 ret = runner.withContext(context).withSource(scriptFile).execute();
-                System.err.println("Script [" + scriptName + "] loaded.");
+//                System.err.println("Script [" + scriptName + "] loaded.");
             } else {
                 InputStream is = config.getClassLoader().getResourceAsStream(scriptName);
                 if (is == null) {
                     throw new FileNotFoundException("Cannot find script: " + scriptName);
                 }
-                System.err.println("Loading script: " + scriptName);
+//                System.err.println("Loading script: " + scriptName);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
                 ret = runner.withContext(context).withSource(reader).execute();
-                System.err.println("Script [" + scriptName + "] loaded.");
+//                System.err.println("Script [" + scriptName + "] loaded.");
                 try {
                     is.close();
                 } catch (IOException e) {
@@ -142,7 +142,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
 
         @Override
         public void start() throws Exception {
-            System.err.println("Starting DynJSVerticle with script: " + this.scriptName);
+//            System.err.println("Starting DynJSVerticle with script: " + this.scriptName);
             loadScript(this.context, this.scriptName);
         }
 
