@@ -110,7 +110,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
                 ret = runner.withContext(context).withSource(scriptFile).execute();
                 System.err.println("Script [" + scriptName + "] loaded.");
             } else {
-                InputStream is = mcl.getResourceAsStream(scriptName);
+                InputStream is = config.getClassLoader().getResourceAsStream(scriptName);
                 if (is == null) {
                     throw new FileNotFoundException("Cannot find script: " + scriptName);
                 }
