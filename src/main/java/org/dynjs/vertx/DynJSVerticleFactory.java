@@ -51,7 +51,6 @@ public class DynJSVerticleFactory implements VerticleFactory {
 
     @Override
     public void init(Vertx vertx, Container container, ClassLoader classloader) {
-//        System.err.println("Initializing DynJSVerticleFactory.");
         this.mcl = classloader;
         DynJSVerticleFactory.container = container;
         DynJSVerticleFactory.vertx = vertx;
@@ -62,6 +61,8 @@ public class DynJSVerticleFactory implements VerticleFactory {
                 final GlobalObject globalObject = new GlobalObject(runtime);
                 globalObject.defineGlobalProperty("__dirname", System.getProperty("user.dir"));
                 globalObject.defineGlobalProperty("vertx", new DynObject(globalObject));
+                globalObject.defineGlobalProperty("global", globalObject);
+                globalObject.defineGlobalProperty("runtime", runtime);
                 globalObject.defineGlobalProperty("load", new AbstractNativeFunction(globalObject) {
                     @Override
                     public Object call(ExecutionContext context, Object self, Object... args) {
@@ -106,18 +107,14 @@ public class DynJSVerticleFactory implements VerticleFactory {
         Object ret = null;
         try {
             if (scriptFile.exists()) {
-//                System.err.println("Found script file: " + scriptFile.getAbsolutePath());
                 ret = runner.withContext(context).withSource(scriptFile).execute();
-//                System.err.println("Script [" + scriptName + "] loaded.");
             } else {
                 InputStream is = config.getClassLoader().getResourceAsStream(scriptName);
                 if (is == null) {
                     throw new FileNotFoundException("Cannot find script: " + scriptName);
                 }
-//                System.err.println("Loading script: " + scriptName);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
                 ret = runner.withContext(context).withSource(reader).execute();
-//                System.err.println("Script [" + scriptName + "] loaded.");
                 try {
                     is.close();
                 } catch (IOException e) {
@@ -142,7 +139,6 @@ public class DynJSVerticleFactory implements VerticleFactory {
 
         @Override
         public void start() throws Exception {
-//            System.err.println("Starting DynJSVerticle with script: " + this.scriptName);
             loadScript(this.context, this.scriptName);
         }
 
@@ -152,7 +148,6 @@ public class DynJSVerticleFactory implements VerticleFactory {
                 Runner runner = this.context.getGlobalObject().getRuntime().newRunner();
                 runner.withContext(this.context).withSource("(vertxStop ? vertxStop() : null)").execute();
             } catch (Exception e) {
-                // If not defined in global scope, we get an exception
             }
         }
     }
