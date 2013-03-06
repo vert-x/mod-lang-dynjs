@@ -77,6 +77,7 @@ if (!vertx.deployVerticle) {
 
     var j_conf = org.dynjs.vertx.DynJSVerticleFactory.container.getConfig();
     vertx.config =  j_conf == null ? null : JSON.parse(j_conf.encode());
+    vertx._jVertx = org.dynjs.vertx.DynJSVerticleFactory.vertx;
 
   })();
 }
