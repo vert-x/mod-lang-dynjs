@@ -187,7 +187,7 @@ function httpMethod(ssl, method, chunked) {
   var uri = (ssl ? "https" : "http") +"://localhost:" + port + path + "?" + query;
 
   server.requestHandler(function(req) {
-    tu.checkContext()
+    tu.checkThread()
     tu.azzert(req.method === method, tu.expected(method, req.method));
     tu.azzert(uri === req.uri, tu.expected(uri, req.uri));
     tu.azzert(req.path === path, tu.expected(path, req.path));
@@ -201,12 +201,12 @@ function httpMethod(ssl, method, chunked) {
     req.response.putHeader('rheader2', 'vrheader2');
     var body = new vertx.Buffer(0);
     req.dataHandler(function(data) {
-      tu.checkContext();
+      tu.checkThread();
       body.appendBuffer(data);
     });
     req.response.setChunked(chunked);
     req.endHandler(function() {
-      tu.checkContext();
+      tu.checkThread();
       if (!chunked) {
         req.response.headers()['Content-Length'] =  '' + body.length();
       }
@@ -233,18 +233,18 @@ function httpMethod(ssl, method, chunked) {
   var sent_buff = tu.generateRandomBuffer(1000);
 
   var request = client.request(method, uri, function(resp) {
-    tu.checkContext();
+    tu.checkThread();
     tu.azzert(200 === resp.statusCode);
     tu.azzert('vrheader1' === resp.headers()['rheader1']);
     tu.azzert('vrheader2' === resp.headers()['rheader2']);
     var body = new vertx.Buffer(0);
     resp.dataHandler(function(data) {
-      tu.checkContext();
+      tu.checkThread();
       body.appendBuffer(data);
     });
 
     resp.endHandler(function() {
-      tu.checkContext();
+      tu.checkThread();
       if (method !== 'HEAD' && method !== 'CONNECT') {
         tu.azzert(tu.buffersEqual(sent_buff, body));
         if (chunked) {

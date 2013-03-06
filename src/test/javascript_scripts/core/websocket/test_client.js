@@ -35,10 +35,10 @@ function echo(binary) {
 
   server.websocketHandler(function(ws) {
 
-    tu.checkContext();
+    tu.checkThread();
 
     ws.dataHandler(function(buff) {
-      tu.checkContext();
+      tu.checkThread();
       ws.writeBuffer(buff);
     });
 
@@ -56,12 +56,12 @@ function echo(binary) {
   }
 
   client.connectWebsocket("/someurl", function(ws) {
-    tu.checkContext();
+    tu.checkThread();
 
     var received = new vertx.Buffer(0);
 
     ws.dataHandler(function(buff) {
-      tu.checkContext();
+      tu.checkThread();
       received.appendBuffer(buff);
       if (received.length() == buff.length()) {
         tu.azzert(tu.buffersEqual(buff, received));
@@ -81,16 +81,16 @@ function echo(binary) {
 function testWriteFromConnectHandler() {
 
   server.websocketHandler(function(ws) {
-    tu.checkContext();
+    tu.checkThread();
     ws.writeTextFrame("foo");
   });
 
   server.listen(8080);
 
   client.connectWebsocket("/someurl", function(ws) {
-    tu.checkContext();
+    tu.checkThread();
     ws.dataHandler(function(buff) {
-      tu.checkContext();
+      tu.checkThread();
       tu.azzert("foo" == buff.toString());
       tu.testComplete();
     });
@@ -101,7 +101,7 @@ function testWriteFromConnectHandler() {
 function testClose() {
 
   server.websocketHandler(function(ws) {
-    tu.checkContext();
+    tu.checkThread();
     ws.dataHandler(function(buff) {
       ws.close();
     });
@@ -110,7 +110,7 @@ function testClose() {
   server.listen(8080);
 
   client.connectWebsocket("/someurl", function(ws) {
-    tu.checkContext();
+    tu.checkThread();
     ws.closedHandler(function() {
       tu.testComplete();
     });
@@ -122,14 +122,14 @@ function testClose() {
 function testCloseFromConnectHandler() {
 
   server.websocketHandler(function(ws) {
-    tu.checkContext();
+    tu.checkThread();
     ws.close();
   });
 
   server.listen(8080);
 
   client.connectWebsocket("/someurl", function(ws) {
-    tu.checkContext();
+    tu.checkThread();
     ws.closedHandler(function() {
       tu.testComplete();
     });

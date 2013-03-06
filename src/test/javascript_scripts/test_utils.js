@@ -44,8 +44,8 @@ var TestUtils = function() {
     jutils.unregisterAll();
   }
 
-  that.checkContext = function() {
-    jutils.checkContext();
+  that.checkThread = function() {
+    jutils.checkThread();
   }
 
   that.generateRandomBuffer = function(size) {

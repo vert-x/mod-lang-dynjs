@@ -53,7 +53,7 @@ function testSimple() {
 
   var handled = false;
   eb.registerHandler(address, function MyHandler(msg, replier) {
-    tu.checkContext();
+    tu.checkThread();
     tu.azzert(!handled);
     assertSent(msg);
     eb.unregisterHandler(address, MyHandler);
@@ -68,7 +68,7 @@ function testEmptyMessage() {
 
   var handled = false;
   eb.registerHandler(address, function MyHandler(msg, replier) {
-    tu.checkContext();
+    tu.checkThread();
     tu.azzert(!handled);
     eb.unregisterHandler(address, MyHandler);
     handled = true;
@@ -83,7 +83,7 @@ function testUnregister() {
 
   var handled = false;
   var MyHandler = function(msg, replier) {
-    tu.checkContext();
+    tu.checkThread();
     tu.azzert(!handled);
     assertSent(msg);
     eb.unregisterHandler(address, MyHandler);
@@ -106,7 +106,7 @@ function testWithReply() {
 
   var handled = false;
   eb.registerHandler(address, function MyHandler(msg, replier) {
-    tu.checkContext();
+    tu.checkThread();
     tu.azzert(!handled);
     assertSent(msg);
     eb.unregisterHandler(address, MyHandler);
@@ -115,7 +115,7 @@ function testWithReply() {
   });
 
   eb.send(address, sent, function(reply) {
-    tu.checkContext();
+    tu.checkThread();
     assertReply(reply);
     tu.testComplete();
   });
@@ -145,7 +145,7 @@ function testEmptyReply() {
 
   var handled = false;
   eb.registerHandler(address, function MyHandler(msg, replier) {
-    tu.checkContext();
+    tu.checkThread();
     tu.azzert(!handled);
     assertSent(msg);
     eb.unregisterHandler(address, MyHandler);
@@ -154,7 +154,7 @@ function testEmptyReply() {
   });
 
   eb.send(address, sent, function(reply) {
-    tu.checkContext();
+    tu.checkThread();
     tu.testComplete();
   });
   eb.send(address, sent);
@@ -195,7 +195,7 @@ function testEchoNull() {
 
 function echo(msg) {
   eb.registerHandler(address, function MyHandler(received, replier) {
-    tu.checkContext();
+    tu.checkThread();
     eb.unregisterHandler(address, MyHandler);
     replier(received);
   });

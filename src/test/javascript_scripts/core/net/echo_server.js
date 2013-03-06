@@ -22,9 +22,9 @@ var tu = new TestUtils();
 var server = vertx.createNetServer();
 
 var h = function(sock) {
-  tu.checkContext();
+  tu.checkThread();
   sock.dataHandler(function(data) {
-    tu.checkContext();
+    tu.checkThread();
     sock.write(data);
   })
 };
@@ -36,9 +36,9 @@ server.listen(1234, 'localhost');
 tu.appReady();
 
 function vertxStop() {
-  tu.checkContext();
+  tu.checkThread();
   server.close(function() {
-    tu.checkContext();
+    tu.checkThread();
     tu.appStopped();
   });
 }

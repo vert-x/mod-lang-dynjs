@@ -88,13 +88,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.vert-x</groupId>
+            <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
             <version>${version.vertx}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.vert-x</groupId>
+            <groupId>io.vertx</groupId>
             <artifactId>vertx-platform</artifactId>
             <version>${version.vertx}</version>
             <scope>compile</scope>
@@ -115,7 +115,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.vert-x</groupId>
+            <groupId>io.vertx</groupId>
             <artifactId>vertx-testframework</artifactId>
             <version>${version.vertx}</version>
             <scope>test</scope>

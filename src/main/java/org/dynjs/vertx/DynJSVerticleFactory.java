@@ -31,6 +31,7 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.GlobalObjectFactory;
+import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Runner;
 import org.vertx.java.core.Vertx;
 import org.vertx.java.core.logging.Logger;
@@ -57,10 +58,28 @@ public class DynJSVerticleFactory implements VerticleFactory {
         config = new Config(this.mcl);
         config.setGlobalObjectFactory(new GlobalObjectFactory() {
             @Override
-            public GlobalObject newGlobalObject(DynJS runtime) {
+            public GlobalObject newGlobalObject(final DynJS runtime) {
                 final GlobalObject globalObject = new GlobalObject(runtime);
                 globalObject.defineGlobalProperty("__dirname", System.getProperty("user.dir"));
                 globalObject.defineGlobalProperty("vertx", new DynObject(globalObject));
+                DynObject dynjs = new DynObject(globalObject);
+                dynjs.defineOwnProperty(null, "global", new PropertyDescriptor() {
+                    {
+                        set("Value", globalObject);
+                        set("Writable", true);
+                        set("Enumerable", false);
+                        set("Configurable", true);
+                    }
+                }, false);
+                dynjs.defineOwnProperty(null, "runtime", new PropertyDescriptor() {
+                    {
+                        set("Value", runtime);
+                        set("Writable", true);
+                        set("Enumerable", false);
+                        set("Configurable", true);
+                    }
+                }, false);
+                globalObject.defineGlobalProperty("dynjs", dynjs);
                 globalObject.defineGlobalProperty("global", globalObject);
                 globalObject.defineGlobalProperty("runtime", runtime);
                 globalObject.defineGlobalProperty("load", new AbstractNativeFunction(globalObject) {

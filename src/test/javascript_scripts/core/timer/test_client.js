@@ -22,7 +22,7 @@ var tu = new TestUtils();
 function testOneOff() {
   var count = 0;
   var id = vertx.setTimer(1000, function(timer_id) {
-    tu.checkContext();
+    tu.checkThread();
     tu.azzert(id === timer_id);
     tu.azzert(count === 0);
     count++;
@@ -35,7 +35,7 @@ function testPeriodic() {
   var delay = 100;
   var count = 0;
   var id = vertx.setPeriodic(delay, function(timer_id) {
-    tu.checkContext();
+    tu.checkThread();
     tu.azzert(id === timer_id);
     count++;
     if (count === numFires) {
