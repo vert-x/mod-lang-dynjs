@@ -139,6 +139,9 @@ public class DynJSVerticleFactory implements VerticleFactory {
             globalObject.defineGlobalProperty("dynjs", dynjs);
             globalObject.defineGlobalProperty("global", globalObject);
             globalObject.defineGlobalProperty("runtime", runtime);
+            globalObject.defineReadOnlyGlobalProperty("stdout", System.out);
+            globalObject.defineReadOnlyGlobalProperty("stderr", System.err);
+
             globalObject.defineGlobalProperty("load", new AbstractNativeFunction(globalObject) {
                 @Override
                 public Object call(ExecutionContext context, Object self, Object... args) {
