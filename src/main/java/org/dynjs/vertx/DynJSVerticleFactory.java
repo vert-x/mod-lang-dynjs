@@ -66,16 +66,16 @@ public class DynJSVerticleFactory implements VerticleFactory {
                 dynjs.defineOwnProperty(null, "global", new PropertyDescriptor() {
                     {
                         set("Value", globalObject);
-                        set("Writable", true);
-                        set("Enumerable", false);
+                        set("Writable", false);
+                        set("Enumerable", true);
                         set("Configurable", true);
                     }
                 }, false);
                 dynjs.defineOwnProperty(null, "runtime", new PropertyDescriptor() {
                     {
                         set("Value", runtime);
-                        set("Writable", true);
-                        set("Enumerable", false);
+                        set("Writable", false);
+                        set("Enumerable", true);
                         set("Configurable", true);
                     }
                 }, false);
@@ -108,9 +108,14 @@ public class DynJSVerticleFactory implements VerticleFactory {
     public void reportException(Logger logger, Throwable t) {
         logger.error("Exception in DynJS JavaScript verticle", t);
     }
+    
+    public DynJS getRuntime() {
+        return this.runtime;
+    }
 
     public Object loadScript(ExecutionContext context, String scriptName)
             throws FileNotFoundException {
+
         if (scriptName == null) {
             return null;
         }
@@ -158,6 +163,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
 
         @Override
         public void start() throws Exception {
+            System.err.println("Starting DynJS Verticle with script: " + scriptName);
             loadScript(this.context, this.scriptName);
         }
 
