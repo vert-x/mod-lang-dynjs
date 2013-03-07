@@ -118,7 +118,6 @@ public class DynJSVerticleFactory implements VerticleFactory {
         public GlobalObject newGlobalObject(final DynJS runtime) {
             final GlobalObject globalObject = new GlobalObject(runtime);
             globalObject.defineGlobalProperty("__dirname", System.getProperty("user.dir"));
-            globalObject.defineGlobalProperty("vertx", new DynObject(globalObject));
             DynObject dynjs = new DynObject(globalObject);
             dynjs.defineOwnProperty(null, "global", new PropertyDescriptor() {
                 {
