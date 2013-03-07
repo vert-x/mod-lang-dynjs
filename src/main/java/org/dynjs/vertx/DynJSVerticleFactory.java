@@ -56,45 +56,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
         DynJSVerticleFactory.container = container;
         DynJSVerticleFactory.vertx = vertx;
         config = new Config(this.mcl);
-        config.setGlobalObjectFactory(new GlobalObjectFactory() {
-            @Override
-            public GlobalObject newGlobalObject(final DynJS runtime) {
-                final GlobalObject globalObject = new GlobalObject(runtime);
-                globalObject.defineGlobalProperty("__dirname", System.getProperty("user.dir"));
-                globalObject.defineGlobalProperty("vertx", new DynObject(globalObject));
-                DynObject dynjs = new DynObject(globalObject);
-                dynjs.defineOwnProperty(null, "global", new PropertyDescriptor() {
-                    {
-                        set("Value", globalObject);
-                        set("Writable", false);
-                        set("Enumerable", true);
-                        set("Configurable", true);
-                    }
-                }, false);
-                dynjs.defineOwnProperty(null, "runtime", new PropertyDescriptor() {
-                    {
-                        set("Value", runtime);
-                        set("Writable", false);
-                        set("Enumerable", true);
-                        set("Configurable", true);
-                    }
-                }, false);
-                globalObject.defineGlobalProperty("dynjs", dynjs);
-                globalObject.defineGlobalProperty("global", globalObject);
-                globalObject.defineGlobalProperty("runtime", runtime);
-                globalObject.defineGlobalProperty("load", new AbstractNativeFunction(globalObject) {
-                    @Override
-                    public Object call(ExecutionContext context, Object self, Object... args) {
-                        try {
-                            return loadScript(context, (String) args[0]);
-                        } catch (FileNotFoundException e) {
-                            throw new ThrowException(context, e);
-                        }
-                    }
-                });
-                return globalObject;
-            }
-        });
+        config.setGlobalObjectFactory(new DynJSGlobalObjectFactory());
         runtime = new DynJS(config);
     }
 
@@ -151,6 +113,46 @@ public class DynJSVerticleFactory implements VerticleFactory {
         return ret;
     }
 
+    public class DynJSGlobalObjectFactory implements GlobalObjectFactory {
+        @Override
+        public GlobalObject newGlobalObject(final DynJS runtime) {
+            final GlobalObject globalObject = new GlobalObject(runtime);
+            globalObject.defineGlobalProperty("__dirname", System.getProperty("user.dir"));
+            globalObject.defineGlobalProperty("vertx", new DynObject(globalObject));
+            DynObject dynjs = new DynObject(globalObject);
+            dynjs.defineOwnProperty(null, "global", new PropertyDescriptor() {
+                {
+                    set("Value", globalObject);
+                    set("Writable", false);
+                    set("Enumerable", true);
+                    set("Configurable", true);
+                }
+            }, false);
+            dynjs.defineOwnProperty(null, "runtime", new PropertyDescriptor() {
+                {
+                    set("Value", runtime);
+                    set("Writable", false);
+                    set("Enumerable", true);
+                    set("Configurable", true);
+                }
+            }, false);
+            globalObject.defineGlobalProperty("dynjs", dynjs);
+            globalObject.defineGlobalProperty("global", globalObject);
+            globalObject.defineGlobalProperty("runtime", runtime);
+            globalObject.defineGlobalProperty("load", new AbstractNativeFunction(globalObject) {
+                @Override
+                public Object call(ExecutionContext context, Object self, Object... args) {
+                    try {
+                        return loadScript(context, (String) args[0]);
+                    } catch (FileNotFoundException e) {
+                        throw new ThrowException(context, e);
+                    }
+                }
+            });
+            return globalObject;
+        }
+    }
+
     private class DynJSVerticle extends Verticle {
 
         private final String scriptName;
@@ -163,7 +165,6 @@ public class DynJSVerticleFactory implements VerticleFactory {
 
         @Override
         public void start() throws Exception {
-            System.err.println("Starting DynJS Verticle with script: " + scriptName);
             loadScript(this.context, this.scriptName);
         }
 
