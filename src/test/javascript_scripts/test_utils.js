@@ -71,4 +71,3 @@ var TestUtils = function() {
         return instance;
     };
 }).call((this.module && module.exports)? module.exports : this.TestUtils);
-

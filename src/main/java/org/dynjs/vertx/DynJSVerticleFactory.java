@@ -47,6 +47,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
     private DynJS runtime;
     private Config config;
     private ClassLoader mcl;
+    private ExecutionContext rootContext;
     public static Container container;
     public static Vertx vertx;
 
@@ -58,6 +59,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
         config = new Config(this.mcl);
         config.setGlobalObjectFactory(new DynJSGlobalObjectFactory());
         runtime = new DynJS(config);
+        rootContext = findRootContext(runtime.getExecutionContext());
     }
 
     @Override
@@ -70,9 +72,13 @@ public class DynJSVerticleFactory implements VerticleFactory {
     public void reportException(Logger logger, Throwable t) {
         logger.error("Exception in DynJS JavaScript verticle", t);
     }
-    
+
     public DynJS getRuntime() {
         return this.runtime;
+    }
+
+    public ExecutionContext getExecutionContext() {
+        return this.rootContext;
     }
 
     public Object loadScript(ExecutionContext context, String scriptName)
@@ -83,11 +89,6 @@ public class DynJSVerticleFactory implements VerticleFactory {
         }
         Runner runner = context.getGlobalObject().getRuntime().newRunner();
         File scriptFile = new File(scriptName);
-        ExecutionContext parent = context.getParent();
-        while (parent != null) {
-            context = parent;
-            parent = context.getParent();
-        }
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(config.getClassLoader());
         Object ret = null;
@@ -107,13 +108,26 @@ public class DynJSVerticleFactory implements VerticleFactory {
                     // ignore
                 }
             }
+        } catch(Exception e) {
+            System.err.println("Error loading script: " + scriptName + ". " + e.getLocalizedMessage());
+            throw e;
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }
         return ret;
     }
 
+    protected ExecutionContext findRootContext(ExecutionContext context) {
+        ExecutionContext parent = context.getParent();
+        while (parent != null) {
+            context = parent;
+            parent = context.getParent();
+        }
+        return context;
+    }
+
     public class DynJSGlobalObjectFactory implements GlobalObjectFactory {
+
         @Override
         public GlobalObject newGlobalObject(final DynJS runtime) {
             final GlobalObject globalObject = new GlobalObject(runtime);
@@ -136,16 +150,16 @@ public class DynJSVerticleFactory implements VerticleFactory {
                 }
             }, false);
             globalObject.defineGlobalProperty("dynjs", dynjs);
-            globalObject.defineGlobalProperty("global", globalObject);
-            globalObject.defineGlobalProperty("runtime", runtime);
             globalObject.defineReadOnlyGlobalProperty("stdout", System.out);
             globalObject.defineReadOnlyGlobalProperty("stderr", System.err);
-
+            globalObject.defineGlobalProperty("global", globalObject);
+            globalObject.defineGlobalProperty("runtime", runtime);
             globalObject.defineGlobalProperty("load", new AbstractNativeFunction(globalObject) {
                 @Override
                 public Object call(ExecutionContext context, Object self, Object... args) {
                     try {
-                        return loadScript(context, (String) args[0]);
+                        // Use the root context, provided to the ctor, always
+                        return loadScript(findRootContext(context), (String) args[0]);
                     } catch (FileNotFoundException e) {
                         throw new ThrowException(context, e);
                     }
@@ -158,23 +172,21 @@ public class DynJSVerticleFactory implements VerticleFactory {
     private class DynJSVerticle extends Verticle {
 
         private final String scriptName;
-        private final ExecutionContext context;
 
         DynJSVerticle(String scriptName) {
             this.scriptName = scriptName;
-            this.context = ExecutionContext.createGlobalExecutionContext(runtime);
         }
 
         @Override
         public void start() throws Exception {
-            loadScript(this.context, this.scriptName);
+            loadScript(rootContext, this.scriptName);
         }
 
         @Override
         public void stop() throws Exception {
             try {
-                Runner runner = this.context.getGlobalObject().getRuntime().newRunner();
-                runner.withContext(this.context).withSource("(vertxStop ? vertxStop() : null)").execute();
+                Runner runner = rootContext.getGlobalObject().getRuntime().newRunner();
+                runner.withContext(rootContext).withSource("(vertxStop ? vertxStop() : null)").execute();
             } catch (Exception e) {
             }
         }
