@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
 import org.dynjs.Config;
 import org.dynjs.exception.ThrowException;
@@ -44,12 +45,13 @@ import org.vertx.java.platform.VerticleFactory;
  */
 public class DynJSVerticleFactory implements VerticleFactory {
 
-    private ClassLoader mcl;
-    private ExecutionContext rootContext;
-    private GlobalObjectFactory globalObjectFactory;
     public static Container container;
     public static Vertx vertx;
 
+    private ClassLoader mcl;
+    private ExecutionContext rootContext;
+    private GlobalObjectFactory globalObjectFactory;
+    
     @Override
     public void init(Vertx vertx, Container container, ClassLoader classloader) {
         this.mcl = classloader;
@@ -67,14 +69,16 @@ public class DynJSVerticleFactory implements VerticleFactory {
     public void reportException(Logger logger, Throwable t) {
         logger.error("Exception in DynJS JavaScript verticle", t);
     }
-    
+
     @Override
     public void close() {
     }
 
     public GlobalObjectFactory getGlobalObjectFactory() {
-        if (globalObjectFactory == null) {
-            globalObjectFactory = new DynJSGlobalObjectFactory();
+        synchronized (this) {
+            if (globalObjectFactory == null) {
+                globalObjectFactory = new DynJSGlobalObjectFactory();
+            }
         }
         return globalObjectFactory;
     }
@@ -116,7 +120,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
                     // ignore
                 }
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.err.println("Error loading script: " + scriptName + ". " + e.getLocalizedMessage());
             throw e;
         } finally {
