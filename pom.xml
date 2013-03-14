@@ -24,10 +24,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.vertx>2.0.0-SNAPSHOT</version.vertx>
+        <version.vertx.testtools>1.0.0-SNAPSHOT</version.vertx.testtools>
         <version.dynjs>1.0-SNAPSHOT</version.dynjs>
-        <!--
-        <version.dynjs>1.x.incremental.555</version.dynjs>
-        -->
     </properties>
 
     <developers>
@@ -99,7 +97,6 @@
             <version>${version.vertx}</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>org.dynjs</groupId>
             <artifactId>dynjs</artifactId>
@@ -120,6 +117,12 @@
             <version>${version.vertx}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>testtools</artifactId>
+            <version>${version.vertx.testtools}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <extensions>
@@ -129,19 +132,6 @@
                 <version>1.0-beta-7</version>
             </extension>
         </extensions>
-        <resources>
-          <resource>
-            <directory>src/main/api_shim/</directory>
-          </resource>
-        </resources>
-        <testResources>
-          <testResource>
-            <directory>src/test/resources/</directory>
-          </testResource>
-          <testResource>
-            <directory>src/test/javascript_scripts/</directory>
-          </testResource>
-        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -174,6 +164,24 @@
                 <configuration>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
+                <executions>
+                  <execution>
+                    <id>copy-resources</id>
+                    <phase>process-classes</phase>
+                    <goals>
+                      <goal>copy-resources</goal>
+                    </goals>
+                    <configuration>
+                      <outputDirectory>${basedir}/mods/${groupId}~${artifactId}~${version}</outputDirectory>
+                      <resources>
+                        <resource>
+                          <directory>target/classes</directory>
+                          <filtering>true</filtering>
+                        </resource>
+                      </resources>
+                    </configuration>
+                  </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
@@ -190,7 +198,7 @@
                 <version>2.13</version>
                 <configuration>
                     <disableXmlReport>true</disableXmlReport>
-                    <argLine>-Xss2048k</argLine><!-- -XX:ClassMetaspaceSize=128m</argLine> -->
+                    <argLine>-Xss2048k</argLine>
                     <verbose>true</verbose>
                 </configuration>
             </plugin>
@@ -208,13 +216,24 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
+                        <id>assemble</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+              <artifactId>maven-clean-plugin</artifactId>
+              <version>2.5</version>
+              <configuration>
+                <filesets>
+                  <fileset>
+                    <directory>${basedir}/mods</directory>
+                  </fileset>
+                </filesets>
+              </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

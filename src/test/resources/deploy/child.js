@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-load('test_utils.js')
 load('vertx.js')
 
 var eb = vertx.eventBus;

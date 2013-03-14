@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var tu = require("test_utils.js").get();
+
+var TestUtils = require('test_utils');
+var tu = new TestUtils();
 
 module.exports = function() {
-  try {
-    require('does-not-exist');
-    tu.azzert(false, 'Should throw exception');
-  } catch (err) {
-    // OK
-  }
-  return "bar";
-}
+  func2 = require('./module2');
+  tu.azzert(func2() === 'bar');
+  return "foo";
+};

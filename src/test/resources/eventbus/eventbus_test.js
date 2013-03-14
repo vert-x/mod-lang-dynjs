@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-load('test_utils.js')
 load('vertx.js')
-
-var tu = new TestUtils();
+load('vertx_tests.js')
 
 // Most testing occurs in the Java tests
 
@@ -39,26 +37,25 @@ var reply = {
 }
 
 function assertSent(msg) {
-  tu.azzert(sent.price === msg.price);
-  tu.azzert(sent.name === msg.name);
+  vassert.assertEquals(sent.price, msg.price);
+  vassert.assertEquals(sent.name, msg.name);
 }
 
 
 function assertReply(rep) {
-  tu.azzert(reply.desc === rep.desc);
-  tu.azzert(reply.status === rep.status);
+  vassert.assertEquals(reply.desc, rep.desc);
+  vassert.assertTrue(reply.status === rep.status);
 }
 
 function testSimple() {
 
   var handled = false;
   eb.registerHandler(address, function MyHandler(msg, replier) {
-    tu.checkThread();
-    tu.azzert(!handled);
+    vassert.assertTrue(!handled);
     assertSent(msg);
     eb.unregisterHandler(address, MyHandler);
     handled = true;
-    tu.testComplete();
+    vassert.testComplete();
   });
 
   eb.send(address, sent);
@@ -68,11 +65,10 @@ function testEmptyMessage() {
 
   var handled = false;
   eb.registerHandler(address, function MyHandler(msg, replier) {
-    tu.checkThread();
-    tu.azzert(!handled);
+    vassert.assertTrue(!handled);
     eb.unregisterHandler(address, MyHandler);
     handled = true;
-    tu.testComplete();
+    vassert.testComplete();
   });
 
   eb.send(address, emptySent);
@@ -83,8 +79,7 @@ function testUnregister() {
 
   var handled = false;
   var MyHandler = function(msg, replier) {
-    tu.checkThread();
-    tu.azzert(!handled);
+    vassert.assertTrue(!handled);
     assertSent(msg);
     eb.unregisterHandler(address, MyHandler);
     // Unregister again - should do nothing
@@ -92,7 +87,7 @@ function testUnregister() {
     handled = true;
     // Wait a little while to allow any other messages to arrive
     vertx.setTimer(100, function() {
-      tu.testComplete();
+      vassert.testComplete();
     });
   }
   eb.registerHandler(address, MyHandler);
@@ -106,8 +101,7 @@ function testWithReply() {
 
   var handled = false;
   eb.registerHandler(address, function MyHandler(msg, replier) {
-    tu.checkThread();
-    tu.azzert(!handled);
+    vassert.assertTrue(!handled);
     assertSent(msg);
     eb.unregisterHandler(address, MyHandler);
     handled = true;
@@ -115,28 +109,27 @@ function testWithReply() {
   });
 
   eb.send(address, sent, function(reply) {
-    tu.checkThread();
     assertReply(reply);
-    tu.testComplete();
+    vassert.testComplete();
   });
 }
 
 function testReplyOfReplyOfReply() {
 
   eb.registerHandler(address, function MyHandler(msg, replier) {
-    tu.azzert("message" === msg);
+    vassert.assertTrue("message" === msg);
     replier("reply", function(reply, replier) {
-      tu.azzert("reply-of-reply" === reply);
+      vassert.assertTrue("reply-of-reply" === reply);
       replier("reply-of-reply-of-reply");
       eb.unregisterHandler(address, MyHandler);
     });
   });
 
   eb.send(address, "message", function(reply, replier) {
-    tu.azzert("reply" === reply);
+    vassert.assertEquals("reply", reply);
     replier("reply-of-reply", function(reply) {
-      tu.azzert("reply-of-reply-of-reply" === reply);
-      tu.testComplete();
+      vassert.assertEquals("reply-of-reply-of-reply", reply);
+      vassert.testComplete();
     });
   });
 }
@@ -145,8 +138,7 @@ function testEmptyReply() {
 
   var handled = false;
   eb.registerHandler(address, function MyHandler(msg, replier) {
-    tu.checkThread();
-    tu.azzert(!handled);
+    vassert.assertTrue(!handled);
     assertSent(msg);
     eb.unregisterHandler(address, MyHandler);
     handled = true;
@@ -154,8 +146,7 @@ function testEmptyReply() {
   });
 
   eb.send(address, sent, function(reply) {
-    tu.checkThread();
-    tu.testComplete();
+    vassert.testComplete();
   });
   eb.send(address, sent);
 }
@@ -195,7 +186,6 @@ function testEchoNull() {
 
 function echo(msg) {
   eb.registerHandler(address, function MyHandler(received, replier) {
-    tu.checkThread();
     eb.unregisterHandler(address, MyHandler);
     replier(received);
   });
@@ -203,18 +193,13 @@ function echo(msg) {
 
   if (msg != null) {
     for (field in reply) {
-      tu.azzert(msg.field === reply.field);
+      vassert.assertEquals(msg.field, reply.field);
     }
   }
 
-  tu.testComplete();
+  vassert.testComplete();
   });
 }
 
-tu.registerTests(this);
-tu.appReady();
+initTests(this);
 
-function vertxStop() {
-  tu.unregisterAll();
-  tu.appStopped();
-}

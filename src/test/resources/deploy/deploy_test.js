@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-load('test_utils.js')
-load('vertx.js')
-
-var tu = new TestUtils();
+load('vertx.js');
+load('vertx_tests.js');
 
 var eb = vertx.eventBus;
 
@@ -25,29 +23,22 @@ function testDeploy() {
   eb.registerHandler("test-handler", function MyHandler(message) {
     if ("started" === message) {
       eb.unregisterHandler("test-handler", MyHandler);
-      tu.testComplete();
+      vassert.testComplete();
     }
   });
-  vertx.deployVerticle("core/deploy/child.js");
+  vertx.deployVerticle("deploy/child.js");
 }
 
 function testUndeploy() {
-  vertx.deployVerticle("core/deploy/child.js", null, 1, function(id) {
-    tu.checkThread();
+  vertx.deployVerticle("deploy/child.js", null, 1, function(id) {
     eb.registerHandler("test-handler", function MyHandler(message) {
       if ("stopped" === message) {
         eb.unregisterHandler("test-handler", MyHandler);
-        tu.testComplete();
+        vassert.testComplete();
       }
     });
     vertx.undeployVerticle(id);
   });
 }
 
-tu.registerTests(this);
-tu.appReady();
-
-function vertxStop() {
-  tu.unregisterAll();
-  tu.appStopped();
-}
+initTests(this);

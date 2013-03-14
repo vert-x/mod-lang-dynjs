@@ -4,15 +4,20 @@
         <format>zip</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
-    <files>
-        <file>
-          <source>${project.build.directory}/${artifactId}-${project.version}.jar</source>
-          <outputDirectory>lib</outputDirectory>
-        </file>
-        <file>
-            <source>src/main/conf/mod.json</source>
-        </file>
-    </files>
+    <fileSets>
+      <fileSet>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </fileSet>
+      <fileSet>
+        <directory>target/classes</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </fileSet>
+    </fileSets>
     <dependencySets>
         <dependencySet>
             <outputDirectory>lib</outputDirectory>

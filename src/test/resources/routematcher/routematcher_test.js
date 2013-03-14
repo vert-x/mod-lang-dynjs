@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-load('test_utils.js')
-load('vertx.js')
+load('vertx.js');
+load('vertx_tests.js');
 
+var TestUtils = require('test_utils.js');
 var tu = new TestUtils();
 var server = vertx.createHttpServer();
 var rm = new vertx.RouteMatcher();
@@ -113,7 +114,7 @@ function testAllWithRegEx() {
 function testRouteNoMatch() {
   client.get('some-uri', function(resp) {
     tu.azzert(404 === resp.statusCode);
-    tu.testComplete();
+    vassert.testComplete();
   }).end();
 }
 
@@ -139,16 +140,13 @@ function route(method, regex, pattern, params, uri) {
 
   client[method](uri, function(resp) {
     tu.azzert(200 == resp.statusCode)
-    tu.testComplete();
+    vassert.testComplete();
   }).end();
 }
 
-tu.registerTests(this);
-tu.appReady();
+initTests(this);
 
 function vertxStop() {
-  tu.unregisterAll();
-  tu.appStopped();
   server.close(function() {
     client.close();
   })

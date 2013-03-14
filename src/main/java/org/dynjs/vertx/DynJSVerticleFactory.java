@@ -34,6 +34,7 @@ import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.GlobalObjectFactory;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Runner;
+import org.dynjs.runtime.Types;
 import org.vertx.java.core.Vertx;
 import org.vertx.java.core.logging.Logger;
 import org.vertx.java.platform.Container;
@@ -106,6 +107,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
         Object ret = null;
         try {
             if (scriptFile.exists()) {
+                context.getGlobalObject().addLoadPath(scriptFile.getParent());
                 ret = runner.withContext(context).withSource(scriptFile).execute();
             } else {
                 InputStream is = mcl.getResourceAsStream(scriptName);
@@ -147,6 +149,21 @@ public class DynJSVerticleFactory implements VerticleFactory {
             dynjs.defineOwnProperty(null, "runtime", new PropertyDescriptor() {
                 {
                     set("Value", runtime);
+                    set("Writable", false);
+                    set("Enumerable", true);
+                    set("Configurable", true);
+                }
+            }, false);
+            dynjs.defineOwnProperty(null, "addLoadPath", new PropertyDescriptor() {
+                {
+                    set("Value", new AbstractNativeFunction(globalObject) {
+                        @Override
+                        public Object call(ExecutionContext context, Object self, Object... args) {
+                            final String loadPath = Types.toString(context, args[0]);
+                            globalObject.addLoadPath(loadPath);
+                            return Types.UNDEFINED;
+                        }
+                    });
                     set("Writable", false);
                     set("Enumerable", true);
                     set("Configurable", true);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2012 the original author or authors.
+ * Copyright 2013 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-var tu = require("test_utils.js").get();
+load("vertx.js");
+load("vertx_tests.js");
+setMain("commonjs");
+
 var func1 = require("./module1");
 
 function testScriptLoading() {
-  tu.azzert(func1() === 'foo');
-  tu.testComplete();
+  vassert.assertEquals('foo', func1());
+  vassert.testComplete();
 }
 
-tu.registerTests(this);
-tu.appReady();
-
-function vertxStop() {
-  tu.unregisterAll();
-  tu.appStopped();
-}
+initTests(this);
