@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-load('test_utils.js')
 load('vertx.js')
-
-var tu = new TestUtils();
+load('vertx_tests.js')
 
 function testOneOff() {
   var count = 0;
   var id = vertx.setTimer(1000, function(timer_id) {
-    tu.checkThread();
-    tu.azzert(id === timer_id);
-    tu.azzert(count === 0);
+    vassert.assertTrue(id === timer_id);
+    vassert.assertTrue(count === 0);
     count++;
     setEndTimer();
   });
@@ -35,29 +32,23 @@ function testPeriodic() {
   var delay = 100;
   var count = 0;
   var id = vertx.setPeriodic(delay, function(timer_id) {
-    tu.checkThread();
-    tu.azzert(id === timer_id);
+    vassert.assertTrue(id === timer_id);
     count++;
     if (count === numFires) {
       vertx.cancelTimer(timer_id);
       setEndTimer();
     }
     if (count > numFires) {
-      tu.azzert(false, "Fired too many times");
+      vassert.fail(false, "Fired too many times");
     }
   });
 }
 
 function setEndTimer() {
   vertx.setTimer(10, function() {
-    tu.testComplete();
+    vassert.testComplete();
   })
 }
 
-tu.registerTests(this);
-tu.appReady();
+initTests(this);
 
-function vertxStop() {
-  tu.unregisterAll();
-  tu.appStopped();
-}

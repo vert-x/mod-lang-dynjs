@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-load('test_utils.js')
 load('vertx.js')
+load('vertx_tests.js')
 
+var TestUtils = require('test_utils.js');
 var tu = new TestUtils();
 
 function testDelimited() {
@@ -27,7 +28,7 @@ function testDelimited() {
 
   var output = function(line) {
     if (++lineCount == numLines) {
-      tu.testComplete();
+      vassert.testComplete();
     }
   }
 
@@ -49,9 +50,9 @@ function testFixed() {
   var chunkSize = 100;
 
   var output = function(chunk) {
-    tu.azzert(chunk.length() == chunkSize);
+    vassert.assertTrue(chunkSize === chunk.length());
     if (++chunkCount == numChunks) {
-      tu.testComplete();
+      vassert.testComplete();
     }
   }
 
@@ -66,10 +67,5 @@ function testFixed() {
   rp.handle(input);
 }
 
-tu.registerTests(this);
-tu.appReady();
+initTests(this);
 
-function vertxStop() {
-  tu.unregisterAll();
-  tu.appStopped();
-}

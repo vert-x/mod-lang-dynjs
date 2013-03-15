@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-load('test_utils.js')
 load('vertx.js')
+load('vertx_tests.js')
 
+var TestUtils = require('test_utils');
 var tu = new TestUtils();
 
 var server = vertx.createHttpServer();
@@ -35,10 +36,7 @@ function echo(binary) {
 
   server.websocketHandler(function(ws) {
 
-    tu.checkThread();
-
     ws.dataHandler(function(buff) {
-      tu.checkThread();
       ws.writeBuffer(buff);
     });
 
@@ -56,16 +54,14 @@ function echo(binary) {
   }
 
   client.connectWebsocket("/someurl", function(ws) {
-    tu.checkThread();
 
     var received = new vertx.Buffer(0);
 
     ws.dataHandler(function(buff) {
-      tu.checkThread();
       received.appendBuffer(buff);
       if (received.length() == buff.length()) {
-        tu.azzert(tu.buffersEqual(buff, received));
-        tu.testComplete();
+        vassert.assertTrue(tu.buffersEqual(buff, received));
+        vassert.testComplete();
       }
     });
 
@@ -81,18 +77,15 @@ function echo(binary) {
 function testWriteFromConnectHandler() {
 
   server.websocketHandler(function(ws) {
-    tu.checkThread();
     ws.writeTextFrame("foo");
   });
 
   server.listen(8080);
 
   client.connectWebsocket("/someurl", function(ws) {
-    tu.checkThread();
     ws.dataHandler(function(buff) {
-      tu.checkThread();
-      tu.azzert("foo" == buff.toString());
-      tu.testComplete();
+      vassert.assertTrue("foo" == buff.toString());
+      vassert.testComplete();
     });
   });
 
@@ -101,7 +94,6 @@ function testWriteFromConnectHandler() {
 function testClose() {
 
   server.websocketHandler(function(ws) {
-    tu.checkThread();
     ws.dataHandler(function(buff) {
       ws.close();
     });
@@ -110,9 +102,8 @@ function testClose() {
   server.listen(8080);
 
   client.connectWebsocket("/someurl", function(ws) {
-    tu.checkThread();
     ws.closedHandler(function() {
-      tu.testComplete();
+      vassert.testComplete();
     });
     ws.writeTextFrame("foo");
   });
@@ -122,29 +113,23 @@ function testClose() {
 function testCloseFromConnectHandler() {
 
   server.websocketHandler(function(ws) {
-    tu.checkThread();
     ws.close();
   });
 
   server.listen(8080);
 
   client.connectWebsocket("/someurl", function(ws) {
-    tu.checkThread();
     ws.closedHandler(function() {
-      tu.testComplete();
+      vassert.testComplete();
     });
   });
 
 }
 
-tu.registerTests(this);
-tu.appReady();
+initTests(this);
 
 function vertxStop() {
   client.close();
-  server.close(function() {
-    tu.unregisterAll();
-    tu.appStopped();
-  });
+  server.close();
 }
 

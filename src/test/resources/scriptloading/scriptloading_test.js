@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-load("test_utils.js")
-load("core/scriptloading/script1.js");
-
-var tu = TestUtils.get();
+load("vertx.js");
+load("vertx_tests.js");
+load("script1.js");
 
 function testScriptLoading() {
-  tu.azzert(func1() === 'foo');
-  tu.testComplete();
+  vassert.assertTrue(func1() === 'foo');
+  vassert.testComplete();
 }
 
-tu.registerTests(this);
-tu.appReady();
-
-function vertxStop() {
-  tu.unregisterAll();
-  tu.appStopped();
-}
+initTests(this);

@@ -14,31 +14,35 @@
  * limitations under the License.
  */
 
-load('vertx.js')
-load('test_utils.js')
+load('vertx.js');
+load('vertx_tests.js');
 
-var tu = new TestUtils();
-
-var server = vertx.createNetServer();
-
-var h = function(sock) {
-  tu.checkThread();
+var handler = function(sock) {
   sock.dataHandler(function(data) {
-    tu.checkThread();
     sock.write(data);
   })
 };
 
-server.connectHandler(h);
 
-server.listen(1234, 'localhost');
+function testEchoServer() {
 
-tu.appReady();
+  client = vertx.createNetClient();
+  server = vertx.createNetServer();
+  server.connectHandler(handler);
+  server.listen(1234, 'localhost');
 
-function vertxStop() {
-  tu.checkThread();
-  server.close(function() {
-    tu.checkThread();
-    tu.appStopped();
+  client.connect(1234, 'localhost', function(sock) {
+
+    sock.dataHandler(function(data) {
+      vassert.testComplete();
+      client.close();
+      server.close();
+    });
+
+    sock.write(new vertx.Buffer('this is a buffer'));
+
   });
 }
+
+initTests(this);
+

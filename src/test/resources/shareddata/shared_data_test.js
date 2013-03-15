@@ -14,104 +14,96 @@
  * limitations under the License.
  */
 
-load('test_utils.js')
 load('vertx.js')
-
-var tu = new TestUtils();
+load('vertx_tests.js')
 
 function testMap() {
   var map1 = vertx.getMap("foo");
-  tu.azzert(typeof map1 != undefined);
+  vassert.assertTrue(typeof map1 != undefined);
   var map2 = vertx.getMap("foo");
-  tu.azzert(typeof map2 != undefined);
-  tu.azzert(map1 === map2);
+  vassert.assertTrue(typeof map2 != undefined);
+  vassert.assertTrue(map1 === map2);
   var map3 = vertx.getMap("bar");
-  tu.azzert(typeof map3 != undefined);
-  tu.azzert(map3 != map2);
+  vassert.assertTrue(typeof map3 != undefined);
+  vassert.assertTrue(map3 != map2);
 
   var key = "blah";
 
   map1.put(key, 123);
   var val = map1.get(key);
-  tu.azzert(typeof val === 'number');
-  tu.azzert(val === 123);
+  vassert.assertTrue(typeof val === 'number');
+  vassert.assertTrue(val === 123);
 
   map1.put(key, 1.2345);
   var val = map1.get(key);
-  tu.azzert(typeof val === 'number');
-  tu.azzert(val === 1.2345);
+  vassert.assertTrue(typeof val === 'number');
+  vassert.assertTrue(val === 1.2345);
 
   map1.put(key, "quux");
   var val = map1.get(key);
-  tu.azzert(typeof val === 'string');
-  tu.azzert(val === "quux");
+  vassert.assertTrue(typeof val === 'string');
+  vassert.assertTrue(val === "quux");
 
   map1.put(key, true);
   var val = map1.get(key);
-  tu.azzert(typeof val === 'boolean');
-  tu.azzert(val === true);
+  vassert.assertTrue(typeof val === 'boolean');
+  vassert.assertTrue(val === true);
 
   map1.put(key, false);
   var val = map1.get(key);
-  tu.azzert(typeof val === 'boolean');
-  tu.azzert(val === false);
+  vassert.assertTrue(typeof val === 'boolean');
+  vassert.assertTrue(val === false);
 
   //Most testing done in Java tests
 
-  tu.testComplete();
+  vassert.testComplete();
 }
 
 function testSet() {
 
   var set1 = vertx.getSet("foo");
-  tu.azzert(typeof set1 != undefined);
+  vassert.assertTrue(typeof set1 != undefined);
   var set2 = vertx.getSet("foo");
-  tu.azzert(typeof set2 != undefined);
-  tu.azzert(set1 === set2);
+  vassert.assertTrue(typeof set2 != undefined);
+  vassert.assertTrue(set1 === set2);
   var set3 = vertx.getMap("bar");
-  tu.azzert(typeof set3 != undefined);
-  tu.azzert(set3 != set2);
+  vassert.assertTrue(typeof set3 != undefined);
+  vassert.assertTrue(set3 != set2);
 
   var key = "blah";
 
   set1.add(123);
   var val = set1.iterator().next();
-  tu.azzert(typeof val === 'number');
-  tu.azzert(val === 123);
+  vassert.assertTrue(typeof val === 'number');
+  vassert.assertTrue(val === 123);
   set1.clear();
 
   set1.add(1.2345);
   var val = set1.iterator().next();
-  tu.azzert(typeof val === 'number');
-  tu.azzert(val === 1.2345);
+  vassert.assertTrue(typeof val === 'number');
+  vassert.assertTrue(val === 1.2345);
   set1.clear();
 
   set1.add("quux");
   var val = set1.iterator().next();
-  tu.azzert(typeof val === 'string');
-  tu.azzert(val === "quux");
+  vassert.assertTrue(typeof val === 'string');
+  vassert.assertTrue(val === "quux");
   set1.clear();
 
   set1.add(true);
   var val = set1.iterator().next();
-  tu.azzert(typeof val === 'boolean');
-  tu.azzert(val === true);
+  vassert.assertTrue(typeof val === 'boolean');
+  vassert.assertTrue(val === true);
   set1.clear();
 
   set1.add(false);
   var val = set1.iterator().next();
-  tu.azzert(typeof val === 'boolean');
-  tu.azzert(val === false);
+  vassert.assertTrue(typeof val === 'boolean');
+  vassert.assertTrue(val === false);
 
   //Most testing done in Java tests
 
-  tu.testComplete();
+  vassert.testComplete();
 }
 
-tu.registerTests(this);
-tu.appReady();
-
-function vertxStop() {
-  tu.unregisterAll();
-  tu.appStopped();
-}
+initTests(this);

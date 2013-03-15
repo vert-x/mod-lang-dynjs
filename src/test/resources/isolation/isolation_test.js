@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-load('test_utils.js')
 load('vertx.js')
-
-var tu = new TestUtils();
+load('vertx_tests.js')
 
 var myglobal;
 
 function testIsolation() {
-  tu.azzert(myglobal == undefined, "Expected undefined but got: " + myglobal);
+  vassert.assertEquals(myglobal, undefined);
   myglobal = 123;
-  tu.testComplete();
+  vassert.testComplete();
 }
 
-tu.registerTests(this);
-tu.appReady();
+initTests(this);
 
-function vertxStop() {
-  tu.unregisterAll();
-  tu.appStopped();
-}

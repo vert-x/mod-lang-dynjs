@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-var tu = TestUtils.get();
-
 function func2() {
   try {
     load('does-not-exist.js');
-    tu.azzert(false, 'Should throw exception');
+    vassert.assertFalse(false);
   } catch (err) {
     // OK
   }

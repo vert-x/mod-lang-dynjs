@@ -31,14 +31,15 @@ function testCopy() {
   var to = fileDir + "/bar.tmp";
   var content = "some-data";
   fs.writeFile(from, content, function() {
-//    fs.copy(from, to, function(err, res) {
-//      vassert.assertTrue(err === null);
-//      fs.readFile(to, function(err, res) {
-//        vassert.assertTrue(err === null);
-//        vassert.assertTrue(res.toString() === content);
+    fs.copy(from, to, function(err, res) {
+      vassert.assertTrue(err === null);
+      fs.readFile(to, function(err, res) {
+        vassert.assertTrue(err === null);
+        vassert.assertTrue(res.toString() === content);
         vassert.testComplete();
-//      });
-//    });
+        teardown();
+      });
+    });
   });
 }
 
@@ -56,6 +57,7 @@ function testMove() {
           vassert.assertTrue(err === null);
           vassert.assertTrue(!res);
           vassert.testComplete();
+          teardown();
         });
       });
     });
@@ -74,6 +76,7 @@ function testReadDir() {
           vassert.assertTrue(err === null);
           vassert.assertTrue(res.length === 3);
           vassert.testComplete();
+          teardown();
         });
       })
     })
@@ -91,6 +94,7 @@ function testProps() {
       vassert.assertTrue(typeof res.lastAccessTime === 'number');
       vassert.assertTrue(typeof res.lastModifiedTime === 'number');
       vassert.testComplete();
+      teardown();
     });
   });
 }
@@ -115,6 +119,7 @@ function testPumpFile() {
                 vassert.assertTrue(err === null);
                 vassert.assertTrue(tu.buffersEqual(content, res));
                 vassert.testComplete();
+                teardown();
               });
             });
           });
