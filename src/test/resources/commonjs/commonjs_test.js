@@ -18,7 +18,7 @@ load("vertx.js");
 load("vertx_tests.js");
 setMain("commonjs");
 
-var func1 = require("./module1");
+var func1 = require("module1");
 
 function testScriptLoading() {
   vassert.assertEquals('foo', func1());

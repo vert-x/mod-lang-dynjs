@@ -200,6 +200,9 @@
                     <disableXmlReport>true</disableXmlReport>
                     <argLine>-Xss2048k</argLine>
                     <verbose>true</verbose>
+                    <includes>
+                      <include>**/*Tests.java</include>
+                    </includes>
                 </configuration>
             </plugin>
             <plugin>

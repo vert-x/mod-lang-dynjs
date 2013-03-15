@@ -145,9 +145,8 @@ function setup(doneHandler) {
   });
 }
 
-function teardown(doneHandler) {
+function teardown() {
   fs.delete(fileDir, true, function() {
-    doneHandler();
   });
 }
 
