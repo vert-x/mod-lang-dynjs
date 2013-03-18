@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-var vertx = vertx || {};
-
 if (!vertx.eventBus) {
   vertx.eventBus = new (function() {
     var that = this;
 
     var handlerMap = {};
-    var jEventBus = org.dynjs.vertx.DynJSVerticleFactory.vertx.eventBus();
+    var jEventBus = vertx.__vertx.eventBus();
 
     function checkHandlerParams(address, handler) {
       if (!address) {

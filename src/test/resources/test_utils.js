@@ -1,7 +1,7 @@
 var TestUtils = function() {
 
   var that = this;
-  var jutils = new org.vertx.java.testframework.TestUtils(org.dynjs.vertx.DynJSVerticleFactory.vertx);
+  var jutils = new org.vertx.java.testframework.TestUtils(vertx.__vertx);
 
   that.expected = function(expects, gets) {
     return "Expected [" + expects + "] but got [" + gets + "]."

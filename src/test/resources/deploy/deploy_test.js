@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-load('vertx.js');
 load('vertx_tests.js');
 
 var eb = vertx.eventBus;
@@ -23,6 +22,9 @@ function testDeploy() {
   eb.registerHandler("test-handler", function MyHandler(message) {
     if ("started" === message) {
       eb.unregisterHandler("test-handler", MyHandler);
+      vassert.testComplete();
+    } else {
+      vassert.fail("App not started");
       vassert.testComplete();
     }
   });
@@ -34,6 +36,9 @@ function testUndeploy() {
     eb.registerHandler("test-handler", function MyHandler(message) {
       if ("stopped" === message) {
         eb.unregisterHandler("test-handler", MyHandler);
+        vassert.testComplete();
+      } else {
+        vassert.fail("App not started");
         vassert.testComplete();
       }
     });

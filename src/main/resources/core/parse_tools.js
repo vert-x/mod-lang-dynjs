@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-var vertx = vertx || {};
-
 if (!vertx.createDelimitedParser) {
   vertx.createDelimitedParser = function(delim, output) {
     return org.vertx.java.core.parsetools.RecordParser.newDelimited(delim, output);

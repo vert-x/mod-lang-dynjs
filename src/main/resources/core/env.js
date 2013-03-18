@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-var vertx = vertx || {};
-
 if (!vertx.env) {
   vertx.env = org.dynjs.vertx.DynJSVerticleFactory.container.getEnv();
+}
+
+if (!vertx.config) {
+  conf = org.dynjs.vertx.DynJSVerticleFactory.container.getConfig();
+  vertx.config =  conf == null ? null : JSON.parse(conf.encode());
 }

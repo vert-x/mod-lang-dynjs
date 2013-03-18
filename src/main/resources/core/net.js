@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-var vertx = vertx || {};
-
 if (!vertx.createNetServer) {
   vertx.createNetServer = function() {
-    return org.dynjs.vertx.DynJSVerticleFactory.vertx.createNetServer();
+    return vertx.__vertx.createNetServer();
   }
 
   vertx.createNetClient = function() {
-    return org.dynjs.vertx.DynJSVerticleFactory.vertx.createNetClient();
+    return vertx.__vertx.createNetClient();
   }
 }

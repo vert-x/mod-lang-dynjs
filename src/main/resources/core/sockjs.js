@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-var vertx = vertx || {};
-
 if (!vertx.createSockJSServer) {
 
   vertx.createSockJSServer = function(httpServer) {
@@ -24,9 +22,7 @@ if (!vertx.createSockJSServer) {
       throw "Please construct a vertx.SockJSServer with an instance of vert.HttpServer"
     }
 
-    var vertx = org.dynjs.vertx.DynJSVerticleFactory.vertx;
-
-    var jserver = vertx.createSockJSServer(httpServer._to_java_server());
+    var jserver = vertx.__vertx.createSockJSServer(httpServer._to_java_server());
 
     function convertPermitted(permitted) {
       var json_arr = new org.vertx.java.core.json.JsonArray();

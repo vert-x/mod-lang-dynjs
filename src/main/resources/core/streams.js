@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-var vertx = vertx || {};
-
 if (!vertx.Pump) {
   vertx.Pump = function(rs, ws) {
 

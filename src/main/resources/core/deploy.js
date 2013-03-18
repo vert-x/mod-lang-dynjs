@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-var vertx = vertx || {};
-
 if (!vertx.deployVerticle) {
   (function() {
 
@@ -74,10 +72,6 @@ if (!vertx.deployVerticle) {
     vertx.exit = function() {
       org.dynjs.vertx.DynJSVerticleFactory.container.exit();
     }
-
-    var j_conf = org.dynjs.vertx.DynJSVerticleFactory.container.getConfig();
-    vertx.config =  j_conf == null ? null : JSON.parse(j_conf.encode());
-    vertx._jVertx = org.dynjs.vertx.DynJSVerticleFactory.vertx;
 
   })();
 }

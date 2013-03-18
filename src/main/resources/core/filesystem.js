@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-var vertx = vertx || {};
-
 if (!vertx.fileSystem) {
   vertx.fileSystem = {};
 

@@ -18,13 +18,13 @@ var vertx = vertx || {};
 
 if (!vertx.createHttpServer) {
     vertx.createHttpServer = function() {
-      return org.dynjs.vertx.DynJSVerticleFactory.vertx.createHttpServer();
+      return vertx.__vertx.createHttpServer();
     }
 }
 
 if (!vertx.createHttpClient) {
     vertx.createHttpClient = function() {
-      return org.dynjs.vertx.DynJSVerticleFactory.vertx.createHttpClient();
+      return vertx.__vertx.createHttpClient();
     }
 }
 

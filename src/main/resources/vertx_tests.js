@@ -2,7 +2,7 @@ var vassert = org.vertx.testtools.VertxAssert;
 
 function initTests(top) {
   var methodName = vertx.config.methodName;
-  vassert.initialize(vertx._jVertx)
+  vassert.initialize(vertx.__vertx)
   top[methodName]();
 }
 

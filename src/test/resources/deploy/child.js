@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-load('vertx.js')
-
-var eb = vertx.eventBus;
-
-eb.send("test-handler", "started");
+vertx.eventBus.send("test-handler", "started");
 
 function vertxStop() {
-  eb.send("test-handler", "stopped");
+  vertx.eventBus.send("test-handler", "stopped");
 }

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+
 (function(){
+    load('core/env.js');
     load('core/buffer.js');
     load('core/event_bus.js');
     load('core/net.js');
@@ -28,6 +30,4 @@
     load('core/filesystem.js');
     load('core/deploy.js');
     load('core/logger.js');
-    load('core/env.js');
-    return (this.module && module.exports) ? this.module.exports = vertx : this.vertx = vertx;
 })();
