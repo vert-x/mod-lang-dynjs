@@ -15,7 +15,6 @@
  */
 
 load("vertx_tests.js");
-setMain("commonjs");
 
 var func1 = require("module1");
 

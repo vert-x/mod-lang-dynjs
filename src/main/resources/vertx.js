@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 (function(){
     load('core/env.js');
     load('core/buffer.js');

@@ -1,15 +1,9 @@
+load('vertx.js');
 var vassert = org.vertx.testtools.VertxAssert;
 
-function initTests(top) {
+var initTests = function(top) {
   var methodName = vertx.config.methodName;
   vassert.initialize(vertx.__vertx)
   top[methodName]();
 }
-
-function setMain(main) {
-  separator = java.io.File.separator;
-  root = java.lang.System.getProperty('user.dir');
-  dynjs.addLoadPath(root + separator + "src" + separator + "test" + separator + "resources" + separator + main);
-}
-
 

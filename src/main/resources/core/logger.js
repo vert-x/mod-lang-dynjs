@@ -18,7 +18,7 @@ if (!vertx.logger) {
   vertx.logger = org.dynjs.vertx.DynJSVerticleFactory.container.getLogger();
 
   // Add a console object which will be familiar to JavaScript devs
-  var vertx.console = {
+  vertx.console = {
     // TODO this should take varargs and allow formatting a la sprintf
     log: function(msg) {
       stdout.println(msg);
