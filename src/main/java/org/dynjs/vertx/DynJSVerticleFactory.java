@@ -63,12 +63,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
         
         this.config = new Config(getClassLoader());
         this.config.setGlobalObjectFactory(getGlobalObjectFactory());
-
         this.runtime = new DynJS(this.config);
-
-        this.rootContext = initializeRootContext();
-
-        vertxJS = new DynObject(null);
     }
 
     @Override
@@ -111,6 +106,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
             @Override
             public void initialize(ExecutionContext context) {
                 try {
+                    rootContext = context;
                     loadScript(context, "vertx.js");
                 } catch (FileNotFoundException e) {
                     System.err.println("Missing vertx.js file. Cannot initialize.");
@@ -126,12 +122,16 @@ public class DynJSVerticleFactory implements VerticleFactory {
         if (scriptName == null) {
             return null;
         }
-        Runner runner = context.getGlobalObject().getRuntime().newRunner();
         File scriptFile = new File(scriptName);
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(mcl);
         Object ret = null;
-        if (getExecutionContext() != null) context = getExecutionContext();
+        // load() should always dump 
+        if (getExecutionContext() != null) {
+            // This should always be available
+            context = getExecutionContext();
+        }
+        Runner runner = context.getGlobalObject().getRuntime().newRunner();
         try {
             if (scriptFile.exists()) {
                 context.getGlobalObject().addLoadPath(scriptFile.getParent());
@@ -212,6 +212,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
 
         @Override
         public void start() throws Exception {
+            rootContext = initializeRootContext();
             loadScript(getExecutionContext(), this.scriptName);
         }
 

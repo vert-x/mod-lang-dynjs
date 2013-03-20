@@ -1,4 +1,3 @@
-load('vertx.js');
 var vassert = org.vertx.testtools.VertxAssert;
 
 var initTests = function(top) {
