@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-var vertx = vertx || {};
-
 if (!vertx.createHttpServer) {
-    vertx.createHttpServer = function() {
-      return vertx.__vertx.createHttpServer();
-    }
+    vertx.createHttpServer = vertx.__vertx.createHttpServer.bind(vertx.__vertx);
 }
 
 if (!vertx.createHttpClient) {
-    vertx.createHttpClient = function() {
-      return vertx.__vertx.createHttpClient();
-    }
+    vertx.createHttpClient = vertx.__vertx.createHttpClient.bind(vertx.__vertx);
 }
 
 if (!vertx.RouteMatcher) {

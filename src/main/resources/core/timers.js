@@ -14,23 +14,9 @@
  * limitations under the License.
  */
 
-var vertx = vertx || {};
-
 if (!vertx.setTimer) {
-
-  vertx.setTimer = function(delay, handler) {
-    return org.dynjs.vertx.DynJSVerticleFactory.vertx.setTimer(delay, handler);
-  }
-
-  vertx.setPeriodic = function(interval, handler) {
-    return org.dynjs.vertx.DynJSVerticleFactory.vertx.setPeriodic(interval, handler);
-  }
-
-  vertx.cancelTimer = function(id) {
-    org.dynjs.vertx.DynJSVerticleFactory.vertx.cancelTimer(id);
-  }
-
-  vertx.runOnLoop = function(handler) {
-    org.dynjs.vertx.DynJSVerticleFactory.vertx.runOnLoop(handler);
-  }
+  vertx.setTimer    = vertx.__vertx.setTimer.bind(vertx.__vertx);
+  vertx.setPeriodic = vertx.__vertx.setPeriodic.bind(vertx.__vertx);
+  vertx.cancelTimer = vertx.__vertx.cancelTimer.bind(vertx.__vertx);
+  vertx.runOnLoop   = vertx.__vertx.runOnLoop.bind(vertx.__vertx);
 }

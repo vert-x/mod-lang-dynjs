@@ -15,11 +15,6 @@
  */
 
 if (!vertx.createNetServer) {
-  vertx.createNetServer = function() {
-    return vertx.__vertx.createNetServer();
-  }
-
-  vertx.createNetClient = function() {
-    return vertx.__vertx.createNetClient();
-  }
+  vertx.createNetServer = vertx.__vertx.createNetServer.bind(vertx.__vertx);
+  vertx.createNetClient = vertx.__vertx.createNetClient.bind(vertx.__vertx);
 }

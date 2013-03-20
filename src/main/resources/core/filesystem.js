@@ -18,7 +18,7 @@ if (!vertx.fileSystem) {
   vertx.fileSystem = {};
 
   (function() {
-    var j_fs = org.dynjs.vertx.DynJSVerticleFactory.vertx.fileSystem();
+    var j_fs = vertx.__vertx.fileSystem();
 
     function wrapHandler(handler) {
       return function(asyncResult) {

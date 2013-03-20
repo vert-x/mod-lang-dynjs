@@ -15,11 +15,6 @@
  */
 
 if (!vertx.createDelimitedParser) {
-  vertx.createDelimitedParser = function(delim, output) {
-    return org.vertx.java.core.parsetools.RecordParser.newDelimited(delim, output);
-  }
-
-  vertx.createFixedParser = function(size, output) {
-    return org.vertx.java.core.parsetools.RecordParser.newFixed(size, output);
-  }
+  vertx.createDelimitedParser = org.vertx.java.core.parsetools.RecordParser.newDelimited;
+  vertx.createFixedParser     = org.vertx.java.core.parsetools.RecordParser.newFixed;
 }
