@@ -1,3 +1,5 @@
+load('vertx.js');
+
 var TestUtils = function() {
 
   var that = this;

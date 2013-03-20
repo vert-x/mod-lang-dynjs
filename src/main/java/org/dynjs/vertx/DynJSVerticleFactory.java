@@ -22,6 +22,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.dynjs.Config;
 import org.dynjs.exception.ThrowException;
@@ -31,7 +33,6 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.GlobalObjectFactory;
-import org.dynjs.runtime.InitializationListener;
 import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Runner;
 import org.vertx.java.core.Vertx;
@@ -51,9 +52,9 @@ public class DynJSVerticleFactory implements VerticleFactory {
     private DynJS runtime;
     private Config config;
     private ClassLoader mcl;
-    private ExecutionContext rootContext;
-    private GlobalObjectFactory globalObjectFactory = new DynJSGlobalObjectFactory();
+    private boolean vertxLoaded = false;
     private DynObject vertxJS = new DynObject(null);
+    private GlobalObjectFactory globalObjectFactory = new DynJSGlobalObjectFactory();
     
     @Override
     public void init(Vertx vertx, Container container, ClassLoader classloader) {
@@ -68,7 +69,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
 
     @Override
     public Verticle createVerticle(String main) throws Exception {
-        return new DynJSVerticle(main);
+        return new DynJSVerticle(this, main);
     }
 
     @Override
@@ -88,10 +89,6 @@ public class DynJSVerticleFactory implements VerticleFactory {
         return this.config;
     }
     
-    public ExecutionContext getExecutionContext() {
-        return this.rootContext;
-    }
-
     protected GlobalObjectFactory getGlobalObjectFactory() {
         return globalObjectFactory;
     }
@@ -100,44 +97,23 @@ public class DynJSVerticleFactory implements VerticleFactory {
         return this.mcl;
     }
 
-    protected ExecutionContext initializeRootContext() {
-        return ExecutionContext.createGlobalExecutionContext(getRuntime(), new InitializationListener()
-        {
-            @Override
-            public void initialize(ExecutionContext context) {
-                try {
-                    rootContext = context;
-                    loadScript(context, "vertx.js");
-                } catch (FileNotFoundException e) {
-                    System.err.println("Missing vertx.js file. Cannot initialize.");
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
     protected Object loadScript(ExecutionContext context, String scriptName)
             throws FileNotFoundException {
-
         if (scriptName == null) {
             return null;
         }
+        if (vertxLoaded && scriptName.equals("vertx.js")) { return vertxJS; }
         File scriptFile = new File(scriptName);
         ClassLoader old = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(mcl);
+        Thread.currentThread().setContextClassLoader(runtime.getConfig().getClassLoader());
         Object ret = null;
-        // load() should always dump 
-        if (getExecutionContext() != null) {
-            // This should always be available
-            context = getExecutionContext();
-        }
         Runner runner = context.getGlobalObject().getRuntime().newRunner();
         try {
             if (scriptFile.exists()) {
                 context.getGlobalObject().addLoadPath(scriptFile.getParent());
                 ret = runner.withContext(context).withSource(scriptFile).execute();
             } else {
-                InputStream is = mcl.getResourceAsStream(scriptName);
+                InputStream is = runtime.getConfig().getClassLoader().getResourceAsStream(scriptName);
                 if (is == null) {
                     throw new FileNotFoundException("Cannot find script: " + scriptName);
                 }
@@ -181,6 +157,22 @@ public class DynJSVerticleFactory implements VerticleFactory {
                     set("Configurable", true);
                 }
             }, false);
+            dynjs.defineOwnProperty(null, "vertx", new PropertyDescriptor() {
+                {
+                    set("Value", vertx);
+                    set("Writable", false);
+                    set("Enumerable", true);
+                    set("Configurable", true);
+                }
+            }, false);
+            dynjs.defineOwnProperty(null, "runtime", new PropertyDescriptor() {
+                {
+                    set("Value", runtime);
+                    set("Writable", false);
+                    set("Enumerable", true);
+                    set("Configurable", true);
+                }
+            }, false);
             globalObject.defineGlobalProperty("dynjs", dynjs);
             globalObject.defineReadOnlyGlobalProperty("stdout", System.out);
             globalObject.defineReadOnlyGlobalProperty("stderr", System.err);
@@ -199,30 +191,6 @@ public class DynJSVerticleFactory implements VerticleFactory {
             vertxJS.put("__vertx", vertx);
             globalObject.defineGlobalProperty("vertx", vertxJS);
             return globalObject;
-        }
-    }
-
-    protected class DynJSVerticle extends Verticle {
-
-        private final String scriptName;
-
-        public DynJSVerticle(String scriptName) {
-            this.scriptName = scriptName;
-        }
-
-        @Override
-        public void start() throws Exception {
-            rootContext = initializeRootContext();
-            loadScript(getExecutionContext(), this.scriptName);
-        }
-
-        @Override
-        public void stop() throws Exception {
-            try {
-                Runner runner = getExecutionContext().getGlobalObject().getRuntime().newRunner();
-                runner.withContext(getExecutionContext()).withSource("(vertxStop ? vertxStop() : null)").execute();
-            } catch (Exception e) {
-            }
         }
     }
 

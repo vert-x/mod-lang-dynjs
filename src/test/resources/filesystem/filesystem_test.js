@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+load('core/filesystem.js');
 load('vertx_tests.js');
 
 var TestUtils = require('test_utils');

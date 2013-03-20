@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-function func2() {
+func2 = function() {
   try {
     load('does-not-exist.js');
     vassert.assertFalse(false);

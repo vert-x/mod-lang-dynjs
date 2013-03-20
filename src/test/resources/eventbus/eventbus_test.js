@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+load('vertx.js');
 load('vertx_tests.js')
 
 // Most testing occurs in the Java tests

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-function func1() {
+func1 = function() {
   load('script2.js');
   vassert.assertTrue(func2() === 'bar');
   return "foo";
