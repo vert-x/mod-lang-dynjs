@@ -22,9 +22,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.dynjs.Config;
 import org.dynjs.exception.ThrowException;
 import org.dynjs.runtime.AbstractNativeFunction;
