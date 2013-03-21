@@ -25,7 +25,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.vertx>2.0.0-SNAPSHOT</version.vertx>
         <version.vertx.testtools>1.0.0-SNAPSHOT</version.vertx.testtools>
-        <version.dynjs>1.0-SNAPSHOT</version.dynjs>
+        <version.dynjs>0.1.0-SNAPSHOT</version.dynjs>
     </properties>
 
     <developers>
