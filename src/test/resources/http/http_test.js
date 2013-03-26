@@ -97,9 +97,6 @@ function testPATCHSSL() {
   httpMethod(true, "PATCH", false)
 }
 
-
-
-
 function testGETChunked() {
   httpMethod(false, "GET", true)
 }

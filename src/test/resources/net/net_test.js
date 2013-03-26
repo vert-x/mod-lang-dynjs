@@ -29,18 +29,16 @@ function testEchoServer() {
   client = vertx.createNetClient();
   server = vertx.createNetServer();
   server.connectHandler(handler);
-  server.listen(1234, 'localhost');
+  server.listen(1234, 'localhost', function() {
+    client.connect(1234, 'localhost', function(sock) {
 
-  client.connect(1234, 'localhost', function(sock) {
-
-    sock.dataHandler(function(data) {
-      vassert.testComplete();
-      client.close();
-      server.close();
+      sock.dataHandler(function(data) {
+        vassert.testComplete();
+        client.close();
+        server.close();
+      });
+      sock.write(new vertx.Buffer('this is a buffer'));
     });
-
-    sock.write(new vertx.Buffer('this is a buffer'));
-
   });
 }
 
