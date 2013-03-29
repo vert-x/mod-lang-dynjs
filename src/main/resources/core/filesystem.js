@@ -201,7 +201,7 @@ if (!vertx.fileSystem) {
       j_fs.mkdir(path, perms, createParents, wrapHandler(handler));
     }
 
-    vertx.fileSystem.mkDirSync = function(path, arg1, arg2) {
+    vertx.fileSystem.mkdirSync = function(path, arg1, arg2) {
       var createParents;
       var perms;
       switch (arguments.length) {
