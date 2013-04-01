@@ -175,7 +175,7 @@ if (!vertx.fileSystem) {
       j_fs.deleteSync(path, recursive);
     }
 
-    vertx.fileSystem.mkDir = function(path, arg1, arg2, arg3) {
+    vertx.fileSystem.mkdir = function(path, arg1, arg2, arg3) {
       var createParents;
       var perms;
       var handler;
@@ -201,7 +201,7 @@ if (!vertx.fileSystem) {
       j_fs.mkdir(path, perms, createParents, wrapHandler(handler));
     }
 
-    vertx.fileSystem.mkDirSync = function(path, arg1, arg2) {
+    vertx.fileSystem.mkdirSync = function(path, arg1, arg2) {
       var createParents;
       var perms;
       switch (arguments.length) {

@@ -133,12 +133,12 @@ function setup(doneHandler) {
   fs.exists(fileDir, function(err, exists) {
     if (exists) {
       fs.delete(fileDir, true, function() {
-        fs.mkDir(fileDir, function() {
+        fs.mkdir(fileDir, function() {
           doneHandler();
         });
       });
     } else {
-      fs.mkDir(fileDir, function() {
+      fs.mkdir(fileDir, function() {
         doneHandler();
       });
     }
