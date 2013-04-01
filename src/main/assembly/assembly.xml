@@ -28,6 +28,8 @@
             <excludes>
                 <exclude>org.easytesting:fest-assert</exclude>
                 <exclude>org.easytesting:fest-util</exclude>
+                <exclude>io.vertx:vertx-core</exclude>
+                <exclude>io.vertx:vertx-platform</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
