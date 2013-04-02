@@ -162,14 +162,6 @@ public class DynJSVerticleFactory implements VerticleFactory {
                     set("Configurable", true);
                 }
             }, false);
-            dynjs.defineOwnProperty(null, "runtime", new PropertyDescriptor() {
-                {
-                    set("Value", runtime);
-                    set("Writable", false);
-                    set("Enumerable", true);
-                    set("Configurable", true);
-                }
-            }, false);
             globalObject.defineGlobalProperty("dynjs", dynjs);
             globalObject.defineReadOnlyGlobalProperty("stdout", System.out);
             globalObject.defineReadOnlyGlobalProperty("stderr", System.err);
