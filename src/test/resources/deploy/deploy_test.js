@@ -19,31 +19,73 @@ load('vertx_tests.js');
 
 var eb = vertx.eventBus;
 
-function testDeploy() {
-  eb.registerHandler("test-handler", function MyHandler(message) {
-    if ("started" === message) {
-      eb.unregisterHandler("test-handler", MyHandler);
-      vassert.testComplete();
-    } else {
-      vassert.fail("App not started");
-      vassert.testComplete();
-    }
+function testSimpleDeploy() {
+  vertx.deployVerticle("deploy/child.js", function(err, deployId) {
+    vassert.assertEquals(null, err);
+    vassert.assertNotNull(deployId);
+    vassert.testComplete();
   });
-  vertx.deployVerticle("deploy/child.js");
+}
+
+function testDeployWithConfig() {
+  var conf = {foo: 'bar'}
+  vertx.deployVerticle("deploy/child.js", conf, function(err, deployId) {
+    vassert.assertEquals(null, err);
+    // this should work?
+//    vassert.assertEquals('bar', vertx.config['foo']);
+    vassert.assertNotNull(deployId);
+    vassert.testComplete();
+  });
+}
+
+function testDeployWithNumInstances() {
+  vertx.deployVerticle("deploy/child.js", 12, function(err, deployId) {
+    vassert.assertEquals(null, err);
+    vassert.assertNotNull(deployId);
+    vassert.testComplete();
+  });
+}
+
+function testDeployWithConfigAndNumInstances() {
+  var conf = {foo: 'bar'}
+  vertx.deployVerticle("deploy/child.js", conf, 12, function(err, deployId) {
+    vassert.assertEquals(null, err);
+    vassert.assertNotNull(deployId);
+    vassert.testComplete();
+  });
+}
+
+function testDeployFail() {
+  vertx.deployVerticle("deploy/notexist.js", function(err, deployId) {
+    vassert.assertFalse(null === err);
+    vassert.assertEquals(null, deployId);
+    vassert.testComplete();
+  });
 }
 
 function testUndeploy() {
-  vertx.deployVerticle("deploy/child.js", null, 1, function(id) {
-    eb.registerHandler("test-handler", function MyHandler(message) {
-      if ("stopped" === message) {
-        eb.unregisterHandler("test-handler", MyHandler);
-        vassert.testComplete();
-      } else {
-        vassert.fail("App not started");
-        vassert.testComplete();
-      }
+  vertx.deployVerticle("deploy/child.js", function(err, deployId) {
+    vertx.undeployVerticle(deployId, function(err) {
+      vassert.assertTrue(null === err);
+      vassert.testComplete();
     });
-    vertx.undeployVerticle(id);
+  });
+}
+
+function testUndeployFail() {
+  vertx.deployVerticle("deploy/child.js", function(err, deployId) {
+    vertx.undeployVerticle('someotherid', function(err) {
+      vassert.assertFalse(null === err);
+      vassert.testComplete();
+    });
+  });
+}
+
+function testDeployWorker() {
+  vertx.deployWorkerVerticle('deploy/child.js', function(err, deployId) {
+    vassert.assertTrue(null === err);
+    vassert.assertTrue(deployId !== null);
+    vassert.testComplete();
   });
 }
 

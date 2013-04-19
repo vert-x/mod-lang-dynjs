@@ -16,8 +16,4 @@
 
 load('vertx.js');
 
-vertx.eventBus.send("test-handler", "started");
 
-function vertxStop() {
-  vertx.eventBus.send("test-handler", "stopped");
-}

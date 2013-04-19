@@ -39,8 +39,9 @@ if (!vertx.eventBus) {
     function wrappedHandler(handler) {
       return new org.vertx.java.core.Handler({
         handle: function(jMsg) {
-          var body = jMsg.body;
-          if (body.getClass && body.getClass().name === "org.vertx.java.core.json.JsonObject") {
+          var body = jMsg.body();
+          if (body.getClass 
+            && body.getClass().name === "org.vertx.java.core.json.JsonObject") {
               // Convert to JS JSON
               body = JSON.parse(body.encode());
           }

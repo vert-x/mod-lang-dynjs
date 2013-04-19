@@ -30,7 +30,6 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.GlobalObjectFactory;
-import org.dynjs.runtime.PropertyDescriptor;
 import org.dynjs.runtime.Runner;
 import org.vertx.java.core.Vertx;
 import org.vertx.java.core.logging.Logger;
@@ -152,6 +151,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
                 }
             });
             vertxJS.put("__vertx", vertx);
+            vertxJS.put("container", container);
             globalObject.defineGlobalProperty("vertx", vertxJS);
             return globalObject;
         }
