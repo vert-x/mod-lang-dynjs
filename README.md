@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/dynjs/dynjs-vertx-module.png)](http://travis-ci.org/projectodd/dynjs-vertx-module)
+[![Build Status](https://secure.travis-ci.org/dynjs/dynjs-vertx-module.png)](http://travis-ci.org/dynjs/dynjs-vertx-module)
 
 [![Build Status](https://buildhive.cloudbees.com/job/dynjs/job/dynjs-vertx-module/badge/icon)](https://buildhive.cloudbees.com/job/dynjs/job/dynjs-vertx-module/)
 
