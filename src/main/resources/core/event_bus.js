@@ -76,10 +76,11 @@ if (!vertx.eventBus) {
       handlerMap[handler] = wrapped;
 
       if (localOnly) {
-        return jEventBus.registerLocalHandler(address, wrapped);
+        jEventBus.registerLocalHandler(address, wrapped);
       } else {
-        return jEventBus.registerHandler(address, wrapped);
+        jEventBus.registerHandler(address, wrapped);
       }
+      return that;
     }
 
     that.registerLocalHandler = function(address, handler) {
@@ -133,11 +134,11 @@ if (!vertx.eventBus) {
     It should have a property "address"
      */
     that.send = function(address, message, replyHandler) {
-      sendOrPub(true, address, message, replyHandler);
+      return sendOrPub(true, address, message, replyHandler);
     };
 
     that.publish = function(address, message) {
-      sendOrPub(false, address, message);
+      return sendOrPub(false, address, message);
     };
 
     function sendOrPub(send, address, message, replyHandler) {
@@ -161,7 +162,7 @@ if (!vertx.eventBus) {
       } else {
         jEventBus.publish(address, message);
       }
-      return vertx.eventBus;
+      return that;
     }
 
   })();
