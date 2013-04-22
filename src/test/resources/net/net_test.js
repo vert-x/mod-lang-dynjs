@@ -17,28 +17,37 @@
 load('vertx.js');
 load('vertx_tests.js');
 
-var handler = function(sock) {
-  sock.dataHandler(function(data) {
-    sock.write(data);
-  })
-};
+function testConnect() {
+  var server = vertx.createNetServer();
 
+  server.connectHandler(function(sock) {
+    sock.dataHandler(function(data) {
+      sock.write(data);
+    });
+  });
 
-function testEchoServer() {
+  server.listen(1234, 'localhost', function(err, server) {
+    vassert.assertTrue(err === null);
 
-  client = vertx.createNetClient();
-  server = vertx.createNetServer();
-  server.connectHandler(handler);
-  server.listen(1234, 'localhost', function() {
-    client.connect(1234, 'localhost', function(sock) {
+    client = vertx.createNetClient();
+    client.connect(1234, 'localhost', function(err, sock) {
+      vassert.assertTrue(err === null);
+      vassert.assertTrue(sock != null);
 
       sock.dataHandler(function(data) {
         vassert.testComplete();
-        client.close();
-        server.close();
       });
-      sock.write(new vertx.Buffer('this is a buffer'));
+
+      sock.write( new vertx.Buffer('this is a buffer'));
     });
+  });
+}
+
+function testNoConnect() {
+  client = vertx.createNetClient();
+  client.connect(1234, 'not-exists', function(err, sock) {
+    vassert.assertTrue(err != null);
+    vassert.testComplete();
   });
 }
 
