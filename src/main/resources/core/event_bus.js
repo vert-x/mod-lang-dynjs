@@ -36,12 +36,16 @@ if (!vertx.eventBus) {
       }
     }
 
+    jsonObjectClass = new org.vertx.java.core.json.JsonObject().getClass();
+    jsonArrayClass  = new org.vertx.java.core.json.JsonArray().getClass();
+
     function wrappedHandler(handler) {
       return new org.vertx.java.core.Handler({
         handle: function(jMsg) {
           var body = jMsg.body();
-          if (body.getClass 
-            && body.getClass().name === "org.vertx.java.core.json.JsonObject") {
+          if (body.getClass && 
+             (body.getClass() === jsonObjectClass || 
+              body.getClass() === jsonArrayClass)) {
               // Convert to JS JSON
               body = JSON.parse(body.encode());
           }
@@ -67,8 +71,8 @@ if (!vertx.eventBus) {
 
       var wrapped = wrappedHandler(handler);
 
-      // This is a bit more complex than it should be because we have to wrap the handler - therefore we
-      // have to keep track of it :(
+      // This is a bit more complex than it should be because we have to wrap
+      // the handler - therefore we have to keep track of it :(
       handlerMap[handler] = wrapped;
 
       if (localOnly) {
@@ -93,6 +97,7 @@ if (!vertx.eventBus) {
         jEventBus.unregisterHandler(address, wrapped);
         delete handlerMap[handler];
       }
+      return that;
     };
 
 
@@ -139,10 +144,10 @@ if (!vertx.eventBus) {
       if (!address) {
         throw "address must be specified";
       }
-      if (typeof address != "string") {
+      if (typeof address !== "string") {
         throw "address must be a string";
       }
-      if (replyHandler && typeof replyHandler != "function") {
+      if (replyHandler && typeof replyHandler !== "function") {
         throw "replyHandler must be a function";
       }
       message = convertMessage(message);
@@ -156,6 +161,7 @@ if (!vertx.eventBus) {
       } else {
         jEventBus.publish(address, message);
       }
+      return vertx.eventBus;
     }
 
   })();
