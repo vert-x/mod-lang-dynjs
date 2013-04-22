@@ -108,8 +108,8 @@ function testPumpFile() {
       vassert.assertTrue(err === null);
       fs.open(to, function(err, file2) {
         vassert.assertTrue(err === null);
-        var rs = file1.getReadStream();
-        var ws = file2.getWriteStream();
+        var rs = file1;
+        var ws = file2;
         var pump = new vertx.Pump(rs, ws);
         pump.start();
         rs.endHandler(function() {
