@@ -17,14 +17,11 @@
 load('vertx.js');
 load('vertx_tests.js');
 
-var TestUtils = require('test_utils.js');
-var tu = new TestUtils();
 var server = vertx.createHttpServer();
 var rm = new vertx.RouteMatcher();
 server.requestHandler(rm);
-server.listen(9999);
 
-var client = vertx.createHttpClient().setPort(9999);
+var client = vertx.createHttpClient().port(9999);
 
 var params = { "name" : "foo", "version" : "v0.1"};
 var re_params = { "param0" : "foo", "param1" :"v0.1"};
@@ -112,18 +109,19 @@ function testAllWithRegEx() {
 }
 
 function testRouteNoMatch() {
-  client.get('some-uri', function(resp) {
-    tu.azzert(404 === resp.statusCode);
-    vassert.testComplete();
-  }).end();
+  server.listen(9999, '0.0.0.0', function(serv) {
+    client.get('some-uri', function(resp) {
+      vassert.assertTrue(404 === resp.statusCode());
+      vassert.testComplete();
+    }).end();
+  });
 }
 
 function route(method, regex, pattern, params, uri) {
 
   var handler = function(req) {
-    tu.azzert(req.params().length === params.length);
     for (k in req.params()) {
-      tu.azzert(params[k] === req.params()[k]);
+      vassert.assertTrue(params[k] === req.params()[k]);
     }
     req.response.end();
   }
@@ -138,10 +136,12 @@ function route(method, regex, pattern, params, uri) {
     method = 'get';
   }
 
-  client[method](uri, function(resp) {
-    tu.azzert(200 == resp.statusCode)
-    vassert.testComplete();
-  }).end();
+  server.listen(9999, '0.0.0.0', function(serv) {
+    client[method](uri, function(resp) {
+      vassert.assertTrue(200 == resp.statusCode());
+      vassert.testComplete();
+    }).end();
+  });
 }
 
 initTests(this);
