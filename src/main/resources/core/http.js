@@ -37,6 +37,12 @@ if (!vertx.createHttpServer) {
         req.peerCertificateChain = jreq.peerCertificateChain.bind(jreq);
         req.absoluteURI          = jreq.absoluteURI.bind(jreq);
         req.bodyHandler          = jreq.bodyHandler.bind(jreq);
+
+        // TODO: This is not exposed in mod-lang-rhino. Should it be?
+        var version = jreq.nettyRequest().getProtocolVersion();
+        req.httpMajorVersion = version.majorVersion().toString();
+        req.httpMinorVersion = version.minorVersion().toString();
+        req.httpVersion = req.httpMajorVersion + "." + that.httpMinorVersion;
         
         var jresp = jreq.response();
         var respHeaders = null;
