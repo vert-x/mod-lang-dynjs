@@ -44,6 +44,12 @@ function testPeriodic() {
   });
 }
 
+function testRunOnContext() {
+  vertx.runOnContext(function() {
+    vassert.testComplete();
+  });
+}
+
 function setEndTimer() {
   vertx.setTimer(10, function() {
     vassert.testComplete();

@@ -15,8 +15,8 @@
  */
 
 if (!vertx.setTimer) {
-  vertx.setTimer    = vertx.__vertx.setTimer.bind(vertx.__vertx);
-  vertx.setPeriodic = vertx.__vertx.setPeriodic.bind(vertx.__vertx);
-  vertx.cancelTimer = vertx.__vertx.cancelTimer.bind(vertx.__vertx);
-  vertx.runOnLoop   = vertx.__vertx.runOnLoop.bind(vertx.__vertx);
+  vertx.setTimer     = vertx.__vertx.setTimer.bind(vertx.__vertx);
+  vertx.setPeriodic  = vertx.__vertx.setPeriodic.bind(vertx.__vertx);
+  vertx.cancelTimer  = vertx.__vertx.cancelTimer.bind(vertx.__vertx);
+  vertx.runOnContext = vertx.__vertx.runOnContext.bind(vertx.__vertx);
 }
