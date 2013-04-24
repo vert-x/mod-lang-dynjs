@@ -42,7 +42,7 @@ if (!vertx.createHttpServer) {
         var version = jreq.nettyRequest().getProtocolVersion();
         req.httpMajorVersion = version.majorVersion().toString();
         req.httpMinorVersion = version.minorVersion().toString();
-        req.httpVersion = req.httpMajorVersion + "." + that.httpMinorVersion;
+        req.httpVersion = req.httpMajorVersion + "." + req.httpMinorVersion;
         
         var jresp = jreq.response();
         var respHeaders = null;
