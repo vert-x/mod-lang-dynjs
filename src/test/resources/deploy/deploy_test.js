@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-load('vertx.js');
-load('vertx_tests.js');
-
-var eb = vertx.eventBus;
+var container = require('container');
+var vertxTest = require('vertx_tests');
+var vassert = vertxTest.vassert;
 
 function testSimpleDeploy() {
-  vertx.deployVerticle("deploy/child.js", function(err, deployId) {
+  container.deployVerticle("deploy/child.js", function(err, deployId) {
     vassert.assertEquals(null, err);
     vassert.assertNotNull(deployId);
     vassert.testComplete();
@@ -28,18 +27,18 @@ function testSimpleDeploy() {
 }
 
 function testDeployWithConfig() {
-  var conf = {foo: 'bar'}
-  vertx.deployVerticle("deploy/child.js", conf, function(err, deployId) {
+  var conf = {'foo': 'bar'}
+  container.deployVerticle("deploy/child.js", conf, function(err, deployId) {
     vassert.assertEquals(null, err);
     // this should work?
-//    vassert.assertEquals('bar', vertx.config['foo']);
+    //vassert.assertEquals('bar', container.config['foo']);
     vassert.assertNotNull(deployId);
     vassert.testComplete();
   });
 }
 
 function testDeployWithNumInstances() {
-  vertx.deployVerticle("deploy/child.js", 12, function(err, deployId) {
+  container.deployVerticle("deploy/child.js", 12, function(err, deployId) {
     vassert.assertEquals(null, err);
     vassert.assertNotNull(deployId);
     vassert.testComplete();
@@ -48,7 +47,7 @@ function testDeployWithNumInstances() {
 
 function testDeployWithConfigAndNumInstances() {
   var conf = {foo: 'bar'}
-  vertx.deployVerticle("deploy/child.js", conf, 12, function(err, deployId) {
+  container.deployVerticle("deploy/child.js", conf, 12, function(err, deployId) {
     vassert.assertEquals(null, err);
     vassert.assertNotNull(deployId);
     vassert.testComplete();
@@ -56,7 +55,7 @@ function testDeployWithConfigAndNumInstances() {
 }
 
 function testDeployFail() {
-  vertx.deployVerticle("deploy/notexist.js", function(err, deployId) {
+  container.deployVerticle("deploy/notexist.js", function(err, deployId) {
     vassert.assertFalse(null === err);
     vassert.assertEquals(null, deployId);
     vassert.testComplete();
@@ -64,8 +63,8 @@ function testDeployFail() {
 }
 
 function testUndeploy() {
-  vertx.deployVerticle("deploy/child.js", function(err, deployId) {
-    vertx.undeployVerticle(deployId, function(err) {
+  container.deployVerticle("deploy/child.js", function(err, deployId) {
+    container.undeployVerticle(deployId, function(err) {
       vassert.assertTrue(null === err);
       vassert.testComplete();
     });
@@ -73,8 +72,8 @@ function testUndeploy() {
 }
 
 function testUndeployFail() {
-  vertx.deployVerticle("deploy/child.js", function(err, deployId) {
-    vertx.undeployVerticle('someotherid', function(err) {
+  container.deployVerticle("deploy/child.js", function(err, deployId) {
+    container.undeployVerticle('someotherid', function(err) {
       vassert.assertFalse(null === err);
       vassert.testComplete();
     });
@@ -82,11 +81,11 @@ function testUndeployFail() {
 }
 
 function testDeployWorker() {
-  vertx.deployWorkerVerticle('deploy/child.js', function(err, deployId) {
+  container.deployWorkerVerticle('deploy/child.js', function(err, deployId) {
     vassert.assertTrue(null === err);
     vassert.assertTrue(deployId !== null);
     vassert.testComplete();
   });
 }
 
-initTests(this);
+vertxTest.startTests(this);

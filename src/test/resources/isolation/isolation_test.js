@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-load('vertx.js');
-load('vertx_tests.js')
+var vertx = require('vertx');
+var vertxTest = require('vertx_tests');
+var vassert = vertxTest.vassert;
 
 var myglobal;
 
@@ -25,5 +26,5 @@ function testIsolation() {
   vassert.testComplete();
 }
 
-initTests(this);
+vertxTest.startTests(this);
 

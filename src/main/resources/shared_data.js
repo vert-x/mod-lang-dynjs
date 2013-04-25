@@ -14,9 +14,27 @@
  * limitations under the License.
  */
 
-if (!vertx.setTimer) {
-  vertx.setTimer     = vertx.__vertx.setTimer.bind(vertx.__vertx);
-  vertx.setPeriodic  = vertx.__vertx.setPeriodic.bind(vertx.__vertx);
-  vertx.cancelTimer  = vertx.__vertx.cancelTimer.bind(vertx.__vertx);
-  vertx.runOnContext = vertx.__vertx.runOnContext.bind(vertx.__vertx);
+if (typeof module === 'undefined') {
+  throw "Use require() to load Vert.x API modules"
 }
+
+var sharedData = {};
+
+sharedData.getMap = function(name) {
+  return __jvertx.sharedData().getMap(name);
+}
+
+sharedData.getSet = function(name) {
+  return __jvertx.sharedData().getSet(name);
+}
+
+sharedData.removeMap = function(name) {
+  return __jvertx.sharedData().removeMap(name);
+}
+
+sharedData.removeSet = function(name) {
+  return __jvertx.sharedData().removeSet(name);
+}
+
+module.exports = sharedData;
+

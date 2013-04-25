@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
-if (!vertx.Buffer) {
-  vertx.Buffer = org.vertx.java.core.buffer.Buffer;
+if (typeof module === 'undefined') {
+  throw "Use require() to load Vert.x API modules"
 }
+
+var parseTools = {};
+
+parseTools.createDelimitedParser = function(delim, output) {
+  return org.vertx.java.core.parsetools.RecordParser.newDelimited(delim, output);
+}
+
+parseTools.createFixedParser = function(size, output) {
+  return org.vertx.java.core.parsetools.RecordParser.newFixed(size, output);
+}
+
+module.exports = parseTools;
+

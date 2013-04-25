@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-load('vertx.js');
-load('vertx_tests.js');
+var vertx = require('vertx');
+var vertxTest = require('vertx_tests');
+var vassert = vertxTest.vassert;
 
 function testConnect() {
   var server = vertx.createNetServer();
@@ -51,5 +52,5 @@ function testNoConnect() {
   });
 }
 
-initTests(this);
+vertxTest.startTests(this);
 

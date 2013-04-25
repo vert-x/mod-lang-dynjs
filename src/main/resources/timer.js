@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-if (!vertx.getMap) {
-
-  vertx.getMap = function(name) {
-    return vertx.__vertx.sharedData().getMap(name);
-  }
-
-  vertx.getSet = function(name) {
-    return vertx.__vertx.sharedData().getSet(name);
-  }
-
-  vertx.removeMap = function(name) {
-    return vertx.__vertx.sharedData().removeMap(name);
-  }
-
-  vertx.removeSet = function(name) {
-    return vertx.__vertx.sharedData().removeSet(name);
-  }
+if (typeof module === 'undefined') {
+  throw "Use require() to load Vert.x API modules"
 }
 
+var timers = {};
 
+timers.setTimer     = __jvertx.setTimer.bind(__jvertx);
+timers.setPeriodic  = __jvertx.setPeriodic.bind(__jvertx);
+timers.cancelTimer  = __jvertx.cancelTimer.bind(__jvertx);
+timers.runOnContext = __jvertx.runOnContext.bind(__jvertx);
 
+module.exports = timers;

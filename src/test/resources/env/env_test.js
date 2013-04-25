@@ -1,14 +1,15 @@
-load('vertx.js');
-load('vertx_tests.js');
+var container = require('container');
+var vertxTest = require('vertx_tests');
+var vassert = vertxTest.vassert;
 
 function testEnv() {
-  vertx.deployVerticle("deploy/child.js", function() {
+  container.deployVerticle("deploy/child.js", function() {
     vassert.testComplete();
     // TODO: WTF
-    // vertx.env['SOMETHING'] = 'else';
-    // vassert.assertEquals("else", vertx.env['SOMETHING']);
+    // container.env['SOMETHING'] = 'else';
+    // vassert.assertEquals("else", container.env['SOMETHING']);
     vassert.testComplete();
   });
 }
 
-initTests(this);
+vertxTest.startTests(this);

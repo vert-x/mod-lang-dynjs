@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-load('vertx.js')
-load('vertx_tests.js')
+var vertx = require('vertx');
+var vertxTest = require("vertx_tests");
+var vassert = vertxTest.vassert;
 
-var TestUtils = require('test_utils');
-var tu = new TestUtils();
+var tu = require('test_utils');
 
 var server = vertx.createHttpServer();
 var client = vertx.createHttpClient();
@@ -118,5 +118,5 @@ function testCloseFromConnectHandler() {
   });
 }
 
-initTests(this);
+vertxTest.startTests(this);
 

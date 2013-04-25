@@ -49,7 +49,6 @@ public class DynJSVerticleFactory implements VerticleFactory {
     private Config config;
     private ClassLoader mcl;
     private boolean vertxLoaded = false;
-    private DynObject vertxJS = new DynObject(null);
     private GlobalObjectFactory globalObjectFactory = new DynJSGlobalObjectFactory();
     
     @Override
@@ -98,7 +97,6 @@ public class DynJSVerticleFactory implements VerticleFactory {
         if (scriptName == null) {
             return null;
         }
-        if (vertxLoaded && scriptName.equals("vertx.js")) { return vertxJS; }
         File scriptFile = new File(scriptName);
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(runtime.getConfig().getClassLoader());
@@ -150,9 +148,8 @@ public class DynJSVerticleFactory implements VerticleFactory {
                     }
                 }
             });
-            vertxJS.put("__vertx", vertx);
-            vertxJS.put("container", container);
-            globalObject.defineGlobalProperty("vertx", vertxJS);
+            globalObject.defineGlobalProperty("__jvertx", vertx);
+            globalObject.defineGlobalProperty("__jcontainer", container);
             return globalObject;
         }
     }

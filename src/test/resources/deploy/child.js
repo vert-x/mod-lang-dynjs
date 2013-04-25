@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-load('vertx.js');
+var vertx = require('vertx');
 
 

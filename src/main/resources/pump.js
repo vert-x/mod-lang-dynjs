@@ -18,33 +18,42 @@ if (typeof module === 'undefined') {
   throw "Use require() to load Vert.x API modules"
 }
 
-var vertx = {};
+var Pump = function(rs, ws) {
 
-function addProps(obj) {
-  for (var key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      vertx[key] = obj[key];
+  var pumped = 0;
+
+  var drainHandler = function() {
+    rs.resume();
+  }
+
+  var dataHandler = function(buffer) {
+    ws.write(buffer);
+    pumped += buffer.length();
+    if (ws.writeQueueFull()) {
+      rs.pause();
+      ws.drainHandler(drainHandler);
     }
   }
+
+  var p = {
+    start: function() {
+      rs.dataHandler(dataHandler);
+      return p;
+    },
+    stop: function() {
+      ws.drainHandler(null);
+      rs.dataHandler(null);
+      return p;
+    },
+    getBytesPumped: function() {
+      return pumped;
+    },
+    setWriteQueueMaxSize: function(maxSize) {
+      ws.setWriteQueueMaxSize(maxSize);
+      return p;
+    }
+  };
+  return p;
 }
 
-vertx.Buffer = require('buffer');
-vertx.eventBus = require('event_bus');
-addProps(require('net'));
-addProps(require('http'));
-vertx.Pump = require('pump');
-addProps(require('timer'));
-addProps(require('sockjs'));
-addProps(require('parse_tools'));
-addProps(require('shared_data'));
-vertx.fileSystem = require('file_system');
-
-vertx.runOnContext = function(task) {
-  __jvertx.runOnContext(task);
-}
-
-vertx.currentContext = function() {
-  return __jvertx.currentContext();
-}
-
-module.exports = vertx;
+module.exports = Pump;

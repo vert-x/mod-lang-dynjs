@@ -3,7 +3,7 @@ load('vertx.js');
 var TestUtils = function() {
 
   var that = this;
-  var jutils = new org.vertx.java.testframework.TestUtils(vertx.__vertx);
+  var jutils = new org.vertx.java.testframework.TestUtils(__jvertx);
 
   that.expected = function(expects, gets) {
     return "Expected [" + expects + "] but got [" + gets + "]."
@@ -64,4 +64,4 @@ var TestUtils = function() {
 
 };
 
-module.exports = TestUtils;
+module.exports = new TestUtils();

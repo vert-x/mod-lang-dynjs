@@ -1,8 +1,17 @@
-vassert = org.vertx.testtools.VertxAssert;
+if (typeof module === 'undefined') {
+  throw "Use require() to load Vert.x API modules"
+}
 
-initTests = function(top) {
-  var methodName = vertx.config.methodName;
-  vassert.initialize(vertx.__vertx)
+var vertxTests = {};
+
+var container = require("container");
+vertxTests.vassert = org.vertx.testtools.VertxAssert;
+
+vertxTests.startTests = function (top) {
+  var methodName = container.config.methodName;
+  vertxTests.vassert.initialize(__jvertx);
   top[methodName]();
 }
+
+module.exports = vertxTests;
 

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-load('vertx.js');
-load('vertx_tests.js');
+var vertx = require('vertx');
+var vertxTest = require('vertx_tests');
+var vassert = vertxTest.vassert;
 
 var server = vertx.createHttpServer();
 var rm = new vertx.RouteMatcher();
@@ -144,7 +145,7 @@ function route(method, regex, pattern, params, uri) {
   });
 }
 
-initTests(this);
+vertxTest.startTests(this);
 
 function vertxStop() {
   server.close(function() {

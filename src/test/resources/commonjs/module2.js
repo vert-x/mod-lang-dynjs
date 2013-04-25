@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var TestUtils = require('test_utils');
-var tu = new TestUtils();
-
+var tu = require('test_utils');
 
 module.exports = function() {
   try {

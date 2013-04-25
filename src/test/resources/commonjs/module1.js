@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-var TestUtils = require('test_utils');
-var tu = new TestUtils();
+var tu = require('test_utils');
 
 module.exports = function() {
   func2 = require('module2');

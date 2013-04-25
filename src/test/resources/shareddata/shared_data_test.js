@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-load('vertx.js');
-load('vertx_tests.js')
+var vertx = require('vertx');
+var vertxTest = require("vertx_tests");
+var vassert = vertxTest.vassert;
+
 
 function testMap() {
   var map1 = vertx.getMap("foo");
@@ -106,4 +108,4 @@ function testSet() {
   vassert.testComplete();
 }
 
-initTests(this);
+vertxTest.startTests(this);

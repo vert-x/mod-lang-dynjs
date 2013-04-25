@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var vertxTest = require('vertx_tests');
+var vassert = vertxTest.vassert;
 
-load('vertx.js');
-load('vertx_tests.js')
-
-// Most testing occurs in the Java tests
-
-var eb = vertx.eventBus;
+var eb = require('event_bus');
+var timers = require('timer');
+var Buffer = require('buffer');
 var address = 'foo-address';
 
 var sent = {
@@ -48,7 +47,6 @@ function assertReply(rep) {
 }
 
 function testSimple() {
-
   var handled = false;
   var ebus = eb.registerHandler(address, function MyHandler(msg, replier) {
     vassert.assertTrue(!handled);
@@ -86,7 +84,7 @@ function testUnregister() {
     vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
     handled = true;
     // Wait a little while to allow any other messages to arrive
-    vertx.setTimer(100, function() {
+    timers.setTimer(100, function() {
       vassert.testComplete();
     });
   }
@@ -119,9 +117,9 @@ function testWithReply() {
 function testReplyOfReplyOfReply() {
 
   var ebus = eb.registerHandler(address, function MyHandler(msg, replier) {
-    vassert.assertTrue("message" === msg);
+    vassert.assertEquals("message", msg);
     replier("reply", function(reply, replier) {
-      vassert.assertTrue("reply-of-reply" === reply);
+      vassert.assertEquals("reply-of-reply", reply);
       replier("reply-of-reply-of-reply");
       vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
     });
@@ -182,7 +180,7 @@ function testEchoJson() {
 }
 
 function testEchoBuffer() {
-  echo(new org.vertx.java.core.buffer.Buffer());
+  echo(new Buffer());
 }
 
 function testEchoNull() {
@@ -208,5 +206,5 @@ function echo(msg) {
   });
 }
 
-initTests(this);
+vertxTest.startTests(this);
 
