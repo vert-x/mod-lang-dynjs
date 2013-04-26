@@ -22,8 +22,8 @@ var jfs = __jvertx.fileSystem();
 
 var fileSystem = {};
 
-load("read_stream.js");
-load("write_stream.js");
+load("vertx/read_stream.js");
+load("vertx/write_stream.js");
 
 function wrapHandler(handler) {
   return function(asyncResult) {

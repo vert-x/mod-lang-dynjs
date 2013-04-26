@@ -24,7 +24,7 @@ var VERTICLE = 0;
 var WORKER = 1;
 var MODULE = 2;
 
-load("helpers.js");
+load("vertx/helpers.js");
 
 function deploy(deployType, name, args) {
   var doneHandler = getArgValue('function', args);

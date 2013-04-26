@@ -20,11 +20,11 @@ if (typeof module === 'undefined') {
 
 var net = {};
 
-load("ssl_support.js");
-load("tcp_support.js");
-load("read_stream.js");
-load("write_stream.js");
-load("helpers.js");
+load("vertx/ssl_support.js");
+load("vertx/tcp_support.js");
+load("vertx/read_stream.js");
+load("vertx/write_stream.js");
+load("vertx/helpers.js");
 
 net.createNetServer = function() {
   var jserver = __jvertx.createNetServer();
