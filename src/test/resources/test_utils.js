@@ -1,4 +1,3 @@
-load('vertx.js');
 
 var TestUtils = function() {
 

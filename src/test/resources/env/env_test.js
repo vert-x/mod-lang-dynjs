@@ -1,4 +1,4 @@
-var container = require('container');
+var container = require('vertx/container');
 var vertxTest = require('vertx_tests');
 var vassert = vertxTest.vassert;
 

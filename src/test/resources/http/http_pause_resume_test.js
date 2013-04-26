@@ -19,8 +19,7 @@ var vertx = require('vertx');
 var vertxTest = require('vertx_tests');
 var vassert = vertxTest.vassert;
 
-var TestUtils = require('test_utils');
-var tu = new TestUtils();
+var tu = require('test_utils');
 
 var port = 9090
 var server = vertx.createHttpServer();

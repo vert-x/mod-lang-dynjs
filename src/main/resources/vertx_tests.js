@@ -4,7 +4,7 @@ if (typeof module === 'undefined') {
 
 var vertxTests = {};
 
-var container = require("container");
+var container = require("vertx/container");
 vertxTests.vassert = org.vertx.testtools.VertxAssert;
 
 vertxTests.startTests = function (top) {

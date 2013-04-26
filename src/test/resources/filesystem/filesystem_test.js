@@ -18,8 +18,8 @@ var tu = require('test_utils');
 var vertxTest = require('vertx_tests');
 var vassert = vertxTest.vassert;
 
-var fs = require("file_system")
-var Pump = require("pump")
+var fs = require("vertx/file_system")
+var Pump = require("vertx/pump")
 
 var fileDir = "js-test-output"
 
