@@ -4,7 +4,6 @@
 .project
 .settings
 bin
-build
 *.class
 target
 mods

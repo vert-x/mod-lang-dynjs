@@ -74,6 +74,12 @@ function wrappedRequestHandler(handler) {
       return req;
     };
 
+    // TODO: This is not exposed in mod-lang-rhino. Should it be?
+    var version = jreq.nettyRequest().getProtocolVersion();
+    req.httpMajorVersion = version.majorVersion().toString();
+    req.httpMinorVersion = version.minorVersion().toString();
+    req.httpVersion = req.httpMajorVersion + "." + req.httpMinorVersion;
+
     var jresp = jreq.response();
     var respHeaders = null;
     var respTrailers = null;
