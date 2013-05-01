@@ -121,9 +121,8 @@ function wrappedRequestHandler(handler) {
       return resp;
     };
     resp.putAllHeaders = function(other) {
-      var hdrs = resp.headers();
       for (var k in other) {
-        hdrs[k] = other[k];
+        jresp.putHeader(k, other[k]);
       }
       return resp;
     };
@@ -138,9 +137,8 @@ function wrappedRequestHandler(handler) {
       return resp;
     };
     resp.putAllTrailers = function(other) {
-      var trlrs = resp.trailers();
       for (var k in other) {
-        trlrs[k] = other[k];
+        jresp.putTrailer(k, other[k]);
       }
       return resp;
     };

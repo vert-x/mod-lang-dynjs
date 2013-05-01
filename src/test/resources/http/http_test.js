@@ -194,11 +194,25 @@ function httpMethod(ssl, method, chunked) {
     tu.azzert(req.path() === path, tu.expected(path, req.path()));
     tu.azzert(req.query() === query, tu.expected(query, req.query()));
 
-    tu.azzert(req.headers()['header1'] === 'vheader1');
-    tu.azzert(req.headers()['header2'] === 'vheader2');
-    tu.azzert(req.params()['param1'] === 'vparam1');
-    tu.azzert(req.params()['param2'] === 'vparam2');
-    req.response.headers()['rheader1'] = 'vrheader1';
+    var headers = req.headers();
+    var params  = req.params();
+
+    tu.azzert(headers.get('header1') === 'vheader1');
+    tu.azzert(headers.get('header2') === 'vheader2');
+
+    tu.azzert(headers.contains('header1'));
+    tu.azzert(headers.contains('header2'));
+    tu.azzert(headers.contains('header3'));
+
+    tu.azzert(!headers.isEmpty());
+
+    tu.azzert(params.get('param1') === 'vparam1');
+    tu.azzert(params.get('param2') === 'vparam2');
+
+    headers.remove('header3');
+    tu.azzert(!headers.contains('header3'));
+
+    req.response.headers().set('rheader1',  'vrheader1');
     req.response.putHeader('rheader2', 'vrheader2');
     if (method !== 'CONNECT') {
       req.response.statusCode(statusCode);
@@ -213,12 +227,12 @@ function httpMethod(ssl, method, chunked) {
     }
     req.endHandler(function() {
       if (!chunked) {
-        req.response.headers()['Content-Length'] =  '' + body.length();
+        req.response.headers().set('Content-Length',  '' + body.length());
       }
       if (method !== 'HEAD' && method !== 'CONNECT') {
         req.response.write(body);
         if (chunked) {
-          req.response.trailers()['trailer1'] = 'vtrailer1';
+          req.response.trailers().set('trailer1', 'vtrailer1');
           req.response.putTrailer('trailer2', 'vtrailer2');
         }
       }
@@ -239,8 +253,8 @@ function httpMethod(ssl, method, chunked) {
 
     var request = client.request(method, uri, function(resp) {
       tu.azzert(200 === resp.statusCode());
-      tu.azzert('vrheader1' === resp.headers()['rheader1']);
-      tu.azzert('vrheader2' === resp.headers()['rheader2']);
+      tu.azzert('vrheader1' === resp.headers().get('rheader1'));
+      tu.azzert('vrheader2' === resp.headers().get('rheader2'));
       var body = new vertx.Buffer(0);
       resp.dataHandler(function(data) {
         tu.checkThread();
@@ -252,21 +266,24 @@ function httpMethod(ssl, method, chunked) {
         if (method !== 'HEAD' && method !== 'CONNECT') {
           tu.azzert(tu.buffersEqual(sent_buff, body));
           if (chunked) {
-            tu.azzert('vtrailer1' === resp.trailers()['trailer1']);
-            tu.azzert('vtrailer2' === resp.trailers()['trailer2']);
+            tu.azzert('vtrailer1' === resp.trailers().get('trailer1'));
+            tu.azzert('vtrailer2' === resp.trailers().get('trailer2'));
           }
         }
+        resp.headers().clear();
+        tu.azzert(resp.headers().isEmpty());
         vassert.testComplete();
       });
     });
 
     request.chunked(chunked);
     request.putHeader('header1', 'vheader1');
-    request.headers()['header2'] = 'vheader2';
+    request.headers().set('header2', 'vheader2');
     if (!chunked) {
       request.putHeader('Content-Length', '' + sent_buff.length())
     }
-
+ 
+    request.headers().add('header3', 'vheader3_1').add('header3', 'vheader3')
     request.write(sent_buff);
 
     request.end();
