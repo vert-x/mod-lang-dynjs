@@ -38,6 +38,7 @@ net.createNetServer = function() {
     jserver.connectHandler(function(result) {
       handler(jsNetSocket(result));
     });
+    return server;
   };
   server.listen = function() {
     var args = Array.prototype.slice.call(arguments);
@@ -51,6 +52,7 @@ net.createNetServer = function() {
       host = "0.0.0.0";
     }
     jserver.listen(port, host, handler);
+    return server;
   };
   server.close = function(handler) {
     if (handler === undefined) {
