@@ -122,7 +122,7 @@ function route(method, regex, pattern, params, uri) {
 
   var handler = function(req) {
     for (k in req.params()) {
-      vassert.assertTrue(params[k] === req.params()[k]);
+      vassert.assertTrue(params[k] === req.params().get(k));
     }
     req.response.end();
   }

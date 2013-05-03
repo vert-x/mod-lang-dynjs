@@ -189,6 +189,7 @@ function httpMethod(ssl, method, chunked) {
   var statusMessage = 'gerbils';
 
   server.requestHandler(function(req) {
+    tu.azzert(req.version() === 'HTTP_1_1');
     tu.azzert(req.method() === method, tu.expected(method, req.method()));
     tu.azzert(uri === req.uri(), tu.expected(uri, req.uri()));
     tu.azzert(req.path() === path, tu.expected(path, req.path()));
@@ -284,6 +285,16 @@ function httpMethod(ssl, method, chunked) {
     }
  
     request.headers().add('header3', 'vheader3_1').add('header3', 'vheader3')
+    var headers = request.headers();
+    var size = headers.size()
+    var names = headers.names()
+    var names_count = 0
+    tu.azzert(size == names.length)
+
+    headers.forEach(function(k, v) {
+      tu.azzert(request.headers().getAll(k).indexOf(v) > -1, "EXPECTED SOMETHING")
+    })
+
     request.write(sent_buff);
 
     request.end();

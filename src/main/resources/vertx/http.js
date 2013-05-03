@@ -33,9 +33,16 @@ function wrappedRequestHandler(handler) {
 
     var reqHeaders = null;
     var reqParams = null;
+    var version = null;
 
     var req = {};
     readStream(req, jreq);
+    req.version = function() {
+      if (version === null) {
+        version = jreq.version().toString();
+      }
+      return version;
+    }
     req.method = function() {
       return jreq.method();
     };
@@ -50,13 +57,13 @@ function wrappedRequestHandler(handler) {
     };
     req.headers = function() {
       if (!reqHeaders) {
-        reqHeaders = jreq.headers();
+        reqHeaders = wrapMultiMap(jreq.headers());
       }
       return reqHeaders;
     };
     req.params = function() {
       if (!reqParams) {
-        reqParams = jreq.params();
+        reqParams = wrapMultiMap(jreq.params());
       }
       return reqParams;
     };
@@ -73,12 +80,6 @@ function wrappedRequestHandler(handler) {
       jreq.bodyHandler(handler);
       return req;
     };
-
-    // TODO: This is not exposed in mod-lang-rhino. Should it be?
-    var version = jreq.nettyRequest().getProtocolVersion();
-    req.httpMajorVersion = version.majorVersion().toString();
-    req.httpMinorVersion = version.minorVersion().toString();
-    req.httpVersion = req.httpMajorVersion + "." + req.httpMinorVersion;
 
     var jresp = jreq.response();
     var respHeaders = null;
@@ -112,7 +113,7 @@ function wrappedRequestHandler(handler) {
     };
     resp.headers = function() {
       if (!respHeaders) {
-        respHeaders = jresp.headers();
+        respHeaders = wrapMultiMap(jresp.headers());
       }
       return respHeaders;
     };
@@ -120,26 +121,14 @@ function wrappedRequestHandler(handler) {
       jresp.putHeader(k, v);
       return resp;
     };
-    resp.putAllHeaders = function(other) {
-      for (var k in other) {
-        jresp.putHeader(k, other[k]);
-      }
-      return resp;
-    };
     resp.trailers = function() {
       if (!respTrailers) {
-        respTrailers = jresp.trailers();
+        respTrailers = wrapMultiMap(jresp.trailers());
       }
       return respTrailers;
     };
     resp.putTrailer = function(k, v) {
       jresp.putTrailer(k, v);
-      return resp;
-    };
-    resp.putAllTrailers = function(other) {
-      for (var k in other) {
-        jresp.putTrailer(k, other[k]);
-      }
       return resp;
     };
     resp.write = function(arg0, arg1) {
@@ -178,6 +167,7 @@ function wrappedRequestHandler(handler) {
 function wrapWebsocketHandler(server, handler) {
   return function(jwebsocket) {
     var ws = {};
+    var headers = null;
     readStream(ws, jwebsocket);
     writeStream(ws, jwebsocket);
     ws.binaryHandlerID = function() {
@@ -206,6 +196,12 @@ function wrapWebsocketHandler(server, handler) {
       ws.reject = function() {
         jwebsocket.reject();
         return ws;
+      }
+      ws.headers = function() {
+        if (!headers) {
+          headers = wrapMultiMap(jwebsocket.headers());
+        }
+        return headers;
       }
     }
     handler(ws);
@@ -258,6 +254,9 @@ http.createHttpServer = function() {
     jserver.listen(port, host, handler);
     return server;
   }
+  server._to_java_server = function() {
+    return jserver;
+  }
   return server;
 }
 
@@ -280,13 +279,13 @@ http.createHttpClient = function() {
       };
       resp.headers = function() {
         if (!respHeaders) {
-          respHeaders = jresp.headers();
+          respHeaders = wrapMultiMap(jresp.headers());
         }
         return respHeaders;
       };
       resp.trailers = function() {
         if (!respTrailers) {
-          respTrailers = jresp.trailers();
+          respTrailers = wrapMultiMap(jresp.trailers());
         }
         return respTrailers;
       };
@@ -316,7 +315,7 @@ http.createHttpClient = function() {
     };
     req.headers = function() {
       if (!reqHeaders) {
-        reqHeaders = jreq.headers();
+        reqHeaders = wrapMultiMap(jreq.headers());
       }
       return reqHeaders;
     };
@@ -545,6 +544,85 @@ http.RouteMatcher = function() {
   this._to_java_handler = function() {
     return j_rm;
   }
+}
+
+function wrapMultiMap(j_map) {
+  var map = {}
+  map.get = function(name) {
+    return j_map.get(name);
+  }
+
+  map.forEach = function(func) {
+    var names = j_map.names().iterator();
+    while (names.hasNext()) {
+      var name = names.next();
+      var values = j_map.getAll(name).iterator();
+      while (values.hasNext()) {
+        func(name, values.next());
+      }
+    }
+  }
+
+  map.getAll = function(name) {
+    var n =  j_map.getAll(name);
+    return convertToArray(n);
+  }
+
+  map.contains = function(name) {
+    return j_map.contains(name);
+  }
+
+  map.isEmpty = function() {
+    return j_map.isEmpty();
+  }
+
+  map.names = function() {
+    var n =  j_map.names();
+    return convertToArray(n);
+  }
+
+  map.add = function(name, value) {
+    j_map.add(name, value);
+    return this;
+  }
+
+  map.set = function(name, value) {
+    j_map.set(name, value);
+    return this;
+  }
+
+  map.setHeaders = function(headers) {
+    j_map.set(headers._jmap);
+    return this;
+  }
+
+  map.remove = function(name) {
+    j_map.remove(name);
+    return this;
+  }
+
+  map.clear = function() {
+    j_map.clear();
+    return this;
+  }
+
+  map.size = function() {
+    return j_map.size();
+  }
+
+  map._jmap = j_map;
+  return map;
+}
+
+function convertToArray(j_col) {
+  var n = j_col.iterator();
+  var array = new Array();
+  var i = 0;
+
+  while (n.hasNext()) {
+    array[i++] = n.next();
+  }
+  return array;
 }
 
 module.exports = http;
