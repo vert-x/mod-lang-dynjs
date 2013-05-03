@@ -5,32 +5,13 @@
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
-      <fileSet>
-        <outputDirectory></outputDirectory>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>**</include>
-        </includes>
-      </fileSet>
-      <fileSet>
-        <outputDirectory></outputDirectory>
-        <directory>target/classes</directory>
-        <includes>
-          <include>**</include>
-        </includes>
-      </fileSet>
+        <fileSet>
+            <outputDirectory></outputDirectory>
+            <directory>target/mods/${module.name}</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
     </fileSets>
-    <dependencySets>
-        <dependencySet>
-            <outputDirectory>lib</outputDirectory>
-            <unpack>false</unpack>
-            <scope>runtime</scope>
-            <excludes>
-                <exclude>org.easytesting:fest-assert</exclude>
-                <exclude>org.easytesting:fest-util</exclude>
-                <exclude>io.vertx:vertx-core</exclude>
-                <exclude>io.vertx:vertx-platform</exclude>
-            </excludes>
-        </dependencySet>
-    </dependencySets>
+
 </assembly>
