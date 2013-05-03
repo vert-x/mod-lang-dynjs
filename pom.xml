@@ -266,6 +266,9 @@
                   <fileset>
                     <directory>${basedir}/mods</directory>
                   </fileset>
+                  <fileset>
+                    <directory>${basedir}/build/mods</directory>
+                  </fileset>
                 </filesets>
               </configuration>
             </plugin>
