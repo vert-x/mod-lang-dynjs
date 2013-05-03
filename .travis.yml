@@ -1,5 +1,5 @@
 language: java
-install: mvn install -s support/settings.xml -DskipTests=true 
+install: mvn clean install -s support/settings.xml -DskipTests=true 
 script: mvn test verify -s support/settings.xml 
 jdk:
   - oraclejdk7
