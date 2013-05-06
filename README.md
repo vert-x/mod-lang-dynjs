@@ -46,18 +46,7 @@ object.
 This little bit of code creates a Java `HashMap` instance, and binds
 `HashMap#get` to a plain old javascript object. How cool is that? Imagine the
 possibilities. We use this trick in a few places throught the vert.x API
-implementation. The HTTP api, for example, is really just binding the Java
-methods directly onto the vertx Javascript object
-
-[http.js](https://github.com/dynjs/dynjs-vertx-module/blob/master/src/main/resources/core/http.js)
-
-    if (!vertx.createHttpServer) {
-        vertx.createHttpServer = vertx.__vertx.createHttpServer.bind(vertx.__vertx);
-    }
-
-    if (!vertx.createHttpClient) {
-        vertx.createHttpClient = vertx.__vertx.createHttpClient.bind(vertx.__vertx);
-    }
+implementation. 
     
 
 Enjoy. And if you have any problems, hit us on on freenode at #dynjs or #vertx. And you can file any reproducible issues in our [Jira](http://jira.codehaus.org/browse/DYNJS).
