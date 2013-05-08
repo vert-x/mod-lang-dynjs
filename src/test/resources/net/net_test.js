@@ -22,6 +22,10 @@ function testConnect() {
   var server = vertx.createNetServer();
 
   server.connectHandler(function(sock) {
+    vassert.assertTrue(sock.localAddress().ipaddress != null)
+    vassert.assertTrue(sock.localAddress().port > -1)
+    vassert.assertTrue(sock.remoteAddress().ipaddress != null)
+    vassert.assertTrue(sock.remoteAddress().port > -1)
     sock.dataHandler(function(data) {
       sock.write(data);
     });
@@ -34,6 +38,12 @@ function testConnect() {
     client.connect(1234, 'localhost', function(err, sock) {
       vassert.assertTrue(err === null);
       vassert.assertTrue(sock != null);
+      vassert.assertTrue(err === null);
+      vassert.assertTrue(sock != null);
+      vassert.assertTrue(sock.localAddress().ipaddress != null)
+      vassert.assertTrue(sock.localAddress().port > -1)
+      vassert.assertTrue(sock.remoteAddress().ipaddress != null)
+      vassert.assertTrue(sock.remoteAddress().port > -1)
 
       sock.dataHandler(function(data) {
         vassert.testComplete();
