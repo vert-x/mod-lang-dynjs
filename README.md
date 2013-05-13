@@ -49,4 +49,6 @@ possibilities. We use this trick in a few places throught the vert.x API
 implementation. 
     
 
-Enjoy. And if you have any problems, hit us on on freenode at #dynjs or #vertx. And you can file any reproducible issues in our [Jira](http://jira.codehaus.org/browse/DYNJS).
+Enjoy. And if you have any problems, hit us on on freenode at #dynjs or #vertx.
+And you can file any reproducible issues in our
+[Jira](http://jira.codehaus.org/browse/DYNJS).
