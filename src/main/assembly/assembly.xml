@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <assembly>
-  <id>${artifactId}-${project.version}</id>
+  <id>${project.artifactId}</id>
   <formats>
     <format>zip</format>
   </formats>

@@ -18,9 +18,11 @@
   <properties>
     <!-- vert.x module name -->
     <module.name>${project.groupId}~${project.artifactId}~${project.version}</module.name>
+
     <!-- encodings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
     <!-- plugin versions -->
     <maven.compiler.plugin.version>3.0</maven.compiler.plugin.version>
     <maven.failsafe.plugin.version>2.14</maven.failsafe.plugin.version>
@@ -31,6 +33,7 @@
     <maven.enforcer.plugin.version>1.1</maven.enforcer.plugin.version>
     <maven.clean.plugin.version>2.5</maven.clean.plugin.version>
     <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
+
     <!-- dependency versions -->
     <version.vertx>2.0.0-SNAPSHOT</version.vertx>
     <version.vertx.testtools>1.0.0-SNAPSHOT</version.vertx.testtools>
@@ -94,13 +97,13 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
       <version>${version.vertx}</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-platform</artifactId>
       <version>${version.vertx}</version>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.dynjs</groupId>
@@ -208,6 +211,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <overwrite>true</overwrite>
               <outputDirectory>${basedir}/target/mods/${module.name}</outputDirectory>
               <resources>
                 <resource>
@@ -289,7 +293,6 @@
         <version>${maven.assembly.plugin.version}</version>
         <configuration>
           <appendAssemblyId>false</appendAssemblyId>
-          <finalName>${project.artifactId}-${project.version}</finalName>
           <descriptors>
             <descriptor>src/main/assembly/assembly.xml</descriptor>
           </descriptors>
@@ -311,10 +314,7 @@
         <configuration>
           <filesets>
             <fileset>
-              <directory>${basedir}/mods</directory>
-            </fileset>
-            <fileset>
-              <directory>${basedir}/build/mods</directory>
+              <directory>${basedir}/target/mods</directory>
             </fileset>
           </filesets>
         </configuration>
