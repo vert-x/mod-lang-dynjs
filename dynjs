@@ -1,0 +1,9 @@
+#!/bin/sh
+
+DYNJS_MOD="-Dvertx.langs.nodejs=org.dynjs~lang-dynjs~1.0.0-SNAPSHOT:org.dynjs.lang-dynjs.DynJSVerticleFactory"
+JS_MAPPING="-Dvertx.langs..js=dynjs"
+
+export JAVA_OPTS="$DYNJS_MOD $JS_MAPPING"
+
+vertx run $*
+
