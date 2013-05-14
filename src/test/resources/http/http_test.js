@@ -189,7 +189,7 @@ function httpMethod(ssl, method, chunked) {
   var statusMessage = 'gerbils';
 
   server.requestHandler(function(req) {
-    tu.azzert(req.netSocket() !== null);
+//    tu.azzert(req.netSocket() !== null);
     tu.azzert(req.version() === 'HTTP_1_1');
     tu.azzert(req.method() === method, tu.expected(method, req.method()));
     tu.azzert(uri === req.uri(), tu.expected(uri, req.uri()));

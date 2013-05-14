@@ -40,7 +40,7 @@ function wrappedRequestHandler(handler) {
     readStream(req, jreq);
     req.netSocket = function() {
       if (socket === null) {
-        socket = jreq.netSocket();
+        //socket = jreq.netSocket();
       }
       return socket;
     }
