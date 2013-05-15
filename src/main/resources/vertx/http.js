@@ -26,6 +26,25 @@ load("vertx/ssl_support.js");
 load("vertx/tcp_support.js");
 load("vertx/helpers.js");
 
+var net = require('vertx/net');
+
+// We do this in http.js because once a client requests 
+// a netSocket, all handlers are unregistered. We want
+// to defer actually getting the underlying netsocket 
+// (and unregistering the handlers) until we're sure the
+// netSocket is needed.
+function wrappedNetSocket(request) {
+  var socket    = {};
+  var netSocket = null;
+  socket.write = function(data) {
+    if (netSocket === null) {
+      netSocket = net.__jsNetSocket(request.netSocket());
+    }
+    netSocket.write(data);
+  }
+  return socket;
+}
+
 function wrappedRequestHandler(handler) {
   return function(jreq) {
 
@@ -40,7 +59,7 @@ function wrappedRequestHandler(handler) {
     readStream(req, jreq);
     req.netSocket = function() {
       if (socket === null) {
-        socket = jreq.netSocket();
+        socket = wrappedNetSocket(jreq);
       }
       return socket;
     }

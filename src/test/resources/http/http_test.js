@@ -198,7 +198,7 @@ function httpMethod(ssl, method, chunked) {
     //
     // See: https://github.com/vert-x/vert.x/blob/master/vertx-core/src/main/java/org/vertx/java/core/http/impl/ServerConnection.java#L128
 
-    // tu.azzert(req.netSocket() !== null);
+    tu.azzert(req.netSocket() !== null);
     tu.azzert(req.version() === 'HTTP_1_1');
     tu.azzert(req.method() === method, tu.expected(method, req.method()));
     tu.azzert(uri === req.uri(), tu.expected(uri, req.uri()));

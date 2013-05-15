@@ -24,6 +24,7 @@ var server = vertx.createHttpServer();
 var client = vertx.createHttpClient();
 client.port(8080);
 
+
 function testEchoBinary() {
   echo(true);
 }

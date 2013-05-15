@@ -162,4 +162,5 @@ function jsNetSocket(jNetSocket) {
   return netSocket;
 }
 
+net.__jsNetSocket = jsNetSocket;
 module.exports = net;
