@@ -274,6 +274,9 @@
               <value>target/mods</value>
             </property>
           </systemProperties>
+          <environmentVariables>
+            <cheese>Gouda</cheese>
+          </environmentVariables>
           <includes>
             <include>**/integration/**</include>
           </includes>

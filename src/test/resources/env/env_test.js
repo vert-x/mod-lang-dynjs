@@ -5,9 +5,8 @@ var vassert = vertxTest.vassert;
 function testEnv() {
   container.deployVerticle("deploy/child.js", function() {
     vassert.testComplete();
-    // TODO: WTF
-    // container.env['SOMETHING'] = 'else';
-    // vassert.assertEquals("else", container.env['SOMETHING']);
+    // env var is set in pom.xml maven-failsafe-plugin
+    vassert.assertEquals("Gouda", container.env['cheese']);
     vassert.testComplete();
   });
 }
