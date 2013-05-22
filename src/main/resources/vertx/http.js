@@ -26,6 +26,9 @@ load("vertx/ssl_support.js");
 load("vertx/tcp_support.js");
 load("vertx/helpers.js");
 
+// Used to get raw netSockets
+var net = require('vertx/net');
+
 function wrappedRequestHandler(handler) {
   return function(jreq) {
 
@@ -40,7 +43,7 @@ function wrappedRequestHandler(handler) {
     readStream(req, jreq);
     req.netSocket = function() {
       if (socket === null) {
-        socket = require('vertx/net').__jsNetSocket(jreq.netSocket());
+        socket = net.__jsNetSocket(jreq.netSocket());
       }
       return socket;
     }
@@ -275,9 +278,16 @@ http.createHttpClient = function() {
 
       var respHeaders = null;
       var respTrailers = null;
+      var socket = null;
 
       var resp = {};
       readStream(resp, jresp);
+      resp.netSocket = function() {
+        if (socket === null) {
+          socket = net.__jsNetSocket(jresp.netSocket());
+        }
+        return socket;
+      }
       resp.statusCode = function() {
         return jresp.statusCode();
       };
