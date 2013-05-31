@@ -48,7 +48,6 @@ public class DynJSVerticleFactory implements VerticleFactory {
     private DynJS runtime;
     private Config config;
     private ClassLoader mcl;
-    private boolean vertxLoaded = false;
     private GlobalObjectFactory globalObjectFactory = new DynJSGlobalObjectFactory();
     
     @Override

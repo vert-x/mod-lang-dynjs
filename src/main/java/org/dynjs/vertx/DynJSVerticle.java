@@ -23,6 +23,7 @@ public class DynJSVerticle extends Verticle {
             @Override
             public void initialize(ExecutionContext context) {
                 rootContext = context;
+                factory.getRuntime().clearModuleCache();
             }
         });
     }
