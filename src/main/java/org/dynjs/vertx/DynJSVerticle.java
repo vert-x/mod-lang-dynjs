@@ -23,7 +23,6 @@ public class DynJSVerticle extends Verticle {
             @Override
             public void initialize(ExecutionContext context) {
                 rootContext = context;
-                factory.getRuntime().clearModuleCache();
             }
         });
     }
@@ -32,6 +31,7 @@ public class DynJSVerticle extends Verticle {
     public void start() {
         rootContext = initializeRootContext();
         try {
+            factory.getRuntime().clearModuleCache();
             factory.loadScript(this.rootContext, this.scriptName);
         } catch (FileNotFoundException e) {
             System.err.println("Cannot load script: " + this.scriptName);
