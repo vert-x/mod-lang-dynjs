@@ -145,6 +145,29 @@ function route(method, regex, pattern, params, uri) {
   });
 }
 
+function testInterceptAll() {
+  var count = 0
+  var handler = function(req) {
+    vassert.assertEquals(1, ++count)
+    // Now call the request handler of the routematcher
+    rm.call(req);
+  }
+
+  server.requestHandler(handler);
+
+  rm.get("/:name/:version", function(req) {
+    vassert.assertEquals(2, ++count);
+    req.response.end();
+  });
+
+  server.listen(9999, '0.0.0.0', function(serv) {
+    client.get("/foo/bar", function(resp) {
+      vassert.assertEquals("200", resp.statusCode().toString())
+      vassert.testComplete();
+    }).end();
+  });
+}
+
 vertxTest.startTests(this);
 
 function vertxStop() {
