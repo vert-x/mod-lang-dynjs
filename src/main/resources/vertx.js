@@ -33,7 +33,15 @@ vertx.eventBus = require('vertx/event_bus');
 addProps(require('vertx/net'));
 addProps(require('vertx/http'));
 vertx.Pump = require('vertx/pump');
-addProps(require('vertx/timer'));
+
+// See if this fixes the intermittent 
+// build failures with vertx.setTimer
+var Timers = require('vertx/timer');
+vertx.setTimer     = Timers.setTimer;
+vertx.setPeriodic  = Timers.setPeriodic;
+vertx.cancelTimer  = Timers.cancelTimer;
+vertx.runOnContext = Timers.runOnContext;
+
 addProps(require('vertx/sockjs'));
 addProps(require('vertx/parse_tools'));
 addProps(require('vertx/shared_data'));
