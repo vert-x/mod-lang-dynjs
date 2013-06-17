@@ -18,22 +18,75 @@ if (typeof module === 'undefined') {
   throw "Use require() to load Vert.x API modules"
 }
 
+
+/**
+ * <p>Represents a distributed lightweight event bus which can encompass
+ * multiple vert.x instances.  It is very useful for otherwise isolated vert.x
+ * application instances to communicate with each other. Messages sent over the
+ * event bus are JSON objects.</p>
+ *
+ * <p>The event bus implements a distributed publish / subscribe network.
+ * Messages are sent to an address.  There can be multiple handlers registered
+ * against that address.  Any handlers with a matching name will receive the
+ * message irrespective of what vert.x application instance and what vert.x
+ * instance they are located in.</p>
+ *
+ * <p>All messages sent over the bus are transient. On event of failure of all
+ * or part of the event bus messages may be lost. Applications should be coded
+ * to cope with lost messages, e.g. by resending them, and making application
+ * services idempotent.</p>
+ *
+ * <p>The order of messages received by any specific handler from a specific
+ * sender will match the order of messages sent from that sender.</p>
+ *
+ * <p>When sending a message, a reply handler can be provided. If so, it will
+ * be called when the reply from the receiver has been received.</p>
+ *
+ * @exports vertx/event_bus
+ */
 var eventBus = {};
 
 var handlerMap = {};
 
 var jEventBus = __jvertx.eventBus();
 
+/**
+ * Register a handler which won't be propageted acress the cluster.
+ *
+ * @param {string} address the address to register for. Any messages sent to
+ * that address will be received by the handler. A single handler can be
+ * registered against many addresses.
+ * @param {function} handler The handler
+ *
+ * @returns {module:vertx.eventBus} The event bus
+ */
 eventBus.registerLocalHandler = function(address, handler) {
   registerHandler(address, handler, true);
   return eventBus;
 };
 
+/**
+ * Register a handler.
+ *
+ * @param {string} address the address to register for. Any messages sent to
+ * that address will be received by the handler. A single handler can be
+ * registered against many addresses.
+ * @param {function} handler The handler
+ *
+ * @returns {module:vertx.eventBus} the event bus
+ */
 eventBus.registerHandler = function(address, handler) {
   registerHandler(address, handler, false);
   return eventBus;
 };
 
+/**
+ * Unregisters a handler.
+ *
+ * @param {string} address The address the handler is registered to
+ * @param {function} handler The handler to unregister
+ * @returns {module:vertx.eventBus} the event bus
+ */
 eventBus.unregisterHandler = function(address, handler) {
   checkHandlerParams(address, handler);
   var wrapped = handlerMap[handler];
@@ -44,15 +97,32 @@ eventBus.unregisterHandler = function(address, handler) {
   return eventBus;
 };
 
-/*
- Message should be a JSON object
- It should have a property "address"
+/**
+ * {@typedef {module:vertx.eventBus} EventBus
+ */
+
+/**
+ * Sends a message on the event bus.
+ * Message should be a JSON object It should have a property "address"
+ *
+ * @param {string} address The address to send the message to
+ * @param {string|module:vertx.Buffer} message The message to send
+ * @param {function} [replyHandler] called when the message receives a reply
+ * @returns {module:vertx.eventBus}
  */
 eventBus.send = function(address, message, replyHandler) {
   sendOrPub(true, address, message, replyHandler);
   return eventBus;
 };
 
+/**
+ * Publish a message on the event bus.
+ * Message should be a JSON object It should have a property "address".
+ *
+ * @param {string} address The address to send the message to
+ * @param {string|module:vertx.Buffer} message The message to send
+ * @returns {module:vertx.eventBus}
+ */
 eventBus.publish = function(address, message) {
   sendOrPub(false, address, message);
   return eventBus;

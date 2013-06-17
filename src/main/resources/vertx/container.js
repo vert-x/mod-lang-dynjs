@@ -18,6 +18,13 @@ if (typeof module === 'undefined') {
   throw "Use require() to load Vert.x API modules"
 }
 
+/**
+ * The vert.x container. The container handles deploying and undeploying
+ * modules, and overall control of the runtime.
+ *
+ * @exports vertx/container
+ */
+
 var container = {};
 
 var VERTICLE = 0;
@@ -64,24 +71,43 @@ function deploy(deployType, name, args) {
   }
 }
 
+/**
+ * Deploy a verticle. The actual deploy happens asynchronously
+ * @param {string} main the main of the verticle to deploy
+ */
 container.deployVerticle = function(main) {
   var args = Array.prototype.slice.call(arguments);
   args.shift();
   deploy(VERTICLE, main, args);
 }
 
+/**
+ * Deploy a verticle. The actual deploy happens asynchronously
+ * @param {string} main the main of the verticle to deploy
+ */
 container.deployWorkerVerticle = function(main) {
   var args = Array.prototype.slice.call(arguments);
   args.shift();
   deploy(WORKER, main, args);
 }
 
+/**
+ * Deploy a module. The actual deploy happens asynchronously
+ *
+ * @param {string} moduleMame The name of the module to deploy
+ */
 container.deployModule = function(moduleName) {
   var args = Array.prototype.slice.call(arguments);
   args.shift();
   deploy(MODULE, moduleName, args);
 }
 
+/**
+ * Undeploy a verticle
+ *
+ * @param {{}} id The unique id of the deployment
+ * @param {function} handler A handler that will be called when undeploy has completed
+ */
 container.undeployVerticle = function(name, doneHandler) {
   if (doneHandler) {
     doneHandler = adaptAsyncResultHandler(doneHandler);
@@ -91,6 +117,12 @@ container.undeployVerticle = function(name, doneHandler) {
   __jcontainer.undeployVerticle(name, doneHandler);
 }
 
+/**
+ * Undeploy a module
+ *
+ * @param {{}} id The unique id of the module
+ * @param {function} handler A handler that will be called when undeploy has completed
+ */
 container.undeployModule = function(name, doneHandler) {
   if (doneHandler) {
     doneHandler = adaptAsyncResultHandler(doneHandler);
@@ -100,14 +132,23 @@ container.undeployModule = function(name, doneHandler) {
   __jcontainer.undeployModule(name, doneHandler);
 }
 
+/**
+ * Causes the container to exit. All running modules will be undeployed.
+ */
 container.exit = function() {
   __jcontainer.exit();
 }
 var j_conf = __jcontainer.config();
 container.config =  j_conf == null ? null : JSON.parse(j_conf.encode());
 
+/**
+ * The container's environment variables
+ */
 container.env = __jcontainer.env();
 
+/**
+ * The container's logger
+ */
 container.logger = __jcontainer.logger();
 
 module.exports = container;

@@ -18,4 +18,41 @@ if (typeof module === 'undefined') {
   throw "Use require() to load Vert.x API modules"
 }
 
-module.exports = org.vertx.java.core.buffer.Buffer;
+/**
+ * Most data in vert.x is shuffled around using buffers.
+ *
+ * A Buffer represents a sequence of zero or more bytes that can be written to
+ * or read from, and which expands automatically as necessary to accomodate any
+ * bytes written to it. You can perhaps think of a buffer as smart byte array.
+ *
+ * Buffers are actually Java objects - the exact same as those documented in the
+ * vert.x Java documents. The methods documented for the Java Buffer objects
+ * are applicable to Javascript Buffer instances as well. 
+ *
+ * Maybe some examples are in order.
+ *
+ * @example <caption>Creating Buffers</caption>
+ * var Buffer = require('vertx/buffer');
+ *
+ * // Create a buffer from a string with UTF-8 encoding (the default)
+ * var buff = new Buffer('Now is the winter of our discontent made glorioius summer');
+ *
+ * // Create a buffer from a string and specify an encoding
+ * buff = new Buffer('Too hot, too hot!', 'UTF-16');
+ *
+ * // etc etc
+ * // TODO: Finish these examples
+ *
+ * @module buffer
+ */
+
+/**
+ * @constructor
+ */
+var Buffer = org.vertx.java.core.buffer.Buffer;
+
+
+/**
+ * @module vertx/buffer
+ */
+module.exports = Buffer;

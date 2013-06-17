@@ -225,6 +225,22 @@
         </executions>
       </plugin>
       <plugin>
+      <artifactId>exec-maven-plugin</artifactId>
+      <groupId>org.codehaus.mojo</groupId>
+      <executions>
+        <execution>
+          <id>Generate JSDoc documentation</id>
+          <phase>generate-sources</phase>
+          <goals>
+            <goal>exec</goal>
+          </goals>
+          <configuration>
+            <executable>${basedir}/run_js.doc.sh</executable>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>${maven.dependency.plugin.version}</version>
@@ -317,6 +333,12 @@
         <version>${maven.clean.plugin.version}</version>
         <configuration>
           <filesets>
+            <fileset>
+              <directory>${basedir}/build/docs</directory>
+            </fileset>
+            <fileset>
+              <directory>${basedir}/build/mods</directory>
+            </fileset>
             <fileset>
               <directory>${basedir}/target/mods</directory>
             </fileset>
