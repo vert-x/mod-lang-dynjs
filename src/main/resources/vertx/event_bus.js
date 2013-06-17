@@ -19,6 +19,7 @@ if (typeof module === 'undefined') {
 }
 
 
+/** @typedef {module:vertx/event_bus} EventBus */
 /**
  * <p>Represents a distributed lightweight event bus which can encompass
  * multiple vert.x instances.  It is very useful for otherwise isolated vert.x
@@ -42,6 +43,21 @@ if (typeof module === 'undefined') {
  * <p>When sending a message, a reply handler can be provided. If so, it will
  * be called when the reply from the receiver has been received.</p>
  *
+ * <p>This module can be used individually, or through the top-level
+ * {@linkcode module:vertx|vertx} module.
+ * 
+ * @example <caption>Accessing the event bus</caption>
+ *
+ * var vertx = require('vertx');
+ *
+ * var eb1 = require('vertx/event_bus');
+ * var eb2 = vertx.eventBus;
+ *
+ * eb1.registerHandler('some-address', function(message) {
+ *   print("Got a message! " + message);
+ * }
+ * eb2.publish('some-address', 'Hello world');
+ *
  * @exports vertx/event_bus
  */
 var eventBus = {};
@@ -58,7 +74,7 @@ var jEventBus = __jvertx.eventBus();
  * registered against many addresses.
  * @param {function} handler The handler
  *
- * @returns {module:vertx.eventBus} The event bus
+ * @returns {EventBus} The event bus
  */
 eventBus.registerLocalHandler = function(address, handler) {
   registerHandler(address, handler, true);
@@ -73,7 +89,7 @@ eventBus.registerLocalHandler = function(address, handler) {
  * registered against many addresses.
  * @param {function} handler The handler
  *
- * @returns {module:vertx.eventBus} the event bus
+ * @returns {EventBus} the event bus
  */
 eventBus.registerHandler = function(address, handler) {
   registerHandler(address, handler, false);
@@ -85,7 +101,7 @@ eventBus.registerHandler = function(address, handler) {
  *
  * @param {string} address The address the handler is registered to
  * @param {function} handler The handler to unregister
- * @returns {module:vertx.eventBus} the event bus
+ * @returns {EventBus} the event bus
  */
 eventBus.unregisterHandler = function(address, handler) {
   checkHandlerParams(address, handler);
@@ -98,17 +114,13 @@ eventBus.unregisterHandler = function(address, handler) {
 };
 
 /**
- * {@typedef {module:vertx.eventBus} EventBus
- */
-
-/**
  * Sends a message on the event bus.
  * Message should be a JSON object It should have a property "address"
  *
  * @param {string} address The address to send the message to
  * @param {string|module:vertx.Buffer} message The message to send
  * @param {function} [replyHandler] called when the message receives a reply
- * @returns {module:vertx.eventBus}
+ * @returns {EventBus}
  */
 eventBus.send = function(address, message, replyHandler) {
   sendOrPub(true, address, message, replyHandler);
@@ -121,7 +133,7 @@ eventBus.send = function(address, message, replyHandler) {
  *
  * @param {string} address The address to send the message to
  * @param {string|module:vertx.Buffer} message The message to send
- * @returns {module:vertx.eventBus}
+ * @returns {EventBus}
  */
 eventBus.publish = function(address, message) {
   sendOrPub(false, address, message);

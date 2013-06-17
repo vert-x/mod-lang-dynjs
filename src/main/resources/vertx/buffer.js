@@ -19,6 +19,24 @@ if (typeof module === 'undefined') {
 }
 
 /**
+ * The vert.x Buffer module
+ * @typedef {module:vertx/buffer} Buffer
+ */
+
+/**
+ * The Java vert.x Buffer object is used directly in JavaScript. An instance
+ * of this is returned when requiring a 'vertx/buffer' and using the new
+ * keyword
+ *
+ * @example
+ * var Buffer = require('vertx/buffer');
+ * var buff   = new Buffer('Hello!'); // this is actually a java thing
+ *
+ * @external org.vertx.java.core.buffer.Buffer
+ */
+
+/**
+ *
  * Most data in vert.x is shuffled around using buffers.
  *
  * A Buffer represents a sequence of zero or more bytes that can be written to
@@ -43,10 +61,6 @@ if (typeof module === 'undefined') {
  * // etc etc
  * // TODO: Finish these examples
  *
- * @module buffer
- */
-
-/**
  * @constructor
  */
 var Buffer = org.vertx.java.core.buffer.Buffer;

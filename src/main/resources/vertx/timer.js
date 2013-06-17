@@ -18,11 +18,45 @@ if (typeof module === 'undefined') {
   throw "Use require() to load Vert.x API modules"
 }
 
-var timers = {};
+/** @typedef {number} TimerId */
 
-timers.setTimer     = __jvertx.setTimer.bind(__jvertx);
-timers.setPeriodic  = __jvertx.setPeriodic.bind(__jvertx);
-timers.cancelTimer  = __jvertx.cancelTimer.bind(__jvertx);
-timers.runOnContext = __jvertx.runOnContext.bind(__jvertx);
+/**
+ * @exports vertx/timers
+ */
+var timers = {
+
+  /**
+   * Sets a one-shot timer that will fire after a certain delay.
+   *
+   * @param {number} delay the delay, in milliseconds
+   * @param {function} handler an handler that will be called when the timer fires
+   * @returns {TimerId} the unique id of the timer
+   */
+  setTimer : function(delay, handler) {
+    return __jvertx.setTimer(delay, handler);
+  },
+
+  /**
+   * Set a periodic timer.
+   *
+   * @param {number} interval the period of the timer, in milliseconds
+   * @param {function} handler an handler that will be called each time the timer fires
+   * @returns {TimerId} the unique id of the timer
+   */
+  setPeriodic : function(interval, handler) {
+    return __jvertx.setPeriodic(interval, handler);
+  },
+
+  /**
+   * Cancels a timer.
+   *
+   * @param {TimerId} id the id of the timer, as returned from set_timer or set_periodic
+   * @returns {boolean} true if the timer was cancelled, false if it wasn't found.
+   */
+  cancelTimer : function(id) {
+    return __jvertx.cancelTimer(id);
+  }
+};
 
 module.exports = timers;
+
