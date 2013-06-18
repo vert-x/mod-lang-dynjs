@@ -1,1 +1,1 @@
-./jsdoc-master/jsdoc -r -d build/docs src/main/resources
+./jsdoc-master/jsdoc -r -d target/docs src/main/resources
