@@ -72,7 +72,7 @@ var jEventBus = __jvertx.eventBus();
  * @param {string} address the address to register for. Any messages sent to
  * that address will be received by the handler. A single handler can be
  * registered against many addresses.
- * @param {function} handler The handler
+ * @param {Handler} handler The handler
  *
  * @returns {EventBus} The event bus
  */
@@ -87,7 +87,7 @@ eventBus.registerLocalHandler = function(address, handler) {
  * @param {string} address the address to register for. Any messages sent to
  * that address will be received by the handler. A single handler can be
  * registered against many addresses.
- * @param {function} handler The handler
+ * @param {Handler} handler The handler
  *
  * @returns {EventBus} the event bus
  */
@@ -100,7 +100,7 @@ eventBus.registerHandler = function(address, handler) {
  * Unregisters a handler.
  *
  * @param {string} address The address the handler is registered to
- * @param {function} handler The handler to unregister
+ * @param {Handler} handler The handler to unregister
  * @returns {EventBus} the event bus
  */
 eventBus.unregisterHandler = function(address, handler) {
@@ -119,7 +119,7 @@ eventBus.unregisterHandler = function(address, handler) {
  *
  * @param {string} address The address to send the message to
  * @param {string|module:vertx.Buffer} message The message to send
- * @param {function} [replyHandler] called when the message receives a reply
+ * @param {Handler} [replyHandler] called when the message receives a reply
  * @returns {EventBus}
  */
 eventBus.send = function(address, message, replyHandler) {

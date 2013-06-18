@@ -18,6 +18,7 @@ if (typeof module === 'undefined') {
   throw "Use require() to load Vert.x API modules"
 }
 
+/** @typedef {string} DeploymentId */
 /**
  * The vert.x container. The container handles deploying and undeploying
  * modules, and overall control of the runtime.
@@ -94,7 +95,7 @@ container.deployWorkerVerticle = function(main) {
 /**
  * Deploy a module. The actual deploy happens asynchronously
  *
- * @param {string} moduleMame The name of the module to deploy
+ * @param {string} moduleName The name of the module to deploy
  */
 container.deployModule = function(moduleName) {
   var args = Array.prototype.slice.call(arguments);
@@ -105,8 +106,8 @@ container.deployModule = function(moduleName) {
 /**
  * Undeploy a verticle
  *
- * @param {{}} id The unique id of the deployment
- * @param {function} handler A handler that will be called when undeploy has completed
+ * @param {DeploymentId} id The unique id of the deployment
+ * @param {Handler} handler A handler that will be called when undeploy has completed
  */
 container.undeployVerticle = function(name, doneHandler) {
   if (doneHandler) {
@@ -120,8 +121,8 @@ container.undeployVerticle = function(name, doneHandler) {
 /**
  * Undeploy a module
  *
- * @param {{}} id The unique id of the module
- * @param {function} handler A handler that will be called when undeploy has completed
+ * @param {DeploymentId} id The unique id of the module
+ * @param {Handler} handler A handler that will be called when undeploy has completed
  */
 container.undeployModule = function(name, doneHandler) {
   if (doneHandler) {

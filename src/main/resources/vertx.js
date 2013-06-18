@@ -19,6 +19,16 @@ if (typeof module === 'undefined') {
 }
 
 /**
+ * Vert.x makes heavy use of callback handlers in the API. A callback
+ * handler simply a function that is called when events are fired.
+ * If there is an error, the first parameter passed to the function
+ * will indicate the cause. If not, the handler will be called with
+ * the result specified.
+ *
+ * @typedef {function} Handler
+ */
+
+/**
  * The 'vertx' module provides all of the vertx API namespaced 
  * under 'vertx'. For example:
  *
@@ -83,7 +93,7 @@ vertx.fileSystem = require('vertx/file_system');
  * Put the task on the event queue for this loop so it will be run asynchronously
  * immediately after this event is processed.
  *
- * @param {function} handler The desired diameter of the circle.
+ * @param {Handler} handler The handler to be called
  */
 vertx.runOnContext = function(task) {
   __jvertx.runOnContext(task);
