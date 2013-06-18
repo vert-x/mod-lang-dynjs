@@ -42,7 +42,7 @@ if (typeof module === 'undefined') {
 /**
  * The vert.x Buffer type is defined in the 
  * {@linkcode module:vertx/buffer|vertx/buffer} module
- * @typedef {module:vertx/buffer} Buffer
+ * @typedef {module:vertx/buffer~Buffer} Buffer
  */
 
 /** 
@@ -56,6 +56,29 @@ if (typeof module === 'undefined') {
  * See the {@linkcode module:vertx/event_bus|vertx/event_bus} module.
  * @typedef {module:vertx/event_bus} EventBus 
  * */
+
+/**
+ * The vert.x FileSystem object contains a broad set of operations for manipulating files.
+ * An asynchronous and a synchronous version of each operation is provided.
+ * The asynchronous versions take a handler as a final argument which is
+ * called when the operation completes or an error occurs. The handler is called
+ * with two arguments; the first an exception, this will be nil if the operation has
+ * succeeded. The second is the result - this will be nil if the operation failed or
+ * there was no result to return.
+ * The synchronous versions return the results, or throw exceptions directly.
+ * @typedef {module:vertx/file_system} FileSystem
+ */
+
+/** 
+ * Pumps data from a ReadStream to a WriteStream and performs flow control
+ * where necessary to prevent the write stream from getting overloaded.
+ * @typedef {module:vertx/pump~Pump} Pump 
+ * */
+
+/**
+ * A file on the file system that supports asynchronous operations.
+ * @typedef {module:vertx/file_system.AsyncFile} AsyncFile 
+ */
 
 /** 
  * A TimerId is just a number that identifies a given timer.

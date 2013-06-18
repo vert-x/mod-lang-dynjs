@@ -18,8 +18,35 @@ if (typeof module === 'undefined') {
   throw "Use require() to load Vert.x API modules"
 }
 
+/** 
+ * <p>
+ * Pumps data from a ReadStream to a WriteStream and performs flow control
+ * where necessary to prevent the write stream from getting overloaded.
+ * </p>
+ * <p>
+ * Instances of this class read bytes from a ReadStream and write them to a
+ * WriteStream. If data can be read faster than it can be written this could
+ * result in the write queue of the WriteStream growing without bound, eventually
+ * causing it to exhaust all available RAM.
+ * </p>
+ * <p>
+ * To prevent this, after each write, instances of this class check whether the
+ * write queue of the WriteStream is full, and if so, the ReadStream is paused,
+ * and a drainHandler is set on the WriteStream. When the WriteStream has
+ * processed half of its backlog, the drainHandler will be called, which
+ * results in the pump resuming the ReadStream.
+ * </p>
+ *
+ * <p>
+ * This class can be used to pump from any ReadStream to any WriteStream, e.g.
+ * from an HttpServerRequest to an AsyncFile, or from NetSocket to a WebSocket.
+ * </p>
+ *
+ * @constructor 
+ * */
 var Pump = function(rs, ws) {
 
+  var that = this;
   var pumped = 0;
 
   var drainHandler = function() {
@@ -35,25 +62,40 @@ var Pump = function(rs, ws) {
     }
   }
 
-  var p = {
-    start: function() {
-      rs.dataHandler(dataHandler);
-      return p;
-    },
-    stop: function() {
-      ws.drainHandler(null);
-      rs.dataHandler(null);
-      return p;
-    },
-    getBytesPumped: function() {
-      return pumped;
-    },
-    setWriteQueueMaxSize: function(maxSize) {
-      ws.setWriteQueueMaxSize(maxSize);
-      return p;
-    }
-  };
-  return p;
+  /**
+   * Start the Pump. The Pump can be started and stopped multiple times.
+   * @returns {Pump}
+   */
+  this.start = function() {
+    rs.dataHandler(dataHandler);
+    return that;
+  },
+  /**
+   * Stop the Pump. The Pump can be started and stopped multiple times.
+   * @returns {Pump}
+   */
+  this.stop = function() {
+    ws.drainHandler(null);
+    rs.dataHandler(null);
+    return that;
+  },
+  /**
+   * Return the total number of bytes pumped by this pump.
+   * @returns {number} the number of bytes pumped
+   */
+  this.getBytesPumped = function() {
+    return pumped;
+  },
+  /**
+   * Set the write queue max size to maxSize
+   * @param {number} maxSize the maximum size of the write queue
+   * @returns {Pump}
+   */
+  this.setWriteQueueMaxSize = function(maxSize) {
+    ws.setWriteQueueMaxSize(maxSize);
+    return that;
+  }
 }
 
+/** @module vertx/pump */
 module.exports = Pump;
