@@ -19,7 +19,6 @@ if (typeof module === 'undefined') {
 }
 
 
-/** @typedef {module:vertx/event_bus} EventBus */
 /**
  * <p>Represents a distributed lightweight event bus which can encompass
  * multiple vert.x instances.  It is very useful for otherwise isolated vert.x

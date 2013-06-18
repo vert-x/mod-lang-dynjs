@@ -23,10 +23,45 @@ if (typeof module === 'undefined') {
  * handler simply a function that is called when events are fired.
  * If there is an error, the first parameter passed to the function
  * will indicate the cause. If not, the handler will be called with
- * the result specified.
+ * the result specified. Handlers are registered with specific components
+ * to enable notification and action based on events defined by those
+ * components.
+ *
+ * @example
+ * var http = require('vertx/http');
+ * var server = http.createHttpServer();
+ *
+ * server.requestHandler( function( request ) {
+ *   // This function is executed for each
+ *   // request event on our server
+ * } );
  *
  * @typedef {function} Handler
  */
+
+/**
+ * The vert.x Buffer type is defined in the 
+ * {@linkcode module:vertx/buffer|vertx/buffer} module
+ * @typedef {module:vertx/buffer} Buffer
+ */
+
+/** 
+ * A DeploymentId is used to identify a specific verticle deployment.
+ * See the {@linkcode module:vertx/container|vertx/container} module.
+ * @typedef {string} DeploymentId 
+ * */
+
+/** 
+ * The EventBus is a distributed lightweight messaging bus. 
+ * See the {@linkcode module:vertx/event_bus|vertx/event_bus} module.
+ * @typedef {module:vertx/event_bus} EventBus 
+ * */
+
+/** 
+ * A TimerId is just a number that identifies a given timer.
+ * See the {@linkcode module:vertx/timer|vertx/timer} module.
+ * @typedef {number} TimerId 
+ * */
 
 /**
  * The 'vertx' module provides all of the vertx API namespaced 
@@ -63,13 +98,13 @@ function addProps(obj) {
    
 /** 
  * The vert.x Buffer class. 
- * See the {@linkcode module:vertx/buffer|buffer} module.
+ * See the {@linkcode module:vertx/buffer|vertx/buffer} module.
  * */
 vertx.Buffer = require('vertx/buffer');
 
 /**
  * The vert.x distributed event bus.
- * See the {@linkcode module:vertx/event_bus|event_bus} module.
+ * See the {@linkcode module:vertx/event_bus|vertx/event_bus} module.
  */
 vertx.eventBus = require('vertx/event_bus');
 addProps(require('vertx/net'));

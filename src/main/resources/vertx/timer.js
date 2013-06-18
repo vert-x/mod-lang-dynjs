@@ -18,10 +18,8 @@ if (typeof module === 'undefined') {
   throw "Use require() to load Vert.x API modules"
 }
 
-/** @typedef {number} TimerId */
-
 /**
- * @exports vertx/timers
+ * @exports vertx/timer
  */
 var timers = {
 

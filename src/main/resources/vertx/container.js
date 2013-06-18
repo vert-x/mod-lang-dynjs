@@ -18,7 +18,6 @@ if (typeof module === 'undefined') {
   throw "Use require() to load Vert.x API modules"
 }
 
-/** @typedef {string} DeploymentId */
 /**
  * The vert.x container. The container handles deploying and undeploying
  * modules, and overall control of the runtime.

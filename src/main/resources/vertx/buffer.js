@@ -19,11 +19,6 @@ if (typeof module === 'undefined') {
 }
 
 /**
- * The vert.x Buffer module
- * @typedef {module:vertx/buffer} Buffer
- */
-
-/**
  * The Java vert.x Buffer object is used directly in JavaScript. An instance
  * of this is returned when requiring a 'vertx/buffer' and using the new
  * keyword
