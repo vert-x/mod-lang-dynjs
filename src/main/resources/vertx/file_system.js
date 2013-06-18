@@ -683,6 +683,11 @@ fileSystem.open = function(path, arg1, arg2, arg3, arg4) {
 }
 
 /**
+ * The underlying Java representation of an {@linkcode module:vertx/file_system.AsyncFile|AsyncFile}
+ * @external org.vertx.java.core.file.AsyncFile
+ */
+
+ /**
  * <p>
  * An <code>AsyncFile</code> represents a file on the file-system which can be
  * read from, or written to asynchronously.  Methods also exist to get a
@@ -696,6 +701,7 @@ fileSystem.open = function(path, arg1, arg2, arg3, arg4) {
  * synchronous functions.
  * </p>
  * @constructor
+ * @param {org.vertx.java.core.file.AsyncFile} asyncFile the underlying java representation of this AsyncFile
  * @mixes readStream~ReadStream
  * @mixes writeStream~WriteStream
  */

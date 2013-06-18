@@ -43,6 +43,8 @@ if (typeof module === 'undefined') {
  * </p>
  *
  * @constructor 
+ * @param {readStream~ReadStream} readStream a ReadStream
+ * @param {writeStream~WriteStream} writeStream a WriteStream
  * */
 var Pump = function(rs, ws) {
 
