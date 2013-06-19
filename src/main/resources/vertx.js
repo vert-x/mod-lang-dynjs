@@ -128,23 +128,4 @@ module.exports = vertx;
  * @typedef {function} Handler
  */
 
-/**
- * A <code>RequestHandler</code> is a {@linkcode Handler} that responds to
- * notifications from objects in the <code>vertx/http</code> module and expects
- * an {@linkcode module:vertx/http.HttpServerRequest|HttpServerRequest} object
- * as it's parameter.
- *
- * @example
- * var http = require('vertx/http');
- * var server = http.createHttpServer();
- *
- * server.requestHandler( function( request ) {
- *   // This function is executed for each
- *   // request event on our server
- * } );
- *
- * @see module:vertx/http.HttpServer#requestHandler
- * @typedef {function} RequestHandler
- * @param {module:vertx/http.HttpServerRequest} request The incoming HTTP request
- */
 

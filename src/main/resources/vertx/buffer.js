@@ -24,16 +24,6 @@ if (typeof module === 'undefined') {
  */
 
 /**
- * The Javascript API exposes Java <code>org.vertx.java.core.buffer.Buffer</code> 
- * instances directly to Javascript.  See the Java documentation for
- * information on the public API.
- *
- * @see https://github.com/vert-x/vert.x/blob/master/vertx-core/src/main/java/org/vertx/java/core/buffer/Buffer.java
- *
- * @example
- * var Buffer = require('vertx/buffer');
- * var buff   = new Buffer('Hello!'); // this is actually a java thing
- *
  * Most data in vert.x is shuffled around using buffers.
  *
  * A Buffer represents a sequence of zero or more bytes that can be written to
@@ -44,7 +34,11 @@ if (typeof module === 'undefined') {
  * vert.x Java documents. The methods documented for the Java Buffer objects
  * are applicable to Javascript Buffer instances as well. 
  *
- * Maybe some examples are in order.
+ * @see https://github.com/vert-x/vert.x/blob/master/vertx-core/src/main/java/org/vertx/java/core/buffer/Buffer.java
+ *
+ * @example
+ * var Buffer = require('vertx/buffer');
+ * var buff   = new Buffer('Hello!'); // this is actually a java thing
  *
  * @example <caption>Creating Buffers</caption>
  * var Buffer = require('vertx/buffer');
@@ -64,6 +58,11 @@ var Buffer = org.vertx.java.core.buffer.Buffer;
 
 
 /**
+ * The Javascript API exposes Java <code>org.vertx.java.core.buffer.Buffer</code> 
+ * instances directly to Javascript.  See the Java documentation for
+ * information on the public API.
+ *
+ * @see https://github.com/vert-x/vert.x/blob/master/vertx-core/src/main/java/org/vertx/java/core/buffer/Buffer.java
  * @module vertx/buffer
  */
 module.exports = Buffer;

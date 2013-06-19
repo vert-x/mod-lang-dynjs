@@ -23,7 +23,6 @@ if (typeof module === 'undefined') {
  * @typedef {string} DeploymentId 
  * */
 
-
 /**
  * The vert.x container. The container handles deploying and undeploying
  * modules, and overall control of the runtime.

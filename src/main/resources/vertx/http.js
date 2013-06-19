@@ -34,6 +34,27 @@ load("vertx/tcp_support.js");
 load("vertx/helpers.js");
 
 /**
+ * A <code>RequestHandler</code> is a {@linkcode Handler} that responds to
+ * notifications from objects in the <code>vertx/http</code> module and expects
+ * an {@linkcode module:vertx/http.HttpServerRequest|HttpServerRequest} object
+ * as its parameter.
+ *
+ * @example
+ * var http = require('vertx/http');
+ * var server = http.createHttpServer();
+ *
+ * server.requestHandler( function( request ) {
+ *   // This function is executed for each
+ *   // request event on our server
+ * } );
+ *
+ * @see module:vertx/http.HttpServer#requestHandler
+ * @typedef {function} RequestHandler
+ * @param {message} request The incoming message
+ */
+
+
+/**
  * Represents a server-side HttpServerRequest object. This object is created internally
  * by vert.x and passed as a parameter to a request listener.
  *

@@ -21,6 +21,18 @@ if (typeof module === 'undefined') {
 var jfs = __jvertx.fileSystem();
 
 /**
+ * File system operations are handled asynchronously. The result of the operations
+ * are given to a <code>ResultHandler</code>. The <code>ResultHandler</code> is 
+ * just a {@linkcode Handler} that accepts two parameters: 1) an exception object
+ * if an error occurred; and 2) the result of the operation, the type of which is
+ * determined by the firing event.
+ *
+ * @typedef {function} ResultHandler
+ * @param {Exception} cause This will be <code>null</code> if the operation succeeded
+ * @param {{}} result The result of the operation event this handler cares about
+ */
+
+/**
  * @exports vertx/file_system
  */
 var fileSystem = {};
@@ -80,8 +92,8 @@ function convertProps(j_props) {
  * @param {string} from path of file to copy
  * @param {string} to path of file to copy to
  * @param {boolean} [recursive] copy recursively (default is false)
- * @param {Handler} [handler] the handler which is called on completion.
- * @returns {FileSystem}
+ * @param {ResultHandler} handler the handler which is called on completion.
+ * @returns {module:vertx/file_system}
  */
 fileSystem.copy = function(from, to, arg2, arg3) {
   var handler;
@@ -103,7 +115,7 @@ fileSystem.copy = function(from, to, arg2, arg3) {
  * @param {string} from the path of the file to copy
  * @param {string} to the path to copy the file to
  * @param {boolean} recursive copy recursively (default is false)
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.copySync = function(from, to, recursive) {
   if (!recursive) recursive = false;
@@ -117,8 +129,8 @@ fileSystem.copySync = function(from, to, recursive) {
  *
  * @param {string} from the path of file to move
  * @param {string} to the path to move the file to
- * @param {Handler} [handler] the function to call when complete
- * @returns {FileSystem}
+ * @param {ResultHandler} handler the function to call when complete
+ * @returns {module:vertx/file_system}
  */
 fileSystem.move = function(from, to, handler) {
   jfs.move(from, to, wrapHandler(handler));
@@ -130,7 +142,7 @@ fileSystem.move = function(from, to, handler) {
  *
  * @param {string} from the path of file to move
  * @param {string} to the path to move the file to
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.moveSync = function(from, to) {
   jfs.moveSync(from, to);
@@ -142,8 +154,8 @@ fileSystem.moveSync = function(from, to) {
  *
  * @param {string} path Path of file to truncate
  * @param {number} len Length to truncate file to. Will fail if len < 0. If len > file size then will do nothing.
- * @param {Handler} handler the function to call when complete
- * @returns {FileSystem}
+ * @param {ResultHandler} handler the function to call when complete
+ * @returns {module:vertx/file_system}
  */
 fileSystem.truncate = function(path, len, handler) {
   jfs.truncate(path, len, wrapHandler(handler));
@@ -155,7 +167,7 @@ fileSystem.truncate = function(path, len, handler) {
  *
  * @param {string} path Path of file to truncate
  * @param {number} len Length to truncate file to. Will fail if len < 0. If len > file size then will do nothing.
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.truncateSync = function(path, len) {
   jfs.truncateSync(path, len);
@@ -171,9 +183,9 @@ fileSystem.truncateSync = function(path, len) {
  * in http://download.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFilePermissions.html.
  * This is used to set the permissions for any regular files (not directories).
  * @param {string} [dir_perms] similar to <code>perms</code> above, but refers only to directories.
- * @param {Handler} [handler] The handler to call when the operation has completed
+ * @param {ResultHandler} handler The handler to call when the operation has completed
  *
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.chmod = function(path, perms, arg2, arg3) {
   var handler;
@@ -197,7 +209,7 @@ fileSystem.chmod = function(path, perms, arg2, arg3) {
  * in http://download.oracle.com/javase/7/docs/api/java/nio/file/attribute/PosixFilePermissions.html.
  * This is used to set the permissions for any regular files (not directories).
  * @param {string} [dir_perms] similar to <code>perms</code> above, but refers only to directories.
- * @return {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.chmodSync = function(path, perms, dirPerms) {
   if (!dirPerms) dirPerms = null;
@@ -209,8 +221,8 @@ fileSystem.chmodSync = function(path, perms, dirPerms) {
  * Get file properties for a file, asynchronously.
  *
  * @param {string} path path to file
- * @param {Handler} [handler] the function to call when complete
- * @returns {FileSystem}
+ * @param {ResultHandler} handler the function to call when complete
+ * @returns {module:vertx/file_system}
  */
 fileSystem.props = function(path, handler) {
   jfs.props(path, wrapPropsHandler(handler));
@@ -232,8 +244,8 @@ fileSystem.propsSync = function(path) {
  * The link will not be followed.
  *
  * @param {string} path path to file
- * @param {Handler} handler the function to call when complete
- * @returns {FileSystem}
+ * @param {ResultHandler} handler the function to call when complete
+ * @returns {module:vertx/file_system}
  */
 fileSystem.lprops = function(path, handler) {
   jfs.lprops(path, wrapPropsHandler(handler));
@@ -256,8 +268,8 @@ fileSystem.lpropsSync = function(path) {
  *
  * @param {string} link path of the link to create.
  * @param {string} existing path of where the link points to.
- * @param {Handler} handler the function to call when complete
- * @returns {FileSystem}
+ * @param {ResultHandler} handler the function to call when complete
+ * @returns {module:vertx/file_system}
  */
 fileSystem.link = function(link, existing, handler) {
   jfs.link(link, existing, wrapHandler(handler));
@@ -268,7 +280,7 @@ fileSystem.link = function(link, existing, handler) {
  * Synchronous version of link.
  * @param {string} link path of the link to create.
  * @param {string} existing path of where the link points to.
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.linkSync = function(link, existing) {
   jfs.linkSync(link, existing);
@@ -280,8 +292,8 @@ fileSystem.linkSync = function(link, existing) {
  *
  * @param {string} link Path of the link to create.
  * @param {string} existing Path of where the link points to.
- * @param {Handler} handler the function to call when complete
- * @returns {FileSystem}
+ * @param {ResultHandler} handler the function to call when complete
+ * @returns {module:vertx/file_system}
  */
 fileSystem.symlink = function(link, existing, handler) {
   jfs.symlink(link, existing, wrapHandler(handler));
@@ -292,7 +304,7 @@ fileSystem.symlink = function(link, existing, handler) {
  * Synchronous version of symlink.
  * @param {string} link Path of the link to create.
  * @param {string} existing Path of where the link points to.
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.symlinkSync = function(link, existing) {
   jfs.symlinkSync(link, existing);
@@ -303,8 +315,8 @@ fileSystem.symlinkSync = function(link, existing) {
  * Unlink a hard link.
  *
  * @param {string} link path of the link to unlink.
- * @param {Handler} handler the handler to notify on completion.
- * @returns {FileSystem}
+ * @param {ResultHandler} handler the handler to notify on completion.
+ * @returns {module:vertx/file_system}
  */
 fileSystem.unlink = function(link, handler) {
   jfs.unlink(link, wrapHandler(handler));
@@ -315,7 +327,7 @@ fileSystem.unlink = function(link, handler) {
  * Synchronous version of unlink.
  *
  * @param {string} link path of the link to unlink.
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.unlinkSync = function(link) {
   jfs.unlinkSync(link);
@@ -326,10 +338,10 @@ fileSystem.unlinkSync = function(link) {
  * Read a symbolic link, asynchronously. I.e. tells you where the symbolic link points.
  *
  * @param {string} link path of the link to read.
- * @param {Handler} handler the function to call when complete, the function will be 
+ * @param {ResultHandler} handler the function to call when complete, the function will be 
  *        called with a string representing the path of the file that the <code>link</code>
  *        symlink is linked to.
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.readSymlink = function(link, handler) {
   jfs.readSymlink(link, wrapHandler(handler));
@@ -352,8 +364,8 @@ fileSystem.readSymlinkSync = function(link) {
  *
  * @param {string} path path of the file to delete.
  * @param {boolean} [recursive] recurse into subdirectories (default: false)
- * @param {Handler} [handler] The handler to call when complete
- * @returns {FileSystem}
+ * @param {ResultHandler} handler The handler to call when complete
+ * @returns {module:vertx/file_system}
  */
 fileSystem.delete = function(path, arg1, arg2) {
   var handler;
@@ -374,7 +386,7 @@ fileSystem.delete = function(path, arg1, arg2) {
  *
  * @param {string} path path of the file to delete.
  * @param {boolean} [recursive] recurse into subdirectories (default: false)
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.deleteSync = function(path, recursive) {
   if (!recursive) recursive = false;
@@ -390,8 +402,8 @@ fileSystem.deleteSync = function(path, recursive) {
  * @param {string} path path of the directory to create.
  * @param {boolean} [createParents] create parent directories if necesssary (default is false)
  * @param {string} [permString] the permissions of the directory being created
- * @param {Handler} [handler] the function to call when complete
- * @returns {FileSystem}
+ * @param {ResultHandler} handler the function to call when complete
+ * @returns {module:vertx/file_system}
  */
 fileSystem.mkDir = function(path, arg1, arg2, arg3) {
   var createParents;
@@ -431,7 +443,7 @@ fileSystem.mkDir = function(path, arg1, arg2, arg3) {
  * @param {string} path path of the directory to create.
  * @param {boolean} [createParents] create parent directories if necesssary (default is false)
  * @param {string} [permString] the permissions of the directory being created
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.mkDirSync = function(path, arg1, arg2) {
   var createParents;
@@ -463,9 +475,9 @@ fileSystem.mkDirSync = function(path, arg1, arg2) {
  * @param {string} path path of the directory to read.
  * @param {string} [filter] a regular expression. If supplied, only paths that match
  *        <code>filter</code> will be passed to the <code>handler</code>.
- * @param {Handler} [handler] the handler to call when complete. The handler will be
+ * @param {ResultHandler} handler the handler to call when complete. The handler will be
  *        passed an array of strings each representing a matched path name.
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.readDir = function(path, arg1, arg2) {
   var filter;
@@ -498,9 +510,9 @@ fileSystem.readDirSync = function(path, filter) {
  * Read the contents of the entire file.
  *
  * @param {string} path path of the file to read.
- * @param {Handler} handler the function to call when complete. The handler function
+ * @param {ResultHandler} handler the function to call when complete. The handler function
  *        will receive a Buffer containing the contents of the file.
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.readFile = function(path, handler) {
   jfs.readFile(path, wrapHandler(handler));
@@ -522,8 +534,8 @@ fileSystem.readFileSync = function(path) {
  *
  * @param {string} path path of the file to write.
  * @param {string|Buffer} data the data to write
- * @param {Handler} [handler] the function to call when complete
- * @returns {FileSystem}
+ * @param {ResultHandler} handler the function to call when complete
+ * @returns {module:vertx/file_system}
  */
 fileSystem.writeFile = function(path, data, handler) {
   if (typeof data === 'string') {
@@ -538,7 +550,7 @@ fileSystem.writeFile = function(path, data, handler) {
  *
  * @param {string} path path of the file to write.
  * @param {string|Buffer} data the data to write
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.writeFileSync = function(path, data) {
   if (typeof data === 'string') {
@@ -626,9 +638,9 @@ fileSystem.openSync = function(path, arg1, arg2, arg3) {
  * @param {boolean} [flush] flush file writes immediately (default is false)
  * @param {string} [permissions] the permissions to create the file with if the
  *        file is created when opened.
- * @param {Handler} handler the function to be called when the file is opened. The 
+ * @param {ResultHandler} handler the function to be called when the file is opened. The 
  *        handler will receieve an AsyncFile as a parameter when called.
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.open = function(path, arg1, arg2, arg3, arg4) {
 
@@ -706,7 +718,7 @@ fileSystem.AsyncFile = function(jaf) {
 
   /**
    * Close the file asynchronously
-   * @param {Handler} [handler] the handler to be called when the operation completes
+   * @param {ResultHandler} handler the handler to be called when the operation completes
    */
   this.close = function(handler) {
     if (handler) {
@@ -720,8 +732,8 @@ fileSystem.AsyncFile = function(jaf) {
    * Write to the file asynchronously
    * @param {Buffer|string} buffer the data to write
    * @param {number} position the byte position from which to start writing
-   * @param {Handler} handler the handler to call when the write has completed
-   * @returns {FileSystem}
+   * @param {ResultHandler} handler the handler to call when the write has completed
+   * @returns {module:vertx/file_system}
    */
   this.write = function(buffer, position, handler) {
     jaf.write(buffer, position, wrapHandler(handler));
@@ -734,7 +746,7 @@ fileSystem.AsyncFile = function(jaf) {
    * @param {number} offset The offset point in the Buffer from which to start writing
    * @param {number} position The position in the file from which to begin reading
    * @param {number} length the number of bytes to read
-   * @param {Handler} handler the handler to call when close() has been completed and will
+   * @param {ResultHandler} handler the handler to call when close() has been completed and will
    *        be provided the filled Buffer as a parameter
    */
   this.read = function(buffer, offset, position, length, handler) {
@@ -744,7 +756,7 @@ fileSystem.AsyncFile = function(jaf) {
 
   /**
    * Flush any writes made to this file to persistent storage.
-   * @param {Handler} [handler] The handler to be called when the flush has completed
+   * @param {ResultHandler} handler The handler to be called when the flush has completed
    */
   this.flush = function(handler) {
     if (handler) {
@@ -761,8 +773,8 @@ fileSystem.AsyncFile = function(jaf) {
  * Create a new empty file, asynchronously.
  *
  * @param {string} path path of the file to create.
- * @param {Handler} handler the function to call when complete
- * @returns {FileSystem}
+ * @param {ResultHandler} handler the function to call when complete
+ * @returns {module:vertx/file_system}
  */
 fileSystem.createFile = function(path, handler) {
   jfs.createFile(path, wrapHandler(handler));
@@ -773,7 +785,7 @@ fileSystem.createFile = function(path, handler) {
  * Synchronous version of createFile.
  *
  * @param {string} path path of the file to create.
- * @returns {FileSystem}
+ * @returns {module:vertx/file_system}
  */
 fileSystem.createFileSync = function(path) {
   jfs.createFileSync(path);
@@ -784,8 +796,8 @@ fileSystem.createFileSync = function(path) {
  * Check if a file exists, asynchronously.
  *
  * @param {string} path Path of the file to check.
- * @param {Handler} handler the function to call when complete
- * @returns {FileSystem}
+ * @param {ResultHandler} handler the function to call when complete
+ * @returns {module:vertx/file_system}
  */
 fileSystem.exists = function(path, handler) {
   jfs.exists(path, wrapHandler(handler));
@@ -814,8 +826,8 @@ fileSystem.existsSync = function(path) {
  * <code>path</code> specified.
  *
  * @param {string} path the path in the file system.
- * @param {Handler} handler the function to call with the FileSystemProps when complete
- * @returns {FileSystem}
+ * @param {ResultHandler} handler the function to call with the FileSystemProps when complete
+ * @returns {module:vertx/file_system}
  */
 fileSystem.fsProps = function(path, handler) {
   jfs.fsProps(path, wrapHandler(handler));

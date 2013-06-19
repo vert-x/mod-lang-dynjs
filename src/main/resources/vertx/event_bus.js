@@ -18,6 +18,34 @@ if (typeof module === 'undefined') {
   throw "Use require() to load Vert.x API modules"
 }
 
+/**
+ * Message handlers receive event_bus messages as JSON.
+ * @see module:vertx/event_bus
+ * @typedef {JSON} JsonMessage
+ */
+
+/**
+ * While JSON is the preferred messaging on the event bus,
+ * you can send any basic type as a message, for example,
+ * <code>string</code>, <code>boolean</code>, etc. can all be passed
+ * directly into {@linkcode module:vertx/event_bus.send}. You may also
+ * send {@linkcode module:vertx/buffer~Buffer}s and plain old 
+ * Javascript objects. Objects will be converted to <code>JSON</code>
+ * before being placed on the bus.
+ * @see module:vertx/event_bus
+ * @typedef {string|boolean|number|{}|module:vertx/buffer~Buffer} Message
+ */
+
+/**
+ * A <code>MessageHandler</code> is a {@linkcode Handler} that responds to
+ * messages on the {@linkcode module:vertx/event_bus} module. <code>MessageHandler</code>s
+ * are called with a {@linkcode JsonMessage} object as the parameter.
+ *
+ * @see module:vertx/event_bus.registerHandler
+ * @typedef {function} MessageHandler
+ * @param {JsonMessage} message The JSON message
+ */
+
 
 /**
  * <p>Represents a distributed lightweight event bus which can encompass
@@ -71,7 +99,7 @@ var jEventBus = __jvertx.eventBus();
  * @param {string} address the address to register for. Any messages sent to
  * that address will be received by the handler. A single handler can be
  * registered against many addresses.
- * @param {Handler} handler The handler
+ * @param {MessageHandler} handler The handler
  *
  * @returns {module:vertx/event_bus} The event bus
  */
@@ -86,7 +114,7 @@ eventBus.registerLocalHandler = function(address, handler) {
  * @param {string} address the address to register for. Any messages sent to
  * that address will be received by the handler. A single handler can be
  * registered against many addresses.
- * @param {Handler} handler The handler
+ * @param {MessageHandler} handler The handler
  *
  * @returns {module:vertx/event_bus} the event bus
  */
@@ -99,7 +127,7 @@ eventBus.registerHandler = function(address, handler) {
  * Unregisters a handler.
  *
  * @param {string} address The address the handler is registered to
- * @param {Handler} handler The handler to unregister
+ * @param {MessageHandler} handler The handler to unregister
  * @returns {module:vertx/event_bus} the event bus
  */
 eventBus.unregisterHandler = function(address, handler) {
@@ -117,8 +145,8 @@ eventBus.unregisterHandler = function(address, handler) {
  * Message should be a JSON object It should have a property "address"
  *
  * @param {string} address The address to send the message to
- * @param {string|module:vertx.Buffer} message The message to send
- * @param {Handler} [replyHandler] called when the message receives a reply
+ * @param {Message} message The message to send
+ * @param {MessageHandler} [replyHandler] called when the message receives a reply
  * @returns {module:vertx/event_bus}
  */
 eventBus.send = function(address, message, replyHandler) {
@@ -131,7 +159,7 @@ eventBus.send = function(address, message, replyHandler) {
  * Message should be a JSON object It should have a property "address".
  *
  * @param {string} address The address to send the message to
- * @param {string|module:vertx.Buffer} message The message to send
+ * @param {Message} message The message to send
  * @returns {module:vertx/event_bus}
  */
 eventBus.publish = function(address, message) {
