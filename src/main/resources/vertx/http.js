@@ -433,11 +433,6 @@ function wrappedRequestHandler(handler) {
 }
 
 /**
- * The underlying Java representation of an HTTP file upload
- * @external org.vertx.java.core.http.HttpServerFileUpload
- */
-
-/**
  * Represents an upload from an HTML form. Created internally and provided to upload
  * handlers. Instances of this class should not be created externally.
  *
@@ -517,11 +512,6 @@ function wrapUploadHandler(handler) {
     handler(new http.HttpServerFileUpload(jupload));
   }
 }
-
-/**
- * The WebSocket interface conforms to the underlying Java interface
- * @external org.vertx.java.core.http.WebSocket
- */
 
 /**
  * <p>Represents an HTML 5 Websocket</p>

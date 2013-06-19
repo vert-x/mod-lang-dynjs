@@ -1,9 +1,4 @@
 /**
- * The underlying Java representation of a {@linkcode module:vertx/multi_map~MultiMap|MultiMap}
- * @external org.vertx.java.core.MultiMap
- */
-
-/**
  * A <code>MultiMap</code> is a type of Map object that can store more
  * than one value for a given key. This is useful for storing and passing
  * around things like HTTP headers where a single header can have multiple

@@ -17,10 +17,6 @@
 if (typeof module === 'undefined') {
   throw "Use require() to load Vert.x API modules"
 }
-/**
- * The underlying Java representation of a {module:vertx/net.NetSocket|NetSocket}
- * @external org.vertx.java.core.net.NetSocket
- */
 
 var net = {};
 

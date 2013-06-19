@@ -27,11 +27,6 @@ if (typeof module === 'undefined') {
  * var Buffer = require('vertx/buffer');
  * var buff   = new Buffer('Hello!'); // this is actually a java thing
  *
- * @external org.vertx.java.core.buffer.Buffer
- */
-
-/**
- *
  * Most data in vert.x is shuffled around using buffers.
  *
  * A Buffer represents a sequence of zero or more bytes that can be written to
