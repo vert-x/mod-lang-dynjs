@@ -20,8 +20,8 @@ var vassert = vertxTest.vassert;
 
 var tu = require('test_utils');
 
-var server = vertx.createHttpServer();
-var client = vertx.createHttpClient();
+var server = vertx.http.createHttpServer();
+var client = vertx.http.createHttpClient();
 client.port(8080);
 
 

@@ -3,8 +3,8 @@ var vertxTest = require('vertx_tests');
 var vassert = vertxTest.vassert;
 
 var port = 9090
-var server = vertx.createHttpServer();
-var client = vertx.createHttpClient().port(port);
+var server = vertx.http.createHttpServer();
+var client = vertx.http.createHttpClient().port(port);
 
 function testHttpCONNECT() {
   server.requestHandler(function(request) {

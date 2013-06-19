@@ -42,14 +42,6 @@ if (typeof module === 'undefined') {
  */
 var vertx = {};
 
-function addProps(obj) {
-  for (var key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      vertx[key] = obj[key];
-    }
-  }
-}
-
 /** 
  * The vert.x Buffer class. 
  * @see module:vertx/buffer~Buffer
@@ -72,7 +64,7 @@ vertx.net = require('vertx/net');
  * The vert.x http module
  * @see module:vertx/http
  */
-vertx.net = require('vertx/http');
+vertx.http = require('vertx/http');
 
 /**
  * The vert.x stream pump.

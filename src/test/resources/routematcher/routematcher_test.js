@@ -18,11 +18,11 @@ var vertx = require('vertx');
 var vertxTest = require('vertx_tests');
 var vassert = vertxTest.vassert;
 
-var server = vertx.createHttpServer();
-var rm = new vertx.RouteMatcher();
+var server = vertx.http.createHttpServer();
+var rm = new vertx.http.RouteMatcher();
 server.requestHandler(rm);
 
-var client = vertx.createHttpClient().port(9999);
+var client = vertx.http.createHttpClient().port(9999);
 
 var params = { "name" : "foo", "version" : "v0.1"};
 var re_params = { "param0" : "foo", "param1" :"v0.1"};

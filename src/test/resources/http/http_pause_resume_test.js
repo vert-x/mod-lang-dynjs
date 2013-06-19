@@ -22,9 +22,8 @@ var vassert = vertxTest.vassert;
 var tu = require('test_utils');
 
 var port = 9090
-var server = vertx.createHttpServer();
-var client = vertx.createHttpClient().setPort(port);
-var logger = vertx.logger;
+var server = vertx.http.createHttpServer();
+var client = vertx.http.createHttpClient().setPort(port);
 
 function deferredTestPauseAndResume() {
   var expectedServer = 'Request Body from Client';

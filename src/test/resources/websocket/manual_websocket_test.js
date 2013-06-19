@@ -24,8 +24,8 @@ var vertxTest = require("vertx_tests");
 var vassert = vertxTest.vassert;
 
 // test objects
-var server = vertx.createHttpServer();
-var client = vertx.createHttpClient();
+var server = vertx.http.createHttpServer();
+var client = vertx.http.createHttpClient();
 client.port(8080);
 
 function testManualWebSockets() {
