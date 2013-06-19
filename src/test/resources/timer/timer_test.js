@@ -20,7 +20,7 @@ var vassert = vertxTest.vassert;
 
 function testOneOff() {
   var count = 0;
-  var id = vertx.setTimer(1000, function(timer_id) {
+  var id = vertx.timer.setTimer(1000, function(timer_id) {
     vassert.assertTrue(id === timer_id);
     vassert.assertTrue(count === 0);
     count++;
@@ -32,11 +32,11 @@ function testPeriodic() {
   var numFires = 10;
   var delay = 100;
   var count = 0;
-  var id = vertx.setPeriodic(delay, function(timer_id) {
+  var id = vertx.timer.setPeriodic(delay, function(timer_id) {
     vassert.assertTrue(id === timer_id);
     count++;
     if (count === numFires) {
-      vertx.cancelTimer(timer_id);
+      vertx.timer.cancelTimer(timer_id);
       setEndTimer();
     }
     if (count > numFires) {
@@ -52,7 +52,7 @@ function testRunOnContext() {
 }
 
 function setEndTimer() {
-  vertx.setTimer(10, function() {
+  vertx.timer.setTimer(10, function() {
     vassert.testComplete();
   })
 }

@@ -21,9 +21,8 @@ var vassert = vertxTest.vassert;
 var tu = require('test_utils');
 
 var port = 9090
-var server = vertx.createHttpServer();
-var client = vertx.createHttpClient().port(port);
-var logger = vertx.logger;
+var server = vertx.http.createHttpServer();
+var client = vertx.http.createHttpClient().port(port);
 
 // This is just a basic test. Most testing occurs in the Java tests
 

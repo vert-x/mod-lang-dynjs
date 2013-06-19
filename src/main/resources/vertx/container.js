@@ -17,6 +17,12 @@
 if (typeof module === 'undefined') {
   throw "Use require() to load Vert.x API modules"
 }
+/** 
+ * A DeploymentId is used to identify a specific verticle deployment.
+ * @see module:vertx/container
+ * @typedef {string} DeploymentId 
+ * */
+
 
 /**
  * The vert.x container. The container handles deploying and undeploying

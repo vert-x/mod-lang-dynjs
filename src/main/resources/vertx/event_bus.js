@@ -73,7 +73,7 @@ var jEventBus = __jvertx.eventBus();
  * registered against many addresses.
  * @param {Handler} handler The handler
  *
- * @returns {EventBus} The event bus
+ * @returns {module:vertx/event_bus} The event bus
  */
 eventBus.registerLocalHandler = function(address, handler) {
   registerHandler(address, handler, true);
@@ -88,7 +88,7 @@ eventBus.registerLocalHandler = function(address, handler) {
  * registered against many addresses.
  * @param {Handler} handler The handler
  *
- * @returns {EventBus} the event bus
+ * @returns {module:vertx/event_bus} the event bus
  */
 eventBus.registerHandler = function(address, handler) {
   registerHandler(address, handler, false);
@@ -100,7 +100,7 @@ eventBus.registerHandler = function(address, handler) {
  *
  * @param {string} address The address the handler is registered to
  * @param {Handler} handler The handler to unregister
- * @returns {EventBus} the event bus
+ * @returns {module:vertx/event_bus} the event bus
  */
 eventBus.unregisterHandler = function(address, handler) {
   checkHandlerParams(address, handler);
@@ -119,7 +119,7 @@ eventBus.unregisterHandler = function(address, handler) {
  * @param {string} address The address to send the message to
  * @param {string|module:vertx.Buffer} message The message to send
  * @param {Handler} [replyHandler] called when the message receives a reply
- * @returns {EventBus}
+ * @returns {module:vertx/event_bus}
  */
 eventBus.send = function(address, message, replyHandler) {
   sendOrPub(true, address, message, replyHandler);
@@ -132,7 +132,7 @@ eventBus.send = function(address, message, replyHandler) {
  *
  * @param {string} address The address to send the message to
  * @param {string|module:vertx.Buffer} message The message to send
- * @returns {EventBus}
+ * @returns {module:vertx/event_bus}
  */
 eventBus.publish = function(address, message) {
   sendOrPub(false, address, message);

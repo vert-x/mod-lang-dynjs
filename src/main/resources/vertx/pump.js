@@ -20,13 +20,15 @@ if (typeof module === 'undefined') {
 
 /** 
  * <p>
- * Pumps data from a ReadStream to a WriteStream and performs flow control
+ * Pumps data from a {@linkcode readStream~ReadStream|ReadStream} to a 
+ * {@linkcode writeStream~WriteStream|WriteStream} and performs flow control
  * where necessary to prevent the write stream from getting overloaded.
  * </p>
  * <p>
- * Instances of this class read bytes from a ReadStream and write them to a
- * WriteStream. If data can be read faster than it can be written this could
- * result in the write queue of the WriteStream growing without bound, eventually
+ * Instances of this class read bytes from a {@linkcode readStream~ReadStream|ReadStream}
+ * and write them to a {@linkcode writeStream~WriteStream|WriteStream}. If data
+ * can be read faster than it can be written this could result in the write
+ * queue of the WriteStream growing without bound, eventually
  * causing it to exhaust all available RAM.
  * </p>
  * <p>

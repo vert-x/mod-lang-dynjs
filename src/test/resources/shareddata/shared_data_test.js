@@ -20,12 +20,12 @@ var vassert = vertxTest.vassert;
 
 
 function testMap() {
-  var map1 = vertx.getMap("foo");
+  var map1 = vertx.sharedData.getMap("foo");
   vassert.assertTrue(typeof map1 != undefined);
-  var map2 = vertx.getMap("foo");
+  var map2 = vertx.sharedData.getMap("foo");
   vassert.assertTrue(typeof map2 != undefined);
   vassert.assertTrue(map1 === map2);
-  var map3 = vertx.getMap("bar");
+  var map3 = vertx.sharedData.getMap("bar");
   vassert.assertTrue(typeof map3 != undefined);
   vassert.assertTrue(map3 != map2);
 
@@ -63,12 +63,12 @@ function testMap() {
 
 function testSet() {
 
-  var set1 = vertx.getSet("foo");
+  var set1 = vertx.sharedData.getSet("foo");
   vassert.assertTrue(typeof set1 != undefined);
-  var set2 = vertx.getSet("foo");
+  var set2 = vertx.sharedData.getSet("foo");
   vassert.assertTrue(typeof set2 != undefined);
   vassert.assertTrue(set1 === set2);
-  var set3 = vertx.getMap("bar");
+  var set3 = vertx.sharedData.getMap("bar");
   vassert.assertTrue(typeof set3 != undefined);
   vassert.assertTrue(set3 != set2);
 

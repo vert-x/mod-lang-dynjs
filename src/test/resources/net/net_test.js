@@ -19,7 +19,7 @@ var vertxTest = require('vertx_tests');
 var vassert = vertxTest.vassert;
 
 function testConnect() {
-  var server = vertx.createNetServer();
+  var server = vertx.net.createNetServer();
 
   server.connectHandler(function(sock) {
     vassert.assertTrue(sock.localAddress().ipaddress != null)
@@ -34,7 +34,7 @@ function testConnect() {
   server.listen(1234, 'localhost', function(err, server) {
     vassert.assertTrue(err === null);
 
-    client = vertx.createNetClient();
+    client = vertx.net.createNetClient();
     client.connect(1234, 'localhost', function(err, sock) {
       vassert.assertTrue(err === null);
       vassert.assertTrue(sock != null);
@@ -55,7 +55,7 @@ function testConnect() {
 }
 
 function testNoConnect() {
-  client = vertx.createNetClient();
+  client = vertx.net.createNetClient();
   client.connect(1234, 'not-exists', function(err, sock) {
     vassert.assertTrue(err != null);
     vassert.testComplete();

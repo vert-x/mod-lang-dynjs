@@ -50,33 +50,61 @@ function addProps(obj) {
   }
 }
 
-   
 /** 
  * The vert.x Buffer class. 
- * See the {@linkcode module:vertx/buffer|vertx/buffer} module.
+ * @see module:vertx/buffer~Buffer
  * */
 vertx.Buffer = require('vertx/buffer');
 
 /**
  * The vert.x distributed event bus.
- * See the {@linkcode module:vertx/event_bus|vertx/event_bus} module.
+ * @see module:vertx/event_bus
  */
 vertx.eventBus = require('vertx/event_bus');
-addProps(require('vertx/net'));
-addProps(require('vertx/http'));
+
+/**
+ * The vert.x net module
+ * @see module:vertx/net
+ */
+vertx.net = require('vertx/net');
+
+/**
+ * The vert.x http module
+ * @see module:vertx/http
+ */
+vertx.net = require('vertx/http');
+
+/**
+ * The vert.x stream pump.
+ * @see module:vertx/pump~Pump
+ */
 vertx.Pump = require('vertx/pump');
 
-// See if this fixes the intermittent 
-// build failures with vertx.setTimer
-var Timers = require('vertx/timer');
-vertx.setTimer     = Timers.setTimer;
-vertx.setPeriodic  = Timers.setPeriodic;
-vertx.cancelTimer  = Timers.cancelTimer;
-vertx.runOnContext = Timers.runOnContext;
+/**
+ * The vert.x timer module
+ * @see module:vertx/timer
+ */
+vertx.timer = require('vertx/timer');
 
-addProps(require('vertx/sockjs'));
-addProps(require('vertx/parse_tools'));
-addProps(require('vertx/shared_data'));
+// TODO: Document and test this
+vertx.sockJS = require('vertx/sockjs');
+
+/**
+ * The vert.x parseTools module
+ * @see module:vertx/parse_tools
+ */
+vertx.parseTools = require('vertx/parse_tools');
+
+/**
+ * The vert.x sharedData module
+ * @see module:vertx/shared_data
+ */
+vertx.sharedData = require('vertx/shared_data');
+
+/**
+ * The vert.x fileSystem module
+ * @see module:vertx/file_system
+ */
 vertx.fileSystem = require('vertx/file_system');
 
 /**
@@ -96,17 +124,23 @@ vertx.currentContext = function() {
 module.exports = vertx;
 
 // JSDoc @typedef declarations go here. This is primarily a documentation
-// convenience.  Typically a @typedef will just be a reference to a module or a
-// type within a module.
+// convenience that allows us to document named types for things that don't
+// really have names in this API, e.g. a RequestHandler
 
 /**
- * Vert.x makes heavy use of callback handlers in the API. A callback
- * handler simply a function that is called when events are fired.
- * If there is an error, the first parameter passed to the function
- * will indicate the cause. If not, the handler will be called with
- * the result specified. Handlers are registered with specific components
- * to enable notification and action based on events defined by those
- * components.
+ * Vert.x makes heavy use of callback handlers in the API. A basic handler is
+ * simply a function that is called when vert.x events are fired, and expects
+ * no parameters.
+ *
+ * @see module:vertx.runOnContext
+ * @typedef {function} Handler
+ */
+
+/**
+ * A <code>RequestHandler</code> is a {@linkcode Handler} that responds to
+ * notifications from objects in the <code>vertx/http</code> module and expects
+ * an {@linkcode module:vertx/http.HttpServerRequest|HttpServerRequest} object
+ * as it's parameter.
  *
  * @example
  * var http = require('vertx/http');
@@ -117,73 +151,8 @@ module.exports = vertx;
  *   // request event on our server
  * } );
  *
- * @typedef {function} Handler
+ * @see module:vertx/http.HttpServer#requestHandler
+ * @typedef {function} RequestHandler
+ * @param {module:vertx/http.HttpServerRequest} request The incoming HTTP request
  */
-
-/**
- * The vert.x Buffer type is defined in the 
- * {@linkcode module:vertx/buffer|vertx/buffer} module
- * @typedef {module:vertx/buffer~Buffer} Buffer
- */
-
-/** 
- * A DeploymentId is used to identify a specific verticle deployment.
- * See the {@linkcode module:vertx/container|vertx/container} module.
- * @typedef {string} DeploymentId 
- * */
-
-/** 
- * The EventBus is a distributed lightweight messaging bus. 
- * See the {@linkcode module:vertx/event_bus|vertx/event_bus} module.
- * @typedef {module:vertx/event_bus} EventBus 
- * */
-
-/**
- * The vert.x FileSystem object contains a broad set of operations for manipulating files.
- * An asynchronous and a synchronous version of each operation is provided.
- * The asynchronous versions take a handler as a final argument which is
- * called when the operation completes or an error occurs. The handler is called
- * with two arguments; the first an exception, this will be nil if the operation has
- * succeeded. The second is the result - this will be nil if the operation failed or
- * there was no result to return.
- * The synchronous versions return the results, or throw exceptions directly.
- * @typedef {module:vertx/file_system} FileSystem
- */
-
-/** 
- * Pumps data from a ReadStream to a WriteStream and performs flow control
- * where necessary to prevent the write stream from getting overloaded.
- * @typedef {module:vertx/pump~Pump} Pump 
- * */
-
-/**
- * A file on the file system that supports asynchronous operations.
- * @typedef {module:vertx/file_system.AsyncFile} AsyncFile 
- */
-
-/**
- * Represents a map that can have multiple values for a given key.
- * @typedef {module:vertx/multi_map~MultiMap} MultiMap
- */
-
-/**
- * Represents a server-side HTTP request
- * @typedef {module:vertx/http.HttpServerRequest} HttpServerRequest
- */
-
-/**
- * Represents a server-side HTTP response
- * @typedef {module:vertx/http.HttpServerResponse} HttpServerResponse
- */
-
-/**
- * Represents a WebSocket object
- * @typedef {module:vertx/http.WebSocket} WebSocket
- */
-
-/** 
- * A TimerId is just a number that identifies a given timer.
- * See the {@linkcode module:vertx/timer|vertx/timer} module.
- * @typedef {number} TimerId 
- * */
 

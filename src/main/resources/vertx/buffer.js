@@ -19,9 +19,16 @@ if (typeof module === 'undefined') {
 }
 
 /**
- * The Java vert.x Buffer object is used directly in JavaScript. An instance
- * of this is returned when requiring a 'vertx/buffer' and using the new
- * keyword
+ * @see https://github.com/vert-x/vert.x/blob/master/vertx-core/src/main/java/org/vertx/java/core/buffer/Buffer.java
+ * @external org.vertx.java.core.buffer.Buffer
+ */
+
+/**
+ * The Javascript API exposes Java <code>org.vertx.java.core.buffer.Buffer</code> 
+ * instances directly to Javascript.  See the Java documentation for
+ * information on the public API.
+ *
+ * @see https://github.com/vert-x/vert.x/blob/master/vertx-core/src/main/java/org/vertx/java/core/buffer/Buffer.java
  *
  * @example
  * var Buffer = require('vertx/buffer');

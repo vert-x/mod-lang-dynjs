@@ -17,6 +17,12 @@
 if (typeof module === 'undefined') {
   throw "Use require() to load Vert.x API modules"
 }
+/** 
+ * A TimerId is just a number that identifies a given timer.
+ * @see module:vertx/timer
+ * @typedef {number} TimerId 
+ * */
+
 
 /**
  * @exports vertx/timer

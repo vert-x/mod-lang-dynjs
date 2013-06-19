@@ -161,7 +161,7 @@ http.HttpServerRequest = function(jreq) {
   /**
    * Get the address of the remote peer as a Java InetSocketAddress object
    *
-   * @return {java.net.InetSocketAddress}
+   * @return {java.net.InetSocketAddress} the underlying Java socket address instance
    */
   this.remoteAddress = function() {
     return jreq.remoteAddress();
@@ -643,6 +643,108 @@ function wrapWebsocketHandler(server, handler) {
   }
 }
 
+
+/**
+ * An HTTP and websockets server. Created by calling 
+ * {@linkcode module:vertx/http.createHttpServer|createHttpServer}
+ *
+ * @class
+ */
+http.HttpServer = function() {
+  var that = this;
+  var jserver = __jvertx.createHttpServer();
+
+  /**
+   * Set the request handler for the server. As HTTP requests are received by
+   * the server, instances of 
+   * {@linkcode module:vertx/http.HttpServerRequest|HttpServerRequest} will be created
+   * and passed to this handler.
+   *
+   * @param {RequestHandler} handler the function used to handle the request.
+   * @return {module:vertx/http.HttpServer}
+   */
+  this.requestHandler = function(handler) {
+    if (handler) {
+      if (typeof handler === 'function') {
+        handler = wrappedRequestHandler(handler);
+      } else {
+        // It's a route matcher
+        handler = handler._to_java_handler();
+      }
+      jserver.requestHandler(handler);
+    }
+    return that;
+  }
+
+  /**
+   * Set the websocket handler for the server. If a websocket connect
+   * handshake is successful a new 
+   * {@linkcode module:vertx/http.WebSocket|WebSocket} instance will be created
+   * and passed to the handler.
+   * 
+   
+   * @param {Handler} handler the function used to handle the request.
+   * @return {module:vertx/http.HttpServer}
+   */
+  this.websocketHandler = function(handler) {
+    if (handler) {
+      jserver.websocketHandler(wrapWebsocketHandler(true, handler));
+    }
+    return that;
+  }
+
+  /**
+   * Close the server. If a handler is supplied, it will be called
+   * when the underlying connection has completed closing.
+   *
+   * @param {Handler} [handler] The handler to notify when close() completes
+   */
+  this.close = function(handler) {
+    if (jserver) {
+      jserver.close(handler);
+    } else {
+      jserver.close();
+    }
+  }
+
+  /**
+   * Start to listen for incoming HTTP requests
+   *
+   * @param {number} port The port to listen on
+   * @param {string} [host] The host name or IP address
+   * @param {Handler} [listenHandler] A handler to be notified when the underlying
+   *        system level listen() call has completed.
+   * @returns {module:vertx/http.HttpServer}
+   */
+  this.listen = function() {
+    var args = Array.prototype.slice.call(arguments);
+    var handler = getArgValue('function', args);
+    var host = getArgValue('string', args);
+    var port = getArgValue('number', args);
+    if (handler) {
+      handler = adaptAsyncResultHandler(handler);
+    }
+    if (host == null) {
+      host = "0.0.0.0";
+    }
+    jserver.listen(port, host, handler);
+    return that;
+  }
+
+  /**
+   * @private
+   */
+  _to_java_server: function() {
+    return jserver;
+  }
+
+  sslSupport(this, jserver);
+  serverSslSupport(this, jserver);
+  tcpSupport(this, jserver);
+  serverTcpSupport(this, jserver);
+}
+
+
 /**
  * Return a HttpServer
  *
@@ -654,107 +756,10 @@ function wrapWebsocketHandler(server, handler) {
  * server.listen(8080, 'localhost');
  *
  * @desc Create and return an HttpServer object
- * @return {HttpServer}
+ * @return {module:vertx/http.HttpServer}
  */
 http.createHttpServer = function() {
-
-  var jserver = __jvertx.createHttpServer();
-
-  /**
-   * An HTTP and websockets server. Created by calling 
-   * {@linkcode module:vertx/http.createHttpServer|createHttpServer}
-   *
-   * @namespace HttpServer
-   */
-  var server = {
-    /**
-     * Set org get the HTTP request handler for the server.
-     * As HTTP requests arrive on the server it will be passed to the handler.
-     *
-     * @param handler the function used to handle the request.
-     * @return {HttpServer}
-     * @memberof HttpServer
-     * @instance
-     */
-    requestHandler: function(handler) {
-      if (handler) {
-        if (typeof handler === 'function') {
-          handler = wrappedRequestHandler(handler);
-        } else {
-          // It's a route matcher
-          handler = handler._to_java_handler();
-        }
-        jserver.requestHandler(handler);
-      }
-      return server;
-    },
-
-    /**
-     * Set org get the websocket handler for the server.
-     * As websocket requests arrive on the server it will be passed to the handler.
-     *
-     * @param handler the function used to handle the request.
-     * @return {HttpServer}
-     * @memberof HttpServer
-     * @instance
-     */
-    websocketHandler: function(handler) {
-      if (handler) {
-        jserver.websocketHandler(wrapWebsocketHandler(true, handler));
-      }
-      return server;
-    },
-
-    /**
-     * Close the server and notify the handler once it was done
-     *
-     * @param handler The handler to notify
-     * @memberof HttpServer
-     * @instance
-     */
-    close: function(handler) {
-      if (jserver) {
-        jserver.close(handler);
-      } else {
-        jserver.close();
-      }
-    },
-
-    /**
-     * Start to listen for HTTP
-     *
-     * @returns {HttpServer}
-     * @memberof HttpServer
-     * @instance
-     */
-    listen: function() {
-      var args = Array.prototype.slice.call(arguments);
-      var handler = getArgValue('function', args);
-      var host = getArgValue('string', args);
-      var port = getArgValue('number', args);
-      if (handler) {
-        handler = adaptAsyncResultHandler(handler);
-      }
-      if (host == null) {
-        host = "0.0.0.0";
-      }
-      jserver.listen(port, host, handler);
-      return server;
-    },
-
-    /**
-     * @private
-     */
-    _to_java_server: function() {
-      return jserver;
-    }
-  };
-  sslSupport(server, jserver);
-  serverSslSupport(server, jserver);
-  tcpSupport(server, jserver);
-  serverTcpSupport(server, jserver);
-
-  return server;
+  return new http.HttpServer();
 }
 
 /**

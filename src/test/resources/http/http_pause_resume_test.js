@@ -35,7 +35,7 @@ function deferredTestPauseAndResume() {
   server.requestHandler(function(request) {
     print("PAUSING SERVER");
     request.pause();
-    vertx.setTimer(100, function() {
+    vertx.timer.setTimer(100, function() {
       print("RESUMING SERVER");
       request.resume();
       request.dataHandler(function(buffer) {
@@ -55,7 +55,7 @@ function deferredTestPauseAndResume() {
     var request = client.post('/', function(response) {
       print("PAUSING CLIENT");
       response.pause();
-      vertx.setTimer(100, function() {
+      vertx.timer.setTimer(100, function() {
         response.dataHandler(function(buffer) {
           print("CLIENT DATA RECEIVED: " + chunk);
           resultClient += buffer;
