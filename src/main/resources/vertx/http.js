@@ -469,6 +469,7 @@ http.HttpServerResponse = function(jresp) {
  *
  * @constructor
  * @param {org.vertx.java.core.http.HttpServerFileUpload} jupload the underlying java proxy object
+ * @see UploadHandler
  * @mixes readStream~ReadStream
  */
 http.HttpServerFileUpload = function(jupload) {
@@ -566,7 +567,7 @@ http.HttpServerFileUpload = function(jupload) {
  *
  * @param {org.vertx.java.core.http.WebSocketBase} jWebSocket The java WebSocketBase object
  * @param {boolean} [server] whether this is a server-side websocket (default: false)
- *
+ * @see WebSocketHandler
  * @mixes readStream~ReadStream
  * @mixes writeStream~WriteStream
  */
@@ -1267,6 +1268,7 @@ http.HttpClientRequest = function(jreq) {
  * </p>
  * @constructor
  * @param {org.vertx.java.core.http.HttpClientResponse} the underlying Java proxy
+ * @see ResponseHandler
  * @mixes readStream~ReadStream
  */
 http.HttpClientResponse = function(jresp) {
