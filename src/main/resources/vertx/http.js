@@ -1344,23 +1344,54 @@ http.HttpClientResponse = function(jresp) {
 
 
 /**
- * This class allows you to do route requests based on the HTTP verb and the request URI, in a manner similar
- * to <a href="http://www.sinatrarb.com/">Sinatra</a> or <a href="http://expressjs.com/">Express</a>.
- * RouteMatcher also lets you extract paramaters from the request URI either a simple pattern or using
- * regular expressions for more complex matches. Any parameters extracted will be added to the requests parameters
+ * <p>
+ * This class allows you to do route requests based on the HTTP verb and the
+ * request URI, in a manner similar to <a * href="http://www.sinatrarb.com/">Sinatra</a> 
+ * or <a * href="http://expressjs.com/">Express</a>.
+ * RouteMatcher also lets you extract paramaters from the request URI either a
+ * simple pattern or using regular expressions for more complex matches. Any
+ * parameters extracted will be added to the requests parameters
  * which will be available to you in your request handler.
- *
+ * </p>
+ * <p>
  * It's particularly useful when writing REST-ful web applications.
+ * </p>
  *
- * To use a simple pattern to extract parameters simply prefix the parameter name in the pattern with a ':' (colon).
+ * <p>
+ * To use a simple pattern to extract parameters simply prefix the parameter
+ * name in the pattern with a ':' (colon).
+ * </p>
  *
+ * <p>
  * Different handlers can be specified for each of the HTTP verbs, GET, POST, PUT, DELETE etc.
+ * </p>
  *
- * For more complex matches regular expressions can be used in the pattern. When regular expressions are used, the extracted
- * parameters do not have a name, so they are put into the HTTP request with names of param0, param1, param2 etc.
+ * <p>
+ * For more complex matches regular expressions can be used in the pattern.
+ * When regular expressions are used, the extracted parameters do not have a
+ * name, so they are put into the HTTP request with names of param0, param1,
+ * param2 etc.
+ * </p>
  *
- * Multiple matches can be specified for each HTTP verb. In the case there are more than one matching patterns for
- a particular request, the first matching one will be used.
+ * Multiple matches can be specified for each HTTP verb. In the case there are
+ * more than one matching patterns for a particular request, the first matching
+ * one will be used.
+ *
+ * @example
+ * var http = require('vertx/http');
+ * var server = http.createHttpServer();
+ * 
+ * var routeMatcher = new http.RouteMatcher();
+ * 
+ * routeMatcher.get('/animals/dogs', function(req) {
+ *     req.response.end('You requested dogs');
+ * });
+ * 
+ * routeMatcher.get('/animals/cats', function(req) {
+ *     req.response.end('You requested cats');    
+ * });
+ * 
+ * server.requestHandler(routeMatcher).listen(8080, 'localhost');
  *
  * @constructor
  */
@@ -1375,9 +1406,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP GET
    *
-   * @pattern pattern to match
-   * @param handler handler for match
-   * @return {RouteMatcher}
+   * @pattern {string} pattern to match
+   * @param {RequestHandler} handler handler for match
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.get = function(pattern, handler) {
     j_rm.get(pattern, wrappedRequestHandler(handler));
@@ -1387,9 +1418,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP PUT
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.put = function(pattern, handler) {
     j_rm.put(pattern, wrappedRequestHandler(handler));
@@ -1399,9 +1430,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP POST
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.post = function(pattern, handler) {
     j_rm.post(pattern, wrappedRequestHandler(handler));
@@ -1411,9 +1442,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP DELETE
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.delete = function(pattern, handler) {
     j_rm.delete(pattern, wrappedRequestHandler(handler));
@@ -1423,9 +1454,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP OPTIONS
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.options = function(pattern, handler) {
     j_rm.options(pattern, wrappedRequestHandler(handler));
@@ -1435,9 +1466,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP HEAD
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.head = function(pattern, handler) {
     j_rm.head(pattern, wrappedRequestHandler(handler));
@@ -1447,9 +1478,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP TRACE
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.trace = function(pattern, handler) {
     j_rm.trace(pattern, wrappedRequestHandler(handler));
@@ -1459,9 +1490,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP CONNECT
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.connect = function(pattern, handler) {
     j_rm.connect(pattern, wrappedRequestHandler(handler));
@@ -1471,9 +1502,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP PATCH
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.patch = function(pattern, handler) {
     j_rm.patch(pattern, wrappedRequestHandler(handler));
@@ -1483,9 +1514,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP ALL
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.all = function(pattern, handler) {
     j_rm.all(pattern, wrappedRequestHandler(handler));
@@ -1495,9 +1526,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP GET
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
 
    */
   this.getWithRegEx = function(pattern, handler) {
@@ -1508,9 +1539,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP PUT
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.putWithRegEx = function(pattern, handler) {
     j_rm.putWithRegEx(pattern, wrappedRequestHandler(handler));
@@ -1520,9 +1551,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP POST
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.postWithRegEx = function(pattern, handler) {
     j_rm.postWithRegEx(pattern, wrappedRequestHandler(handler));
@@ -1532,9 +1563,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP DELETE
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.deleteWithRegEx = function(pattern, handler) {
     j_rm.deleteWithRegEx(pattern, wrappedRequestHandler(handler));
@@ -1544,9 +1575,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP PUT
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.optionsWithRegEx = function(pattern, handler) {
     j_rm.optionsWithRegEx(pattern, wrappedRequestHandler(handler));
@@ -1556,9 +1587,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP HEAD
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.headWithRegEx = function(pattern, handler) {
     j_rm.headWithRegEx(pattern, wrappedRequestHandler(handler));
@@ -1568,9 +1599,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP TRACE
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.traceWithRegEx = function(pattern, handler) {
     j_rm.traceWithRegEx(pattern, wrappedRequestHandler(handler));
@@ -1580,9 +1611,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP CONNECT
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.connectWithRegEx = function(pattern, handler) {
     j_rm.connectWithRegEx(pattern, wrappedRequestHandler(handler));
@@ -1592,9 +1623,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP PATCH
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.patchWithRegEx = function(pattern, handler) {
     j_rm.patchWithRegEx(pattern, wrappedRequestHandler(handler));
@@ -1604,9 +1635,9 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for a matching HTTP request
    *
-   * @param pattern: pattern to match
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {string} pattern pattern to match
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.allWithRegEx = function(pattern, handler) {
     j_rm.allWithRegEx(pattern, wrappedRequestHandler(handler));
@@ -1616,8 +1647,8 @@ http.RouteMatcher = function() {
   /**
    * Specify a handler that will be called for HTTP request that not match any pattern.
    *
-   * @param handler: http server request handler
-   * @return {RouteMatcher}
+   * @param {RequestHandler} handler http server request handler
+   * @return {module:vertx/http.RouteMatcher}
    */
   this.noMatch = function(handler) {
     j_rm.noMatch(wrappedRequestHandler(handler));
