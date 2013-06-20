@@ -34,39 +34,10 @@ load("vertx/tcp_support.js");
 load("vertx/helpers.js");
 
 /**
- * A <code>RequestHandler</code> is a {@linkcode Handler} that responds to
- * notifications from objects in the <code>vertx/http</code> module and expects
- * an {@linkcode module:vertx/http.HttpServerRequest|HttpServerRequest} object
- * as its parameter.
- *
- * @example
- * var http = require('vertx/http');
- * var server = http.createHttpServer();
- *
- * server.requestHandler( function( request ) {
- *   // This function is executed for each
- *   // request event on our server
- * } );
- *
- * @see module:vertx/http.HttpServer#requestHandler
- * @typedef {function} RequestHandler
- * @param {message} request The incoming message
- */
-
-/**
  * A <code>BodyHandler</code> is a {@linkcode Handler} that accepts a
  * {@linkcode module:vertx/buffer~Buffer|Buffer} as it's parameter.
  * @typedef {function} BodyHandler
  * @param {module:vertx/buffer~Buffer} buffer A Buffer object containing the body of the message
- */
-
-/**
- * An <code>UploadHandler</code> is a {@linkcode Handler} that accepts a
- * {@linkcode module:vertx/http.HttpServerFileUpload|HttpServerFileUpload} 
- * object as it's parameter. This allows server code to handle and process
- * uploaded files from HTTP clients.
- * @typedef {function} UploadHandler
- * @param {module:vertx/http.HttpServerFileUpload} upload The file being uploaded
  */
 
 /**
@@ -87,7 +58,7 @@ http.createHttpServer = function() {
 
 
 /**
- * Return a HTTP Client
+ * Create and return a {@linkcode module:vertx/http.HttpClient}
  *
  * @returns {module:vertx/http.HttpClient}
  */
@@ -323,6 +294,7 @@ http.HttpServerRequest = function(jreq) {
  * </p>
  *
  * @class
+ * @param {org.vertx.java.core.http.HttpServerResponse} jresp the underlying java proxy
  * @mixes writeStream~WriteStream
  */
 http.HttpServerResponse = function(jresp) {
@@ -500,6 +472,7 @@ http.HttpServerResponse = function(jresp) {
  * handlers. Instances of this class should not be created externally.
  *
  * @constructor
+ * @param {org.vertx.java.core.http.HttpServerFileUpload} jupload the underlying java proxy object
  * @mixes readStream~ReadStream
  */
 http.HttpServerFileUpload = function(jupload) {
@@ -569,7 +542,14 @@ http.HttpServerFileUpload = function(jupload) {
     return jupload.size();
   }
 
-  /** @private */
+  /**
+   * An <code>UploadHandler</code> is a {@linkcode Handler} that accepts a
+   * {@linkcode module:vertx/http.HttpServerFileUpload|HttpServerFileUpload} 
+   * object as it's parameter. This allows server code to handle and process
+   * uploaded files from HTTP clients.
+   * @typedef {function} UploadHandler
+   * @param {module:vertx/http.HttpServerFileUpload} upload The file being uploaded
+   */
   var wrapUploadHandler = function(handler) {
     return function(jupload) {
       handler(new http.HttpServerFileUpload(jupload));
@@ -753,7 +733,7 @@ http.HttpServer = function() {
    * and passed to the handler.
    * 
    
-   * @param {Handler} handler the function used to handle the request.
+   * @param {WebSocketHandler} handler the function used to handle the request.
    * @return {module:vertx/http.HttpServer}
    */
   this.websocketHandler = function(handler) {
@@ -944,8 +924,8 @@ http.HttpClient = function() {
    * Attempt to connect an HTML5 websocket to the specified URI.
    * The connect is done asynchronously and the handler is called with a WebSocket on success.
    *
-   * @param uri A relative URI where to connect the websocket on the host, e.g. /some/path
-   * @param handler The handler to be called with the WebSocket
+   * @param {string} uri A relative URI where to connect the websocket on the host, e.g. /some/path
+   * @param {WebSocketHandler} handler The handler to be called with the WebSocket
    */
   this.connectWebsocket = function(uri, handler) {
     jclient.connectWebsocket(uri, wrappedWebsocketHandler(false, handler));
@@ -957,131 +937,130 @@ http.HttpClient = function() {
    * With this method the request is immediately sent.
    * When an HTTP response is received from the server the handler is called passing in the response.
    *
-   * @param uri A relative URI where to perform the GET on the server.
-   * @param handler The handler to be called
-
-   * @returns {*}
+   * @param {string} uri A relative URI where to perform the GET on the server.
+   * @param {ResponseHandler} handler The handler to be called
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.getNow = function(uri, handler) {
     return new http.HttpClientRequest(jclient.getNow(uri, wrapResponseHandler(handler)));
   }
 
   /**
-   * his method returns an request which represents an HTTP OPTIOS request with the specified uri.
+   * This method returns an request which represents an HTTP OPTIONS request with the specified uri.
    * When an HTTP response is received from the server the handler is called passing in the response.
    *
-   * @param uri A relative URI where to perform the OPTIONS on the server.
-   * @param handler The handler to be called
-   * @returns {*}
+   * @param {string} uri A relative URI where to perform the OPTIONS on the server.
+   * @param {ResponseHandler} handler The handler to be called
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.options = function(uri, handler) {
     return new http.HttpClientRequest(jclient.options(uri, wrapResponseHandler(handler)));
   }
 
   /**
-   * his method returns an request which represents an HTTP GET request with the specified uri.
+   * This method returns an request which represents an HTTP GET request with the specified uri.
    * When an HTTP response is received from the server the handler is called passing in the response.
    *
-   * @param uri A relative URI where to perform the GET on the server.
-   * @param handler The handler to be called
-   * @returns {*}
+   * @param {string} uri A relative URI where to perform the GET on the server.
+   * @param {ResponseHandler} handler The handler to be called
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.get =function(uri, handler) {
     return new http.HttpClientRequest(jclient.get(uri, wrapResponseHandler(handler)));
   }
 
   /**
-   * his method returns an request which represents an HTTP HEAD request with the specified uri.
+   * This method returns an request which represents an HTTP HEAD request with the specified uri.
    * When an HTTP response is received from the server the handler is called passing in the response.
    *
-   * @param uri A relative URI where to perform the HEAD on the server.
-   * @param handler The handler to be called
-   * @returns {*}
+   * @param {string} uri A relative URI where to perform the HEAD on the server.
+   * @param {ResponseHandler} handler The handler to be called
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.head =function(uri, handler) {
     return new http.HttpClientRequest(jclient.head(uri, wrapResponseHandler(handler)));
   }
 
   /**
-   * his method returns an request which represents an HTTP POST request with the specified uri.
+   * This method returns an request which represents an HTTP POST request with the specified uri.
    * When an HTTP response is received from the server the handler is called passing in the response.
    *
-   * @param uri A relative URI where to perform the POST on the server.
-   * @param handler The handler to be called
-   * @returns {*}
+   * @param {string} uri A relative URI where to perform the POST on the server.
+   * @param {ResponseHandler} handler The handler to be called
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.post = function(uri, handler) {
     return new http.HttpClientRequest(jclient.post(uri, wrapResponseHandler(handler)));
   }
 
   /**
-   * his method returns an request which represents an HTTP PUT request with the specified uri.
+   * This method returns an request which represents an HTTP PUT request with the specified uri.
    * When an HTTP response is received from the server the handler is called passing in the response.
    *
-   * @param uri A relative URI where to perform the PUT on the server.
-   * @param handler The handler to be called
-   * @returns {*}
+   * @param {string} uri A relative URI where to perform the PUT on the server.
+   * @param {ResponseHandler} handler The handler to be called
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.put = function(uri, handler) {
     return new http.HttpClientRequest(jclient.put(uri, wrapResponseHandler(handler)));
   }
 
   /**
-   * his method returns an request which represents an HTTP DELETE request with the specified uri.
+   * This method returns an request which represents an HTTP DELETE request with the specified uri.
    * When an HTTP response is received from the server the handler is called passing in the response.
    *
-   * @param uri A relative URI where to perform the DELETE on the server.
-   * @param handler The handler to be called
-   * @returns {*}
+   * @param {string} uri A relative URI where to perform the DELETE on the server.
+   * @param {ResponseHandler} handler The handler to be called
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.delete = function(uri, handler) {
     return new http.HttpClientRequest(jclient.delete(uri, wrapResponseHandler(handler)));
   }
 
   /**
-   * his method returns an request which represents an HTTP TRACE request with the specified uri.
+   * This method returns an request which represents an HTTP TRACE request with the specified uri.
    * When an HTTP response is received from the server the handler is called passing in the response.
    *
-   * @param uri A relative URI where to perform the TRACE on the server.
-   * @param handler The handler to be called
-   * @returns {*}
+   * @param {string} uri A relative URI where to perform the TRACE on the server.
+   * @param {ResponseHandler} handler The handler to be called
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.trace = function(uri, handler) {
     return new http.HttpClientRequest(jclient.trace(uri, wrapResponseHandler(handler)));
   }
 
   /**
-   * his method returns an request which represents an HTTP CONNECT request with the specified uri.
+   * This method returns an request which represents an HTTP CONNECT request with the specified uri.
    * When an HTTP response is received from the server the handler is called passing in the response.
    *
-   * @param uri A relative URI where to perform the CONNECT on the server.
-   * @param handler The handler to be called
-   * @returns {*}
+   * @param {string} uri A relative URI where to perform the CONNECT on the server.
+   * @param {ResponseHandler} handler The handler to be called
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.connect = function(uri, handler) {
     return new http.HttpClientRequest(jclient.connect(uri, wrapResponseHandler(handler)));
   }
 
   /**
-   * his method returns an request which represents an HTTP PATCH request with the specified uri.
+   * This method returns an request which represents an HTTP PATCH request with the specified uri.
    * When an HTTP response is received from the server the handler is called passing in the response.
    *
-   * @param uri A relative URI where to perform the PATCH on the server.
-   * @param handler The handler to be called
-   * @returns {*}
+   * @param {string} uri A relative URI where to perform the PATCH on the server.
+   * @param {ResponseHandler} handler The handler to be called
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.patch = function(uri, handler) {
     return new http.HttpClientRequest(jclient.patch(uri, wrapResponseHandler(handler)));
   }
 
   /**
-   * his method returns an request which represents an HTTP request with the specified uri.
+   * This method returns an request which represents an HTTP request with the specified uri.
    * When an HTTP response is received from the server the handler is called passing in the response.
    *
-   * @param method The HTTP method which is used for the request
-   * @param uri A relative URI where to perform the PUT on the server.
-   * @param handler The handler to be called
-   * @returns {*}
+   * @param {string} method The HTTP method which is used for the request
+   * @param {string} uri A relative URI where to perform the PUT on the server.
+   * @param {ResponseHandler} handler The handler to be called
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.request = function(method, uri, handler) {
     return new http.HttpClientRequest(jclient.request(method, uri, wrapResponseHandler(handler)));
@@ -1094,7 +1073,13 @@ http.HttpClient = function() {
     jclient.close();
   }
 
-  /** @private */
+  /**
+   * A <code>ResponseHandler</code> is a {@linkcode Handler} that accepts a
+   * {@linkcode module:vertx/http.HttpClientResponse|ClientResponse} 
+   * object as it's parameter. 
+   * @typedef {function} ResponseHandler
+   * @param {module:vertx/http.HttpClientResponse} response The HTTP client response
+   */
   var wrapResponseHandler = function(handler) {
     return function(jresp) {
       handler(new http.HttpClientResponse(jresp));
@@ -1104,7 +1089,47 @@ http.HttpClient = function() {
 }
 
 /**
+ * <p>
+ * Represents a client-side HTTP request.  Instances are created by an
+ * {@linkcode module:vertx/http.HttpClient} instance, via one of the methods
+ * corresponding to the specific HTTP methods, or the generic {@linkcode
+ * module:vertx/http.HttpClient#request} method.
+ * </p>
+ * <p>
+ * Once a request has been obtained, headers can be set on it, and data can be
+ * written to its body if required. Once you are ready to send the request, the
+ * {@linkcode module:vertx/http.HttpClientRequest#end} method should be called.
+ * </p>
+ * <p>
+ * The headers of the request are actually sent either when the 
+ * {@linkcode module:vertx/http.HttpClientRequest#end} method is called, or,
+ * when the first part of the body is written, whichever
+ * occurs first.
+ * </p>
+ * <p>
+ * This class supports both chunked and non-chunked HTTP.
+ * It mixes in {@linkcode writeStream~WriteStream} so it can be used with
+ * {@linkcode module:vertx/pump~Pump} to pump data with flow control.
+ * </p>
+ * <p>
+ * An example of using this class is as follows:
+ * <p>
+ *
+ * @example
+ *
+ * var console = require('vertx/console');
+ *
+ * var req = httpClient.post("/some-url", function(response) {
+ *     console.log("Got response: " + response.statusCode);
+ *   }
+ * });
+ *
+ * req.headers().add("Content-Length", 5);
+ * req.end(new Buffer('hello');
+ *
  * @constructor
+ * @param org.vertx.java.core.http.HttpClientRequest the underlying Java proxy
+ * @mixes writeStream~WriteStream
  */
 http.HttpClientRequest = function(jreq) {
   var that = this;
@@ -1114,10 +1139,13 @@ http.HttpClientRequest = function(jreq) {
   /**
    * Sets or gets whether the request should used HTTP chunked encoding or not.
    *
-   * @param ch If val is true, this request will use HTTP chunked encoding, and each call to write to the body
-   *  will correspond to a new HTTP chunk sent on the wire. If chunked encoding is used the HTTP header
-   * 'Transfer-Encoding' with a value of 'Chunked' will be automatically inserted in the request.
-   * @returns {req}
+   * @param {boolean} [chunked] If val is true, this request will use HTTP
+   * chunked encoding, and each call to write to the body will correspond to a
+   * new HTTP chunk sent on the wire. If chunked encoding is used the HTTP
+   * header 'Transfer-Encoding' with a value of 'Chunked' will be automatically
+   * inserted in the request. If <code>chunked</code> is not provided, returns
+   * the current value.
+   * @returns {boolean|module:vertx/http.HttpClientRequest}
    */
   this.chunked = function(ch) {
     if (ch === undefined) {
@@ -1131,7 +1159,7 @@ http.HttpClientRequest = function(jreq) {
   /**
    * Returns the headers for the requests
    *
-   * @returns {reqHeaders} The headers
+   * @returns {module:vertx/multi_map~MultiMap} The headers
    */
   this.headers = function() {
     if (!reqHeaders) {
@@ -1143,9 +1171,9 @@ http.HttpClientRequest = function(jreq) {
   /**
    * Put a header on the request
    *
-   * @param k The name under which to store
-   * @param V the value to store
-   * @returns {req}
+   * @param {string} name The header name
+   * @param {string} value The header value
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.putHeader = function(k, v) {
     jreq.putHeader(k, v);
@@ -1153,25 +1181,10 @@ http.HttpClientRequest = function(jreq) {
   }
 
   /**
-   * Put muliple headers on the request
-   *
-   * @param k The name under which to store
-   * @param V the value to store
-   * @returns {req}
-   */
-  this.putAllHeaders = function(other) {
-    var hdrs = wrapped.headers();
-    for (var k in other) {
-      hdrs[k] = other[k];
-    }
-    return that;
-  }
-
-  /**
-   * Write a to the request body
-   * @param arg0
-   * @param arg1
-   * @returns {{}}
+   * Write to the request body
+   * @param {string} chunk the data to write
+   * @param {string} [encoding] the data encoding (default is UTF-8)
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.write = function(arg0, arg1) {
     if (arg1 === undefined) {
@@ -1183,14 +1196,16 @@ http.HttpClientRequest = function(jreq) {
   }
 
   /**
-   * If you send an HTTP request with the header 'Expect' set to the value '100-continue'
-   * and the server responds with an interim HTTP response with a status code of '100' and a continue handler
-   * has been set using this method, then the handler will be called.
-   * You can then continue to write data to the request body and later end it. This is normally used in conjunction with
-   * the send_head method to force the request header to be written before the request has ended.
+   * If you send an HTTP request with the header 'Expect' set to the value
+   * '100-continue' and the server responds with an interim HTTP response with
+   * a status code of '100' and a continue handler has been set using this
+   * method, then the handler will be called.  You can then continue to write
+   * data to the request body and later end it. This is normally used in
+   * conjunction with the send_head method to force the request header to be
+   * written before the request has ended.
    *
-   * @param handler The handler
-   * @returns {req}
+   * @param {Handler} handler The handler
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.continueHandler = function(handler) {
     jreq.continueHandler(handler);
@@ -1198,10 +1213,11 @@ http.HttpClientRequest = function(jreq) {
   }
 
   /**
-   * Forces the head of the request to be written before end is called on the request. This is normally used
-   * to implement HTTP 100-continue handling, see continue_handler for more information.
+   * Forces the head of the request to be written before end is called on the
+   * request. This is normally used to implement HTTP 100-continue handling.
    *
-   * @returns req
+   * @see module:vertx/http.HttpClientRequest#continue_handler
+   * @returns {module:vertx/http.HttpClientRequest}
    */
   this.sendHead = function() {
     jreq.sendHead();
@@ -1209,12 +1225,14 @@ http.HttpClientRequest = function(jreq) {
   }
 
   /**
-   * Ends the request. If no data has been written to the request body, and send_head has not been called then
-   * the actual request won't get written until this method gets called.
-   * Once the request has ended, it cannot be used any more, and if keep alive is true the underlying connection will
+   * Ends the request. If no data has been written to the request body, and
+   * send_head has not been called then the actual request won't get written
+   * until this method gets called.  Once the request has ended, it cannot be
+   * used any more, and if keep alive is true the underlying connection will
    * be returned to the HttpClient pool so it can be assigned to another request.
-   * @param arg0 The data to write
-   * @param arg1 The charset to use
+   *
+   * @param {string} [chunk] The data to write
+   * @param {string} [encoding] The charset to use if data is written
    */
   this.end = function(arg0, arg1) {
     if (arg0) {
@@ -1229,9 +1247,11 @@ http.HttpClientRequest = function(jreq) {
   }
 
   /**
-   * Set the timeout
+   * Set's the amount of time after which if a response is not received an exception
+   * will be sent to the exception handler of this request. Calling this method more than once
+   * has the effect of canceling any existing timeout and starting the timeout from scratch.
    *
-   * @param t The timeout to set
+   * @param {number} timeout The amount of time in milliseconds to wait before timing out
    */
   this.timeout = function(t) {
     jreq.setTimeout(t);
@@ -1239,7 +1259,19 @@ http.HttpClientRequest = function(jreq) {
 }
 
 /**
+ * <p>Represents a client-side HTTP response.
+ * An instance is provided to the user via a {@linkcode ResponseHandler}
+ * instance that was specified when one of the HTTP method operations, or the
+ * generic {@linkcode module:vertx.http.HttpClient#request|request}
+ * method was called on an instance of {@linkcode module:vertx/http.HttpClient}.
+ * </p>
+ * <p>
+ * It mixes in {@linkcode readStream~ReadStream} so it can be used with
+ * {@linkcode module:vertx/pump~Pump|Pump} to pump data with flow control.
+ * </p>
  * @constructor
+ * @param {org.vertx.java.core.http.HttpClientResponse} the underlying Java proxy
+ * @mixes readStream~ReadStream
  */
 http.HttpClientResponse = function(jresp) {
   var that = this;
@@ -1250,7 +1282,7 @@ http.HttpClientResponse = function(jresp) {
   /**
    * The HTTP status code of the response.
    *
-   * @returns {code} The HTTP Status code
+   * @returns {number} The HTTP Status code
    */
   this.statusCode = function() {
     return jresp.statusCode();
@@ -1259,7 +1291,7 @@ http.HttpClientResponse = function(jresp) {
   /**
    * The HTTP Status message of the response
    *
-   * @returns {code} The HTTP Status message
+   * @returns {string} The HTTP Status message
    */
   this.statusMessage = function() {
     return jresp.statusMessage();
@@ -1268,7 +1300,7 @@ http.HttpClientResponse = function(jresp) {
   /**
    * Get all the headers of the response.
    *
-   * @returns {respHeaders} The headers
+   * @returns {module:vertx/multi_map~MultiMap} The response headers
    */
   this.headers = function() {
     if (!respHeaders) {
@@ -1280,7 +1312,7 @@ http.HttpClientResponse = function(jresp) {
   /**
    * Get all the trailing headers of the response.
    *
-   * @returns {respTrailers}
+   * @returns {module:vertx/multi_map~MultiMap} The response trailers
    */
   this.trailers = function() {
     if (!respTrailers) {
@@ -1292,7 +1324,7 @@ http.HttpClientResponse = function(jresp) {
   /**
     * The Set-Cookie headers (including trailers)
    *
-   * @returns {cookies} The cookies
+   * @returns {Array} The cookies as an array of strings
    */
   this.cookies = function() {
     return jresp.cookies();
@@ -1301,8 +1333,8 @@ http.HttpClientResponse = function(jresp) {
   /**
    * Set a handler to receive the entire body in one go - do not use this for large bodies
    *
-   * @param handler The handler to use
-   * @returns {resp}
+   * @param {BodyHandler} handler The handler to use
+   * @returns {module:vertx/http.HttpClientResponse}
    */
   this.bodyHandler = function(handler) {
     jresp.bodyHandler(handler);
@@ -1602,12 +1634,38 @@ http.RouteMatcher = function() {
 }
 
 
+/**
+ * A <code>WebSocketHandler</code> is a {@linkcode Handler} that accepts a
+ * {@linkcode module:vertx/http.WebSocket|WebSocket} as it's parameter.
+ *
+ * @typedef {function} WebSocketHandler
+ * @param {module:vertx/http.WebSocket} websocket the active {@linkcode module:vertx/http.WebSocket|WebSocket}
+ */
 function wrappedWebsocketHandler(server, handler) {
   return function(jwebsocket) {
     handler(new http.WebSocket(jwebsocket, server));
   }
 }
 
+/**
+ * A <code>RequestHandler</code> is a {@linkcode Handler} that responds to
+ * notifications from objects in the <code>vertx/http</code> module and expects
+ * an {@linkcode module:vertx/http.HttpServerRequest|HttpServerRequest} object
+ * as its parameter.
+ *
+ * @example
+ * var http = require('vertx/http');
+ * var server = http.createHttpServer();
+ *
+ * server.requestHandler( function( request ) {
+ *   // This function is executed for each
+ *   // request event on our server
+ * } );
+ *
+ * @see module:vertx/http.HttpServer#requestHandler
+ * @typedef {function} RequestHandler
+ * @param {message} request The incoming message
+ */
 function wrappedRequestHandler(handler) {
   return function(jreq) {
     handler(new http.HttpServerRequest(jreq));
