@@ -1277,7 +1277,25 @@ http.HttpClientResponse = function(jresp) {
   var that = this;
   var respHeaders = null;
   var respTrailers = null;
+  var netSocket    = null;
   readStream(this, jresp)
+
+  /**
+   * @external org.vertx.java.core.net.NetSocket
+   * @see https://github.com/vert-x/vert.x/blob/master/vertx-core/src/main/java/org/vertx/java/core/net/NetSocket.java
+   */
+  /**
+   *
+   * Get the raw Java NetSocket. Primarily for internal use, but if you really must
+   * roll your own websockets or some such, this will let you do that.
+   * @returns {org.vertx.java.core.net.NetSocket} The raw <code>NetSocket</code>
+   */
+  this.netSocket = function() {
+    if (netSocket === null) {
+      netSocket = net.__jsNetSocket(jreq.netSocket());
+    }
+    return netSocket;
+  }
 
   /**
    * The HTTP status code of the response.
