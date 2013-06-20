@@ -1284,7 +1284,7 @@ http.HttpClientResponse = function(jresp) {
    */
   this.netSocket = function() {
     if (netSocket === null) {
-      netSocket = new net.NetSocket(jreq.netSocket());
+      netSocket = new net.NetSocket(jresp.netSocket());
     }
     return netSocket;
   }
