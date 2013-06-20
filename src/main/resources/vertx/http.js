@@ -53,10 +53,52 @@ load("vertx/helpers.js");
  * @param {message} request The incoming message
  */
 
+/**
+ * A <code>BodyHandler</code> is a {@linkcode Handler} that accepts a
+ * {@linkcode module:vertx/buffer~Buffer|Buffer} as it's parameter.
+ * @typedef {function} BodyHandler
+ * @param {module:vertx/buffer~Buffer} buffer A Buffer object containing the body of the message
+ */
+
+/**
+ * An <code>UploadHandler</code> is a {@linkcode Handler} that accepts a
+ * {@linkcode module:vertx/http.HttpServerFileUpload|HttpServerFileUpload} 
+ * object as it's parameter. This allows server code to handle and process
+ * uploaded files from HTTP clients.
+ * @typedef {function} UploadHandler
+ * @param {module:vertx/http.HttpServerFileUpload} upload The file being uploaded
+ */
+
+/**
+ * Create and return a {@linkcode module:vertx/http.HttpServer}
+ *
+ * @example
+ * var http = require('vertx/http');
+ * var server = http.createHttpServer();
+ *
+ * // setup request handlers and such...
+ * server.listen(8080, 'localhost');
+ *
+ * @return {module:vertx/http.HttpServer} the newly created server
+ */
+http.createHttpServer = function() {
+  return new http.HttpServer();
+}
+
+
+/**
+ * Return a HTTP Client
+ *
+ * @returns {module:vertx/http.HttpClient}
+ */
+http.createHttpClient = function() {
+  return new http.HttpClient();
+}
 
 /**
  * Represents a server-side HttpServerRequest object. This object is created internally
- * by vert.x and passed as a parameter to a request listener.
+ * by vert.x and passed as a parameter to a request listener. It should not be directly
+ * created.
  *
  * @example
  * var http    = require('vertx/http');
@@ -103,9 +145,14 @@ http.HttpServerRequest = function(jreq) {
   }
 
   /**
+   * @external org.vertx.java.core.net.NetSocket
+   * @see https://github.com/vert-x/vert.x/blob/master/vertx-core/src/main/java/org/vertx/java/core/net/NetSocket.java
+   */
+  /**
+   *
    * Get the raw Java NetSocket. Primarily for internal use, but if you really must
    * roll your own websockets or some such, this will let you do that.
-   * @returns {org.vertx.java.core.net.NetSocket}
+   * @returns {org.vertx.java.core.net.NetSocket} The raw <code>NetSocket</code>
    */
   this.netSocket = function() {
     if (netSocket === null) {
@@ -154,7 +201,7 @@ http.HttpServerRequest = function(jreq) {
   /**
    * The headers of the request.
    *
-   * @returns {MultiMap}
+   * @returns {module:vertx/multi_map~MultiMap}
    */
   this.headers = function() {
     if (!reqHeaders) {
@@ -166,7 +213,7 @@ http.HttpServerRequest = function(jreq) {
   /**
    * Return the remote (client side) address of the request
    *
-   * @returns {MultiMap}
+   * @returns {module:vertx/multi_map~MultiMap}
    */
   this.params = function() {
     if (!reqParams) {
@@ -209,7 +256,7 @@ http.HttpServerRequest = function(jreq) {
   /**
    * Return a form attributes object
    *
-   * @returns {MultiMap} The form attributes
+   * @returns {module:vertx/multi_map~MultiMap} The form attributes
    */
   this.formAttributes = function() {
     if (!reqFormAttrs) {
@@ -223,8 +270,8 @@ http.HttpServerRequest = function(jreq) {
    * upload was received and so allow to get notified by the upload in
    * progress.
    *
-   * @param {Handler} handler The handler to call
-   * @returns {HttpServerRequest} this
+   * @param {UploadHandler} handler The handler to call
+   * @returns {module:vertx/http.HttpServerRequest} this
    */
   this.uploadHandler = function(handler) {
     if (handler) {
@@ -237,8 +284,8 @@ http.HttpServerRequest = function(jreq) {
    *  Set the body handler for this request, the handler receives a single
    *  Buffer object as a parameter.  This can be used as a decorator.
    *
-   * @param {Handler} handler The handler to call once the body was received
-   * @returns {HttpServerRequest} this
+   * @param {BodyHandler} handler The handler to call once the body was received
+   * @returns {module:vertx/http.HttpServerRequest} this
    */
   this.bodyHandler = function(handler) {
     jreq.bodyHandler(handler);
@@ -248,7 +295,8 @@ http.HttpServerRequest = function(jreq) {
   var jresp = jreq.response();
 
   /**
-   * @property HttpResponse response
+   * @property {module:vertx/http.HttpServerResponse} response A response object
+   * that can be used to send a response to this request.
    */
   this.response = new http.HttpServerResponse(jresp);
 
@@ -264,7 +312,7 @@ http.HttpServerRequest = function(jreq) {
  * <p>
  * A server-side HTTP response.
  * An instance of this class is created and associated to every instance of
- * {@linkcode HttpServerRequest} that is created.
+ * {@linkcode module:vertx/http.HttpServerRequest} that is created.
  * </p>
  *
  * <p>
@@ -285,7 +333,7 @@ http.HttpServerResponse = function(jresp) {
   /**
    * Get or set HTTP status code of the response.
    * @param {number} [code] The HTTP status code, e.g. 200
-   * @returns {number|HttpServerResponse} If a status code is supplied, this method
+   * @returns {number|module:vertx/http.HttpServerResponse} If a status code is supplied, this method
    * sets it and returns itself. If a status code is not provided, return the current
    * status code for this response.
    */
@@ -301,7 +349,7 @@ http.HttpServerResponse = function(jresp) {
   /**
    * Get or set HTTP status message of the response.
    * @param {string} [message] The HTTP status message.
-   * @returns {string|HttpServerResponse} 
+   * @returns {string|module:vertx/http.HttpServerResponse} 
    */
   this.statusMessage = function(msg) {
     if (msg) {
@@ -315,7 +363,7 @@ http.HttpServerResponse = function(jresp) {
   /**
    * Get or set if the response is chunked
    * @param {boolean} [chunked] Whether or not the response will be chunked encoding
-   * @returns {boolean|HttpServerResponse}
+   * @returns {boolean|module:vertx/http.HttpServerResponse}
    */
   this.chunked = function(ch) {
     if (ch) {
@@ -328,7 +376,7 @@ http.HttpServerResponse = function(jresp) {
 
   /**
    * Return the http headers of the response
-   * @returns {MultiMap}
+   * @returns {module:vertx/multi_map~MultiMap}
    */
   this.headers = function() {
     if (!respHeaders) {
@@ -342,7 +390,7 @@ http.HttpServerResponse = function(jresp) {
    *
    * @param {string} headerName The name under which the header should be stored
    * @param {string} headerValue T the value of the header
-   * @returns {HttpServerResponse}
+   * @returns {module:vertx/http.HttpServerResponse}
    */
   this.putHeader = function(k, v) {
     jresp.putHeader(k, v);
@@ -352,7 +400,7 @@ http.HttpServerResponse = function(jresp) {
   /**
    * Return the trailing headers of the response
    *
-   * @returns {MultiMap}
+   * @returns {module:vertx/multi_map~MultiMap}
    */
   this.trailers = function() {
     if (!respTrailers) {
@@ -366,7 +414,7 @@ http.HttpServerResponse = function(jresp) {
    *
    * @param {string} trailerName The name under which the header should be stored
    * @param {string} trailerValue The value of the trailer
-   * @returns {HttpServerResponse}
+   * @returns {module:vertx/http.HttpServerResponse}
    */
   this.putTrailer = function(k, v) {
     jresp.putTrailer(k, v);
@@ -378,7 +426,7 @@ http.HttpServerResponse = function(jresp) {
    *
    * @param {string} body The body of the response.
    * @param {string} [encoding] The character encoding, defaults to UTF-8
-   * @returns {HttpServerResponse} Returns self
+   * @returns {module:vertx/http.HttpServerResponse} Returns self
    */
   this.write = function(body, encoding) {
     if (encoding === undefined) {
@@ -394,7 +442,7 @@ http.HttpServerResponse = function(jresp) {
    * request. This is normally used to implement HTTP 100-continue handling,
    * see continue_handler for more information.
    *
-   * @returns {HttpServerResponse}
+   * @returns {module:vertx/http.HttpServerResponse}
    */
   this.sendHead = function() {
     jresp.sendHead();
@@ -433,7 +481,7 @@ http.HttpServerResponse = function(jresp) {
    *
    * @param {string} fileName Path to file to send.
    * @param {string} notFoundFile Path to a file to send if <code>fileName</code> can't be found.
-   * @returns {HttpServerResponse}
+   * @returns {module:vertx/http.HttpServerResponse}
    */
   this.sendFile = function(fileName, notFoundFile) {
     if (notFoundFile === undefined) {
@@ -445,12 +493,6 @@ http.HttpServerResponse = function(jresp) {
   }
 
   writeStream(that, jresp);
-}
-
-function wrappedRequestHandler(handler) {
-  return function(jreq) {
-    handler(new http.HttpServerRequest(jreq));
-  }
 }
 
 /**
@@ -526,13 +568,15 @@ http.HttpServerFileUpload = function(jupload) {
   this.size = function() {
     return jupload.size();
   }
-}
 
-function wrapUploadHandler(handler) {
-  return function(jupload) {
-    handler(new http.HttpServerFileUpload(jupload));
+  /** @private */
+  var wrapUploadHandler = function(handler) {
+    return function(jupload) {
+      handler(new http.HttpServerFileUpload(jupload));
+    }
   }
 }
+
 
 /**
  * <p>Represents an HTML 5 Websocket</p>
@@ -540,7 +584,7 @@ function wrapUploadHandler(handler) {
  * {@linkcode HttpClient} when a successful websocket connect attempt occurs.</p>
  * <p>It implements both {@linkcode readStream~ReadStream|ReadStream} and 
  * {@linkcode writeStream~WriteStream|WriteStream} so it can be used with
- * {@linkcode module:vertx/Pump.Pump|Pump} to pump data with flow control.</p>
+ * {@linkcode module:vertx/Pump~Pump|Pump} to pump data with flow control.</p>
  *
  * @constructor
  *
@@ -590,7 +634,7 @@ http.WebSocket = function(jwebsocket, server) {
   /**
    *  Write data to the websocket as a binary frame
    *
-   * @param {Buffer} data
+   * @param {module:vertx/buffer~Buffer} data
    */
   this.writeBinaryFrame = function(data) {
     jwebsocket.writeBinaryFrame(data);
@@ -599,22 +643,24 @@ http.WebSocket = function(jwebsocket, server) {
   /**
    *  Write data to the websocket as a text frame
    *
-   * @param {Buffer} data
+   * @param {module:vertx/buffer~Buffer} data
    */
   this.writeTextFrame = function(data) {
     jwebsocket.writeTextFrame(data);
   };
 
   /**
-   * Set a closed handler on the connection, the handler receives no parameters.
+   * Set a closed {@linkcode Handler} on the connection, the handler receives
+   * no parameters.
    *
-   * @param {Handler} handler
-   * @returns {WebSocket}
+   * @param {Handler} handler The handler to call when the underlying connection has been closed
+   * @returns {WebSocket} this
    */
   this.closeHandler = function(handler) {
     jwebsocket.closeHandler(handler);
     return this;
   };
+
   /**
    * Close the websocket connection
    */
@@ -637,7 +683,7 @@ http.WebSocket = function(jwebsocket, server) {
      * Reject the WebSocket. Sends 404 to client
      * Only available if this is a server websocket.
      *
-     * @returns {WebSocket}
+     * @returns {module:vertx/http.WebSocket}
      */
     this.reject = function() {
       jwebsocket.reject();
@@ -647,7 +693,7 @@ http.WebSocket = function(jwebsocket, server) {
      * The headers of the handshake request
      * Only available if this is a server websocket.
      *
-     * @returns {MultiMap}
+     * @returns {module:vertx/multi_map~MultiMap}
      */
     this.headers = function() {
       if (!headers) {
@@ -658,16 +704,19 @@ http.WebSocket = function(jwebsocket, server) {
   }
 }
 
-function wrapWebsocketHandler(server, handler) {
-  return function(jwebsocket) {
-    handler(new http.WebSocket(jwebsocket, server));
-  }
-}
-
-
 /**
  * An HTTP and websockets server. Created by calling 
- * {@linkcode module:vertx/http.createHttpServer|createHttpServer}
+ * {@linkcode module:vertx/http.createHttpServer}.
+ *
+ * @example
+ * var http = require('vertx/http');
+ * var server = http.createHttpServer();
+ *
+ * server.requestHandler( function(request) {
+ *    // handle the incoming request
+ * }
+ *
+ * server.listen(8000, 'localhost');
  *
  * @class
  */
@@ -709,7 +758,7 @@ http.HttpServer = function() {
    */
   this.websocketHandler = function(handler) {
     if (handler) {
-      jserver.websocketHandler(wrapWebsocketHandler(true, handler));
+      jserver.websocketHandler(wrappedWebsocketHandler(true, handler));
     }
     return that;
   }
@@ -759,6 +808,7 @@ http.HttpServer = function() {
     return jserver;
   }
 
+  // TODO: Document SSL and TCP support
   sslSupport(this, jserver);
   serverSslSupport(this, jserver);
   tcpSupport(this, jserver);
@@ -767,339 +817,128 @@ http.HttpServer = function() {
 
 
 /**
- * Return a HttpServer
+ * <p>An HTTP client that maintains a pool of connections to a specific host, at a
+ * specific port. The client supports pipelining of requests.</p>
+ * <p>As well as HTTP requests, the client can act as a factory for 
+ * HTML5 {@linkcode module:vertx/http.WebSocket|websockets}.</p>
  *
- * @example
- * var http = require('vertx/http');
- * var server = http.createHttpServer();
- *
- * // setup request handlers and such...
- * server.listen(8080, 'localhost');
- *
- * @desc Create and return an HttpServer object
- * @return {module:vertx/http.HttpServer}
+ * @class
  */
-http.createHttpServer = function() {
-  return new http.HttpServer();
-}
-
-/**
- * Return a HTTP Client
- *
- * @returns {{client}}
- */
-http.createHttpClient = function() {
-
+http.HttpClient = function() {
+  var that = this;
   var jclient = __jvertx.createHttpClient();
 
-  function wrapResponseHandler(handler) {
-    return function(jresp) {
-
-      var respHeaders = null;
-      var respTrailers = null;
-
-      /**
-       *
-       * @type {{}}
-       */
-      var resp = {};
-      readStream(resp, jresp)
-
-      /**
-       * The HTTP status code of the response.
-       *
-       * @returns {code} The HTTP Status code
-       */
-      resp.statusCode = function() {
-        return jresp.statusCode();
-      };
-
-      /**
-       * The HTTP Status message of the response
-       *
-       * @returns {code} The HTTP Status message
-       */
-      resp.statusMessage = function() {
-        return jresp.statusMessage();
-      };
-
-      /**
-       * Get all the headers of the response.
-       *
-       * @returns {respHeaders} The headers
-       */
-      resp.headers = function() {
-        if (!respHeaders) {
-          respHeaders = new MultiMap(jresp.headers());
-        }
-        return respHeaders;
-      };
-
-      /**
-       * Get all the trailing headers of the response.
-       *
-       * @returns {respTrailers}
-       */
-      resp.trailers = function() {
-        if (!respTrailers) {
-          respTrailers = new MultiMap(jresp.trailers());
-        }
-        return respTrailers;
-      };
-
-      /**
-        * The Set-Cookie headers (including trailers)
-       *
-       * @returns {cookies} The cookies
-       */
-      resp.cookies = function() {
-        return jresp.cookies();
-      };
-
-      /**
-       * Set a handler to receive the entire body in one go - do not use this for large bodies
-       *
-       * @param handler The handler to use
-       * @returns {resp}
-       */
-      resp.bodyHandler = function(handler) {
-        jresp.bodyHandler(handler);
-        return resp;
-      };
-      handler(resp);
-    }
-  }
-
-  function wrapRequest(jreq) {
-    var reqHeaders = null;
-
-    var req = {};
-    writeStream(req, jreq);
-
-    /**
-     * Sets or gets whether the request should used HTTP chunked encoding or not.
-     *
-     * @param ch If val is true, this request will use HTTP chunked encoding, and each call to write to the body
-     *  will correspond to a new HTTP chunk sent on the wire. If chunked encoding is used the HTTP header
-     * 'Transfer-Encoding' with a value of 'Chunked' will be automatically inserted in the request.
-     * @returns {req}
-     */
-    req.chunked = function(ch) {
-      if (ch === undefined) {
-        return jreq.isChunked();
-      } else {
-        jreq.setChunked(ch);
-        return req;
-      }
-    };
-    /**
-     * Returns the headers for the requests
-     *
-     * @returns {reqHeaders} The headers
-     */
-    req.headers = function() {
-      if (!reqHeaders) {
-        reqHeaders = new MultiMap(jreq.headers());
-      }
-      return reqHeaders;
-    };
-
-    /**
-     * Put a header on the request
-     *
-     * @param k The name under which to store
-     * @param V the value to store
-     * @returns {req}
-     */
-    req.putHeader = function(k, v) {
-      jreq.putHeader(k, v);
-      return req;
-    };
-
-    /**
-     * Put muliple headers on the request
-     *
-     * @param k The name under which to store
-     * @param V the value to store
-     * @returns {req}
-     */
-    req.putAllHeaders = function(other) {
-      var hdrs = wrapped.headers();
-      for (var k in other) {
-        hdrs[k] = other[k];
-      }
-      return req;
-    };
-
-    /**
-     * Write a to the request body
-     * @param arg0
-     * @param arg1
-     * @returns {{}}
-     */
-    req.write = function(arg0, arg1) {
-      if (arg1 === undefined) {
-        jreq.write(arg0);
-      } else {
-        jreq.write(arg0, arg1);
-      }
-      return req;
-    };
-
-    /**
-     * If you send an HTTP request with the header 'Expect' set to the value '100-continue'
-     * and the server responds with an interim HTTP response with a status code of '100' and a continue handler
-     * has been set using this method, then the handler will be called.
-     * You can then continue to write data to the request body and later end it. This is normally used in conjunction with
-     * the send_head method to force the request header to be written before the request has ended.
-     *
-     * @param handler The handler
-     * @returns {req}
-     */
-    req.continueHandler = function(handler) {
-      jreq.continueHandler(handler);
-      return req;
-    };
-
-    /**
-     * Forces the head of the request to be written before end is called on the request. This is normally used
-     * to implement HTTP 100-continue handling, see continue_handler for more information.
-     *
-     * @returns req
-     */
-    req.sendHead = function() {
-      jreq.sendHead();
-      return req;
-    };
-
-    /**
-     * Ends the request. If no data has been written to the request body, and send_head has not been called then
-     * the actual request won't get written until this method gets called.
-     * Once the request has ended, it cannot be used any more, and if keep alive is true the underlying connection will
-     * be returned to the HttpClient pool so it can be assigned to another request.
-     * @param arg0 The data to write
-     * @param arg1 The charset to use
-     */
-    req.end = function(arg0, arg1) {
-      if (arg0) {
-        if (arg1) {
-          jreq.end(arg0, arg1);
-        } else {
-          jreq.end(arg0);
-        }
-      } else {
-        jreq.end();
-      }
-    };
-
-    /**
-     * Set the timeout
-     *
-     * @param t The timeout to set
-     */
-    req.timeout = function(t) {
-      jreq.setTimeout(t);
-    };
-    return req;
-  }
-
-  /**
-   * An HTTP client.
-   * A client maintains a pool of connections to a specific host, at a specific port. The HTTP connections can act
-   * as pipelines for HTTP requests.
-   * It is used as a factory for HttpClientRequest instances which encapsulate the actual HTTP requests. It is also
-   * used as a factory for HTML5 WebSocket websockets.
-   * @type {{}}
-   */
-  var client = {};
-  sslSupport(client, jclient);
-  clientSslSupport(client, jclient);
-  tcpSupport(client, jclient);
+  // TODO: document client SSL and TCP support
+  sslSupport(this, jclient);
+  clientSslSupport(this, jclient);
+  tcpSupport(this, jclient);
 
   /**
    * Set the exception handler.
    *
-   * @param handler The handler which is called on an exception
-   * @returns {{}}
+   * @param {Handler} handler The handler which is called on an exception
+   * @returns {module:vertx/http.HttpClient}
    */
-  client.exceptionHandler = function(handler) {
+  this.exceptionHandler = function(handler) {
     jclient.exceptionHandler(handler);
-    return client;
-  };
+    return that;
+  }
 
   /**
    * Get or set the maxium number of connections this client will pool
    *
-   * @param size
-   * @returns {*}
+   * @param {number} [size] the maximum number of connection
+   * @returns {number|module:vertx/http.HttpClient}
    */
-  client.maxPoolSize = function(size) {
+  this.maxPoolSize = function(size) {
     if (size === undefined) {
       return jclient.getMaxPoolSize();
     } else {
       jclient.setMaxPoolSize(size);
-      return client;
+      return that;
     }
-  };
+  }
+
   /**
-   * Get or set if the client use keep alive
+   * <p>
+   * Get or set if the client use keep alive. If <code>keepAlive</code> is
+   * <code>true</code> then, after the request has ended the connection will be
+   * returned to the pool where it can be used by another request. In this
+   * manner, many HTTP requests can be pipe-lined over an HTTP connection.
+   * Keep alive connections will not be closed until the <code>close()</code>
+   * method is invoked.</p>
+   * <p>
+   * If <code>keepAlive</code> is <code>false</code> then a new connection will
+   * be created for each request and it won't ever go in the pool, and the
+   * connection will closed after the response has been received. Even with no
+   * keep alive, the client will not allow more than <code>getMaxPoolSize()</code>
+   * connections to be created at any one time.</p> 
+   * <p>
+   * If <code>keepAlive</code> is <code>undefined</code> returns the current
+   * keep alive status of this client.
+   * </p>
    *
-   * @param size
-   * @returns {*}
+   * @param {boolean} [keepAlive]
+   * @returns {boolean|module:vertx/http.HttpClient}
    */
-  client.keepAlive = function(ka) {
+  this.keepAlive = function(ka) {
     if (ka === undefined) {
       return jclient.isKeepAlive();
     } else {
       jclient.setKeepAlive(ka);
-      return client;
+      return that;
     }
-  };
+  }
 
   /**
-   * Get or set the port that the client will attempt to connect to on the server on. The default value is 80
-   * @param p
-   * @returns {*}
+   * Get or set the port that the client will attempt to connect to on the
+   * server on. The default value is 80 
+   *
+   * @param {number} [port] The port to connect on.
+   * @returns {number|module:vertx/http.HttpClient}
    */
-  client.port = function(p) {
+  this.port = function(p) {
     if (p === undefined) {
       return jclient.getPort();
     } else {
       jclient.setPort(p);
-      return client;
+      return that;
     }
-  };
+  }
 
   /**
-   *  Get or set the host name or ip address that the client will attempt to connect to on the server on
+   *  Get or set the host name or ip address that the client will attempt to
+   *  connect to on the server on
    *
-   * @param h
-   * @returns {*}
+   * @param {string} [host] The host name or IP address.
+   * @returns {string|module:vertx/http.HttpClient}
    */
-  client.host = function(h) {
+  this.host = function(h) {
     if (h === undefined) {
       return jclient.getHost();
     } else {
       jclient.setHost(h);
-      return client;
+      return that;
     }
-  };
+  }
+
   /**
-   * Get or set if the host should be verified.  If set then the client will try to validate the remote server's certificate
-   * hostname against the requested host. Should default to 'true'.
+   * Get or set if the host should be verified.  If set then the client will
+   * try to validate the remote server's certificate hostname against the
+   * requested host. Should default to 'true'.
    * This method should only be used in SSL mode
    *
-   * @param h
-   * @returns {*}
+   * @param {boolean} verify whether or not to verify hosts 
+   * @returns {boolean|module:vertx/http.HttpClient}
    */
-  client.verifyHost = function(h) {
+  this.verifyHost = function(h) {
     if (h === undefined) {
       return jclient.isVerifyHost();
     } else {
       jclient.setVerifyHost(h);
-      return client;
+      return that;
     }
-  };
+  }
 
   /**
    * Attempt to connect an HTML5 websocket to the specified URI.
@@ -1108,9 +947,9 @@ http.createHttpClient = function() {
    * @param uri A relative URI where to connect the websocket on the host, e.g. /some/path
    * @param handler The handler to be called with the WebSocket
    */
-  client.connectWebsocket = function(uri, handler) {
-    jclient.connectWebsocket(uri, wrapWebsocketHandler(false, handler));
-  };
+  this.connectWebsocket = function(uri, handler) {
+    jclient.connectWebsocket(uri, wrappedWebsocketHandler(false, handler));
+  }
 
   /**
    * This is a quick version of the get method where you do not want to do anything with the request
@@ -1123,9 +962,9 @@ http.createHttpClient = function() {
 
    * @returns {*}
    */
-  client.getNow = function(uri, handler) {
-    return wrapRequest(jclient.getNow(uri, wrapResponseHandler(handler)));
-  };
+  this.getNow = function(uri, handler) {
+    return new http.HttpClientRequest(jclient.getNow(uri, wrapResponseHandler(handler)));
+  }
 
   /**
    * his method returns an request which represents an HTTP OPTIOS request with the specified uri.
@@ -1135,9 +974,9 @@ http.createHttpClient = function() {
    * @param handler The handler to be called
    * @returns {*}
    */
-  client.options = function(uri, handler) {
-    return wrapRequest(jclient.options(uri, wrapResponseHandler(handler)));
-  };
+  this.options = function(uri, handler) {
+    return new http.HttpClientRequest(jclient.options(uri, wrapResponseHandler(handler)));
+  }
 
   /**
    * his method returns an request which represents an HTTP GET request with the specified uri.
@@ -1147,9 +986,9 @@ http.createHttpClient = function() {
    * @param handler The handler to be called
    * @returns {*}
    */
-  client.get =function(uri, handler) {
-    return wrapRequest(jclient.get(uri, wrapResponseHandler(handler)));
-  };
+  this.get =function(uri, handler) {
+    return new http.HttpClientRequest(jclient.get(uri, wrapResponseHandler(handler)));
+  }
 
   /**
    * his method returns an request which represents an HTTP HEAD request with the specified uri.
@@ -1159,9 +998,9 @@ http.createHttpClient = function() {
    * @param handler The handler to be called
    * @returns {*}
    */
-  client.head =function(uri, handler) {
-    return wrapRequest(jclient.head(uri, wrapResponseHandler(handler)));
-  };
+  this.head =function(uri, handler) {
+    return new http.HttpClientRequest(jclient.head(uri, wrapResponseHandler(handler)));
+  }
 
   /**
    * his method returns an request which represents an HTTP POST request with the specified uri.
@@ -1171,9 +1010,9 @@ http.createHttpClient = function() {
    * @param handler The handler to be called
    * @returns {*}
    */
-  client.post = function(uri, handler) {
-    return wrapRequest(jclient.post(uri, wrapResponseHandler(handler)));
-  };
+  this.post = function(uri, handler) {
+    return new http.HttpClientRequest(jclient.post(uri, wrapResponseHandler(handler)));
+  }
 
   /**
    * his method returns an request which represents an HTTP PUT request with the specified uri.
@@ -1183,9 +1022,9 @@ http.createHttpClient = function() {
    * @param handler The handler to be called
    * @returns {*}
    */
-  client.put = function(uri, handler) {
-    return wrapRequest(jclient.put(uri, wrapResponseHandler(handler)));
-  };
+  this.put = function(uri, handler) {
+    return new http.HttpClientRequest(jclient.put(uri, wrapResponseHandler(handler)));
+  }
 
   /**
    * his method returns an request which represents an HTTP DELETE request with the specified uri.
@@ -1195,9 +1034,9 @@ http.createHttpClient = function() {
    * @param handler The handler to be called
    * @returns {*}
    */
-  client.delete = function(uri, handler) {
-    return wrapRequest(jclient.delete(uri, wrapResponseHandler(handler)));
-  };
+  this.delete = function(uri, handler) {
+    return new http.HttpClientRequest(jclient.delete(uri, wrapResponseHandler(handler)));
+  }
 
   /**
    * his method returns an request which represents an HTTP TRACE request with the specified uri.
@@ -1207,9 +1046,9 @@ http.createHttpClient = function() {
    * @param handler The handler to be called
    * @returns {*}
    */
-  client.trace = function(uri, handler) {
-    return wrapRequest(jclient.trace(uri, wrapResponseHandler(handler)));
-  };
+  this.trace = function(uri, handler) {
+    return new http.HttpClientRequest(jclient.trace(uri, wrapResponseHandler(handler)));
+  }
 
   /**
    * his method returns an request which represents an HTTP CONNECT request with the specified uri.
@@ -1219,9 +1058,9 @@ http.createHttpClient = function() {
    * @param handler The handler to be called
    * @returns {*}
    */
-  client.connect = function(uri, handler) {
-    return wrapRequest(jclient.connect(uri, wrapResponseHandler(handler)));
-  };
+  this.connect = function(uri, handler) {
+    return new http.HttpClientRequest(jclient.connect(uri, wrapResponseHandler(handler)));
+  }
 
   /**
    * his method returns an request which represents an HTTP PATCH request with the specified uri.
@@ -1231,9 +1070,9 @@ http.createHttpClient = function() {
    * @param handler The handler to be called
    * @returns {*}
    */
-  client.patch = function(uri, handler) {
-    return wrapRequest(jclient.patch(uri, wrapResponseHandler(handler)));
-  };
+  this.patch = function(uri, handler) {
+    return new http.HttpClientRequest(jclient.patch(uri, wrapResponseHandler(handler)));
+  }
 
   /**
    * his method returns an request which represents an HTTP request with the specified uri.
@@ -1244,18 +1083,233 @@ http.createHttpClient = function() {
    * @param handler The handler to be called
    * @returns {*}
    */
-  client.request = function(method, uri, handler) {
-    return wrapRequest(jclient.request(method, uri, wrapResponseHandler(handler)));
-  };
+  this.request = function(method, uri, handler) {
+    return new http.HttpClientRequest(jclient.request(method, uri, wrapResponseHandler(handler)));
+  }
 
   /**
    * Close the client
    */
-  client.close = function() {
+  this.close = function() {
     jclient.close();
-  };
-  return client;
+  }
+
+  /** @private */
+  var wrapResponseHandler = function(handler) {
+    return function(jresp) {
+      handler(new http.HttpClientResponse(jresp));
+    }
+  }
+
 }
+
+/**
+ * @constructor
+ */
+http.HttpClientRequest = function(jreq) {
+  var that = this;
+  var reqHeaders = null;
+  writeStream(this, jreq);
+
+  /**
+   * Sets or gets whether the request should used HTTP chunked encoding or not.
+   *
+   * @param ch If val is true, this request will use HTTP chunked encoding, and each call to write to the body
+   *  will correspond to a new HTTP chunk sent on the wire. If chunked encoding is used the HTTP header
+   * 'Transfer-Encoding' with a value of 'Chunked' will be automatically inserted in the request.
+   * @returns {req}
+   */
+  this.chunked = function(ch) {
+    if (ch === undefined) {
+      return jreq.isChunked();
+    } else {
+      jreq.setChunked(ch);
+      return that;
+    }
+  }
+
+  /**
+   * Returns the headers for the requests
+   *
+   * @returns {reqHeaders} The headers
+   */
+  this.headers = function() {
+    if (!reqHeaders) {
+      reqHeaders = new MultiMap(jreq.headers());
+    }
+    return reqHeaders;
+  }
+
+  /**
+   * Put a header on the request
+   *
+   * @param k The name under which to store
+   * @param V the value to store
+   * @returns {req}
+   */
+  this.putHeader = function(k, v) {
+    jreq.putHeader(k, v);
+    return that;
+  }
+
+  /**
+   * Put muliple headers on the request
+   *
+   * @param k The name under which to store
+   * @param V the value to store
+   * @returns {req}
+   */
+  this.putAllHeaders = function(other) {
+    var hdrs = wrapped.headers();
+    for (var k in other) {
+      hdrs[k] = other[k];
+    }
+    return that;
+  }
+
+  /**
+   * Write a to the request body
+   * @param arg0
+   * @param arg1
+   * @returns {{}}
+   */
+  this.write = function(arg0, arg1) {
+    if (arg1 === undefined) {
+      jreq.write(arg0);
+    } else {
+      jreq.write(arg0, arg1);
+    }
+    return that;
+  }
+
+  /**
+   * If you send an HTTP request with the header 'Expect' set to the value '100-continue'
+   * and the server responds with an interim HTTP response with a status code of '100' and a continue handler
+   * has been set using this method, then the handler will be called.
+   * You can then continue to write data to the request body and later end it. This is normally used in conjunction with
+   * the send_head method to force the request header to be written before the request has ended.
+   *
+   * @param handler The handler
+   * @returns {req}
+   */
+  this.continueHandler = function(handler) {
+    jreq.continueHandler(handler);
+    return that;
+  }
+
+  /**
+   * Forces the head of the request to be written before end is called on the request. This is normally used
+   * to implement HTTP 100-continue handling, see continue_handler for more information.
+   *
+   * @returns req
+   */
+  this.sendHead = function() {
+    jreq.sendHead();
+    return that;
+  }
+
+  /**
+   * Ends the request. If no data has been written to the request body, and send_head has not been called then
+   * the actual request won't get written until this method gets called.
+   * Once the request has ended, it cannot be used any more, and if keep alive is true the underlying connection will
+   * be returned to the HttpClient pool so it can be assigned to another request.
+   * @param arg0 The data to write
+   * @param arg1 The charset to use
+   */
+  this.end = function(arg0, arg1) {
+    if (arg0) {
+      if (arg1) {
+        jreq.end(arg0, arg1);
+      } else {
+        jreq.end(arg0);
+      }
+    } else {
+      jreq.end();
+    }
+  }
+
+  /**
+   * Set the timeout
+   *
+   * @param t The timeout to set
+   */
+  this.timeout = function(t) {
+    jreq.setTimeout(t);
+  }
+}
+
+/**
+ * @constructor
+ */
+http.HttpClientResponse = function(jresp) {
+  var that = this;
+  var respHeaders = null;
+  var respTrailers = null;
+  readStream(this, jresp)
+
+  /**
+   * The HTTP status code of the response.
+   *
+   * @returns {code} The HTTP Status code
+   */
+  this.statusCode = function() {
+    return jresp.statusCode();
+  }
+
+  /**
+   * The HTTP Status message of the response
+   *
+   * @returns {code} The HTTP Status message
+   */
+  this.statusMessage = function() {
+    return jresp.statusMessage();
+  }
+
+  /**
+   * Get all the headers of the response.
+   *
+   * @returns {respHeaders} The headers
+   */
+  this.headers = function() {
+    if (!respHeaders) {
+      respHeaders = new MultiMap(jresp.headers());
+    }
+    return respHeaders;
+  }
+
+  /**
+   * Get all the trailing headers of the response.
+   *
+   * @returns {respTrailers}
+   */
+  this.trailers = function() {
+    if (!respTrailers) {
+      respTrailers = new MultiMap(jresp.trailers());
+    }
+    return respTrailers;
+  }
+
+  /**
+    * The Set-Cookie headers (including trailers)
+   *
+   * @returns {cookies} The cookies
+   */
+  this.cookies = function() {
+    return jresp.cookies();
+  }
+
+  /**
+   * Set a handler to receive the entire body in one go - do not use this for large bodies
+   *
+   * @param handler The handler to use
+   * @returns {resp}
+   */
+  this.bodyHandler = function(handler) {
+    jresp.bodyHandler(handler);
+    return that;
+  }
+}
+
 
 /**
  * This class allows you to do route requests based on the HTTP verb and the request URI, in a manner similar
@@ -1546,6 +1600,20 @@ http.RouteMatcher = function() {
     return j_rm;
   }
 }
+
+
+function wrappedWebsocketHandler(server, handler) {
+  return function(jwebsocket) {
+    handler(new http.WebSocket(jwebsocket, server));
+  }
+}
+
+function wrappedRequestHandler(handler) {
+  return function(jreq) {
+    handler(new http.HttpServerRequest(jreq));
+  }
+}
+
 
 
 module.exports = http;

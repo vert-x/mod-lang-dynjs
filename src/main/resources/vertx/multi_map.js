@@ -81,7 +81,7 @@ MultiMap = function(j_map) {
    *
    * @param {string} name The name under which the value should be stored
    * @param {string} value The value to store
-   * @returns {MultiMap}
+   * @returns {module:vertx/multi_map~MultiMap}
    */
   this.add = function(name, value) {
     j_map.add(name, value);
@@ -93,7 +93,7 @@ MultiMap = function(j_map) {
    *
    * @param {string} name The name under which the value should be stored
    * @param {string} value The value to store
-   * @returns {MultiMap}
+   * @returns {module:vertx/multi_map~MultiMap}
    */
   this.set = function(name, value) {
     j_map.set(name, value);
@@ -103,8 +103,8 @@ MultiMap = function(j_map) {
   /**
    * Set the content of the given map.
    *
-   * @param {MultiMap} The map to set
-   * @returns {MultiMap} self
+   * @param {module:vertx/multi_map~MultiMap} The map to set
+   * @returns {module:vertx/multi_map~MultiMap} self
    */
   this.setMap = function(map) {
     j_map.set(map._jmap);
@@ -115,7 +115,7 @@ MultiMap = function(j_map) {
    * Remove all values stored under the name
    *
    * @param {string} name The name for which all values should be removed
-   * @returns {MultiMap} self
+   * @returns {module:vertx/multi_map~MultiMap} self
    */
   this.remove = function(name) {
     j_map.remove(name);
@@ -125,7 +125,7 @@ MultiMap = function(j_map) {
   /**
    * Clears the map
    *
-   * @returns {MultiMap} self
+   * @returns {module:vertx/multi_map~MultiMap} self
    */
   this.clear = function() {
     j_map.clear();
