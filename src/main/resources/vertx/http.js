@@ -116,18 +116,14 @@ http.HttpServerRequest = function(jreq) {
   }
 
   /**
-   * @external org.vertx.java.core.net.NetSocket
-   * @see https://github.com/vert-x/vert.x/blob/master/vertx-core/src/main/java/org/vertx/java/core/net/NetSocket.java
-   */
-  /**
    *
-   * Get the raw Java NetSocket. Primarily for internal use, but if you really must
+   * Get the NetSocket. Primarily for internal use, but if you really must
    * roll your own websockets or some such, this will let you do that.
-   * @returns {org.vertx.java.core.net.NetSocket} The raw <code>NetSocket</code>
+   * @returns {module:vertx/net.NetSocket} The raw <code>NetSocket</code>.
    */
   this.netSocket = function() {
     if (netSocket === null) {
-      netSocket = net.__jsNetSocket(jreq.netSocket());
+      netSocket = new net.NetSocket(jreq.netSocket());
     }
     return netSocket;
   }
@@ -1281,18 +1277,14 @@ http.HttpClientResponse = function(jresp) {
   readStream(this, jresp)
 
   /**
-   * @external org.vertx.java.core.net.NetSocket
-   * @see https://github.com/vert-x/vert.x/blob/master/vertx-core/src/main/java/org/vertx/java/core/net/NetSocket.java
-   */
-  /**
    *
-   * Get the raw Java NetSocket. Primarily for internal use, but if you really must
+   * Get the NetSocket. Primarily for internal use, but if you really must
    * roll your own websockets or some such, this will let you do that.
-   * @returns {org.vertx.java.core.net.NetSocket} The raw <code>NetSocket</code>
+   * @returns {module:vertx/net.NetSocket} The raw <code>NetSocket</code>.
    */
   this.netSocket = function() {
     if (netSocket === null) {
-      netSocket = net.__jsNetSocket(jreq.netSocket());
+      netSocket = new net.NetSocket(jreq.netSocket());
     }
     return netSocket;
   }

@@ -39,7 +39,7 @@ writeStream = function(jsObj, jObj) {
     /**
      * Set a drain handler on the stream. If the write queue is full, then the
      * handler will be called when the write queue has been reduced to maxSize/2.
-     * See Pump for an example of this being used.
+     * See {@linkcode module:vertx/pump~Pump} for an example of this being used.
      * @param {Handler} handler the handler to call when the stream has been drained
      */
     drainHandler: function(handler) {

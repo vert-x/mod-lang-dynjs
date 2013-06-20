@@ -9,7 +9,7 @@ readStream = function(jsObj, jObj) {
     /**
      * Set a data handler. As data is read, the handler will be called with 
      * a Buffer containing the data read.
-     * @param {Handler} handler the handler to call
+     * @param {BodyHandler} handler the handler to call
      */
     dataHandler: function(handler) {
       jObj.dataHandler(handler);
