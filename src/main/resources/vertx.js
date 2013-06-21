@@ -113,6 +113,25 @@ vertx.currentContext = function() {
   return __jvertx.currentContext();
 }
 
+// For compatability with functions that aren't namespaced to the module.
+// For example: `vertx.createHttpServer()` instead of the namespaced
+// version `vertx.http.createHttpServer()`.
+// These are not documented any longer, and may be deprecated some day.
+function addProps(obj) {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      vertx[key] = obj[key];
+    }
+  }
+}
+addProps(vertx.net);
+addProps(vertx.http);
+addProps(vertx.timer);
+addProps(vertx.sockjs);
+addProps(vertx.parse_tools);
+addProps(vertx.shared_data);
+addProps(vertx.file_system);
+
 module.exports = vertx;
 
 // JSDoc @typedef declarations go here. This is primarily a documentation
