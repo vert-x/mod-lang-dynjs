@@ -57,12 +57,15 @@ net.createNetClient = function() {
 /**
  * Represents a TCP or SSL server.  
  * @constructor
+ * @mixes SSLSupport
+ * @mixes ServerSSLSupport
+ * @mixes TCPSupport
+ * @mixes ServerTCPSupport
  */
 net.NetServer = function() {
   var that = this;
   var jserver = __jvertx.createNetServer();
 
-  // TODO: Add docs for ssl and tcp support
   sslSupport(this, jserver);
   serverSslSupport(this, jserver);
   tcpSupport(this, jserver);
@@ -150,6 +153,9 @@ net.NetServer = function() {
  * </p>
  *
  * @constructor
+ * @mixes sslSupport~SSLSupport
+ * @mixes clientSslSupport~ClientSSLSupport
+ * @mixes tcpSupport~TCPSupport
  */
 net.NetClient = function() {
   var jclient = __jvertx.createNetClient();
@@ -248,13 +254,13 @@ net.NetClient = function() {
  * when a server accepts a connection.
  * </p>
  * <p>
- * It implements both {@linkcode readStream~ReadStream} and 
- * {@linkcode writeStream~WriteStream} so it can be used with 
+ * It implements both {@linkcode ReadStream} and 
+ * {@linkcode WriteStream} so it can be used with 
  * {@linkcode module:vertx/pump~Pump} to pump data with flow control.
  * </p>
  * @constructor
- * @mixes readStream~ReadStream
- * @mixes writeStream~WriteStream
+ * @mixes ReadStream
+ * @mixes WriteStream
  */
 net.NetSocket = function(jNetSocket) {
   var that = this;

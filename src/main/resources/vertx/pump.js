@@ -20,13 +20,13 @@ if (typeof module === 'undefined') {
 
 /** 
  * <p>
- * Pumps data from a {@linkcode readStream~ReadStream|ReadStream} to a 
- * {@linkcode writeStream~WriteStream|WriteStream} and performs flow control
+ * Pumps data from a {@linkcode ReadStream} to a 
+ * {@linkcode WriteStream} and performs flow control
  * where necessary to prevent the write stream from getting overloaded.
  * </p>
  * <p>
- * Instances of this class read bytes from a {@linkcode readStream~ReadStream|ReadStream}
- * and write them to a {@linkcode writeStream~WriteStream|WriteStream}. If data
+ * Instances of this class read bytes from a {@linkcode ReadStream}
+ * and write them to a {@linkcode WriteStream}. If data
  * can be read faster than it can be written this could result in the write
  * queue of the WriteStream growing without bound, eventually
  * causing it to exhaust all available RAM.
@@ -45,8 +45,8 @@ if (typeof module === 'undefined') {
  * </p>
  *
  * @constructor 
- * @param {readStream~ReadStream} readStream a ReadStream
- * @param {writeStream~WriteStream} writeStream a WriteStream
+ * @param {ReadStream} readStream a ReadStream
+ * @param {WriteStream} writeStream a WriteStream
  * */
 var Pump = function(rs, ws) {
 

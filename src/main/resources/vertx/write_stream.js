@@ -5,7 +5,7 @@ writeStream = function(jsObj, jObj) {
    * directly.
    * @mixin
    */
-  var WriteStream = {
+  WriteStream = {
     /**
      * Write some data to the stream. The data is put on an internal write
      * queue, and the write actually happens asynchronously. To avoid running

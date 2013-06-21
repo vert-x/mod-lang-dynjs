@@ -709,8 +709,8 @@ fileSystem.open = function(path, arg1, arg2, arg3, arg4) {
  * </p>
  * @constructor
  * @param {org.vertx.java.core.file.AsyncFile} asyncFile the underlying java representation of this AsyncFile
- * @mixes readStream~ReadStream
- * @mixes writeStream~WriteStream
+ * @mixes ReadStream
+ * @mixes WriteStream
  */
 
 fileSystem.AsyncFile = function(jaf) {

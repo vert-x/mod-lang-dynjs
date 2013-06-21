@@ -5,7 +5,7 @@ readStream = function(jsObj, jObj) {
    * directly.
    * @mixin
    */
-  var ReadStream = {
+  ReadStream = {
     /**
      * Set a data handler. As data is read, the handler will be called with 
      * a Buffer containing the data read.

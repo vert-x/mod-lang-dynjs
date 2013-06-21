@@ -156,8 +156,8 @@ sockJS.SockJSServer = function() {
 /**
  * You interact with SockJS clients through instances of SockJS socket.
  * The API is very similar to {@linkcode module:vertx/http.WebSocket}.
- * It implements both {@linkcode readStream~ReadStream} and 
- * {@linkcode writeStream~WriteStream} so it can be used with 
+ * It implements both {@linkcode ReadStream} and 
+ * {@linkcode WriteStream} so it can be used with 
  * {@linkcode module:vertx/pump~Pump} to pump data with flow control.
  *
  * @see https://github.com/vert-x/vert.x/blob/master/vertx-core/src/main/java/org/vertx/java/core/sockjs/SockJSSocket.java

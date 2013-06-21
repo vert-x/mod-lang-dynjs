@@ -91,7 +91,7 @@ http.createHttpClient = function() {
  * @class 
  * @param {org.vertx.java.core.http.HttpServerRequest} request the underlying
  * Java HttpServerRequest object
- * @mixes readStream~ReadStream
+ * @mixes ReadStream
  */
 http.HttpServerRequest = function(jreq) {
   var reqHeaders   = null;
@@ -291,7 +291,7 @@ http.HttpServerRequest = function(jreq) {
  *
  * @class
  * @param {org.vertx.java.core.http.HttpServerResponse} jresp the underlying java proxy
- * @mixes writeStream~WriteStream
+ * @mixes WriteStream
  */
 http.HttpServerResponse = function(jresp) {
   var that = this;
@@ -470,7 +470,7 @@ http.HttpServerResponse = function(jresp) {
  * @constructor
  * @param {org.vertx.java.core.http.HttpServerFileUpload} jupload the underlying java proxy object
  * @see UploadHandler
- * @mixes readStream~ReadStream
+ * @mixes ReadStream
  */
 http.HttpServerFileUpload = function(jupload) {
   readStream(this, jupload);
@@ -559,17 +559,17 @@ http.HttpServerFileUpload = function(jupload) {
  * <p>Represents an HTML 5 Websocket</p>
  * <p>Instances of this class are created and provided to the handler of an
  * {@linkcode HttpClient} when a successful websocket connect attempt occurs.</p>
- * <p>It implements both {@linkcode readStream~ReadStream|ReadStream} and 
- * {@linkcode writeStream~WriteStream|WriteStream} so it can be used with
- * {@linkcode module:vertx/Pump~Pump|Pump} to pump data with flow control.</p>
+ * <p>It implements both {@linkcode ReadStream} and {@linkcode WriteStream} so
+ * it can be used with {@linkcode module:vertx/Pump~Pump|Pump} to pump data
+ * with flow control.</p>
  *
  * @constructor
  *
  * @param {org.vertx.java.core.http.WebSocketBase} jWebSocket The java WebSocketBase object
  * @param {boolean} [server] whether this is a server-side websocket (default: false)
  * @see WebSocketHandler
- * @mixes readStream~ReadStream
- * @mixes writeStream~WriteStream
+ * @mixes ReadStream
+ * @mixes WriteStream
  */
 http.WebSocket = function(jwebsocket, server) {
   var headers = null;
@@ -696,10 +696,20 @@ http.WebSocket = function(jwebsocket, server) {
  * server.listen(8000, 'localhost');
  *
  * @class
+ * @mixes TCPSupport
+ * @mixes ServerTCPSupport
+ * @mixes SSLSupport
+ * @mixes ServerSSLSupport
  */
 http.HttpServer = function() {
   var that = this;
   var jserver = __jvertx.createHttpServer();
+
+
+  sslSupport(this, jserver);
+  serverSslSupport(this, jserver);
+  tcpSupport(this, jserver);
+  serverTcpSupport(this, jserver);
 
   /**
    * Set the request handler for the server. As HTTP requests are received by
@@ -784,12 +794,6 @@ http.HttpServer = function() {
   _to_java_server: function() {
     return jserver;
   }
-
-  // TODO: Document SSL and TCP support
-  sslSupport(this, jserver);
-  serverSslSupport(this, jserver);
-  tcpSupport(this, jserver);
-  serverTcpSupport(this, jserver);
 }
 
 
@@ -800,12 +804,14 @@ http.HttpServer = function() {
  * HTML5 {@linkcode module:vertx/http.WebSocket|websockets}.</p>
  *
  * @class
+ * @mixes TCPSupport
+ * @mixes SSLSupport
+ * @mixes ClientSSLSupport
  */
 http.HttpClient = function() {
   var that = this;
   var jclient = __jvertx.createHttpClient();
 
-  // TODO: document client SSL and TCP support
   sslSupport(this, jclient);
   clientSslSupport(this, jclient);
   tcpSupport(this, jclient);
@@ -1105,7 +1111,7 @@ http.HttpClient = function() {
  * </p>
  * <p>
  * This class supports both chunked and non-chunked HTTP.
- * It mixes in {@linkcode writeStream~WriteStream} so it can be used with
+ * It mixes in {@linkcode WriteStream} so it can be used with
  * {@linkcode module:vertx/pump~Pump} to pump data with flow control.
  * </p>
  * <p>
@@ -1126,7 +1132,7 @@ http.HttpClient = function() {
  *
  * @constructor
  * @param org.vertx.java.core.http.HttpClientRequest the underlying Java proxy
- * @mixes writeStream~WriteStream
+ * @mixes WriteStream
  */
 http.HttpClientRequest = function(jreq) {
   var that = this;
@@ -1263,13 +1269,13 @@ http.HttpClientRequest = function(jreq) {
  * method was called on an instance of {@linkcode module:vertx/http.HttpClient}.
  * </p>
  * <p>
- * It mixes in {@linkcode readStream~ReadStream} so it can be used with
+ * It mixes in {@linkcode ReadStream} so it can be used with
  * {@linkcode module:vertx/pump~Pump|Pump} to pump data with flow control.
  * </p>
  * @constructor
  * @param {org.vertx.java.core.http.HttpClientResponse} the underlying Java proxy
  * @see ResponseHandler
- * @mixes readStream~ReadStream
+ * @mixes ReadStream
  */
 http.HttpClientResponse = function(jresp) {
   var that = this;
