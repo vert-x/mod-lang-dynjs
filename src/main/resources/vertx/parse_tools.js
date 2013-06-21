@@ -58,11 +58,16 @@ if (typeof module === 'undefined') {
 var parseTools = {};
 
 /**
+ * @external org.vertx.java.core.parsetools.RecordParser
+ */
+
+/**
  * Create a new <code>RecordParser</code> instance, initially in delimited
  * mode, and where the delimiter can be represented by <code>delim</code>.
  * <code>output</code> will receive whole records which have been parsed.
  * @param {string} delim The record delimiter
  * @param {module:vertx/buffer~Buffer} output The output buffer
+ * @returns {org.vertx.java.core.parsetools.RecordParser} A delimited record parser
  */
 parseTools.createDelimitedParser = function(delim, output) {
   return org.vertx.java.core.parsetools.RecordParser.newDelimited(delim, output);
@@ -75,6 +80,7 @@ parseTools.createDelimitedParser = function(delim, output) {
  * parsed.
  * @param {number} size The record size
  * @param {module:vertx/buffer~Buffer} output The output buffer
+ * @returns {org.vertx.java.core.parsetools.RecordParser} A fixed size record parser
  */
 parseTools.createFixedParser = function(size, output) {
   return org.vertx.java.core.parsetools.RecordParser.newFixed(size, output);
