@@ -480,7 +480,7 @@ http.HttpServerFileUpload = function(jupload) {
    * @param {string} filename The file to which it wil be streamed
    * @returns {http.HttpServerFileUpload}
    */
-  upload.streamToFileSystem = function(filename) {
+  this.streamToFileSystem = function(filename) {
     jupload.streamToFileSystem(filename);
     return this;
   };
@@ -539,21 +539,21 @@ http.HttpServerFileUpload = function(jupload) {
     return jupload.size();
   }
 
-  /**
-   * An <code>UploadHandler</code> is a {@linkcode Handler} that accepts a
-   * {@linkcode module:vertx/http.HttpServerFileUpload|HttpServerFileUpload} 
-   * object as it's parameter. This allows server code to handle and process
-   * uploaded files from HTTP clients.
-   * @typedef {function} UploadHandler
-   * @param {module:vertx/http.HttpServerFileUpload} upload The file being uploaded
-   */
-  var wrapUploadHandler = function(handler) {
-    return function(jupload) {
-      handler(new http.HttpServerFileUpload(jupload));
-    }
-  }
 }
 
+/**
+ * An <code>UploadHandler</code> is a {@linkcode Handler} that accepts a
+ * {@linkcode module:vertx/http.HttpServerFileUpload|HttpServerFileUpload} 
+ * object as it's parameter. This allows server code to handle and process
+ * uploaded files from HTTP clients.
+ * @typedef {function} UploadHandler
+ * @param {module:vertx/http.HttpServerFileUpload} upload The file being uploaded
+ */
+var wrapUploadHandler = function(handler) {
+  return function(jupload) {
+    handler(new http.HttpServerFileUpload(jupload));
+  }
+}
 
 /**
  * <p>Represents an HTML 5 Websocket</p>
