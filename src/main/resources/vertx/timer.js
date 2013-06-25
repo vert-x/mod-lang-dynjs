@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-if (typeof module === 'undefined') {
+if (typeof __vertxload === 'string') {
   throw "Use require() to load Vert.x API modules"
 }
+
 /** 
  * A TimerId is just a number that identifies a given timer.
  * @see module:vertx/timer

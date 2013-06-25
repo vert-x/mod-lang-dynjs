@@ -104,14 +104,18 @@ public class DynJSVerticleFactory implements VerticleFactory {
         try {
             if (scriptFile.exists()) {
                 context.getGlobalObject().addLoadPath(scriptFile.getParent());
+                context.getGlobalObject().put("__vertxload", this.getClass().getName());
                 ret = runner.withContext(context).withSource(scriptFile).execute();
+                context.getGlobalObject().remove("__vertxload");
             } else {
                 InputStream is = runtime.getConfig().getClassLoader().getResourceAsStream(scriptName);
                 if (is == null) {
                     throw new FileNotFoundException("Cannot find script: " + scriptName);
                 }
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                context.getGlobalObject().put("__vertxload", this.getClass().getName());
                 ret = runner.withContext(context).withSource(reader).execute();
+                context.getGlobalObject().remove("__vertxload");
                 try {
                     is.close();
                 } catch (IOException e) {

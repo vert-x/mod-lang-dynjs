@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-if (typeof module === 'undefined') {
+if (typeof __vertxload === 'string') {
   throw "Use require() to load Vert.x API modules"
 }
 

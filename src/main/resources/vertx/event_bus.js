@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-if (typeof module === 'undefined') {
+if (typeof __vertxload === 'string') {
   throw "Use require() to load Vert.x API modules"
 }
+
 
 /**
  * Message handlers receive event_bus messages as JSON.
@@ -190,8 +191,19 @@ function wrappedHandler(handler) {
     handle: function(jMsg) {
       var body = jMsg.body();
 
-      if (body && typeof body === 'org.vertx.java.core.json.JsonObject') {
-        // Convert to JS JSON
+      if (typeof body === 'object') {
+        var clazz = body.getClass();
+        if (clazz === jsonObjectClass || clazz === jsonArrayClass) {
+          // Convert to JS JSON
+          if (body) {
+            body = JSON.parse(body.encode());
+          } else {
+            body = undefined;
+          }
+        }
+      } else if (body && typeof body === 'org.vertx.java.core.json.JsonObject') {
+        // DynJS returns a fully qualified class name for `typeof` on most
+        // java objects, so we need to check for this too.
         body = JSON.parse(body.encode());
       }
 
@@ -237,8 +249,7 @@ function convertMessage(message) {
     case 'org.vertx.java.core.buffer.Buffer':
       break;
     case 'number':
-      message = (message % 1 === 0) ? message 
-                                    : java.lang.Double.parseDouble(message.toString())
+      message = new java.lang.Double(message);
       break;
     case 'object':
       // If null then we just wrap it as an empty JSON message

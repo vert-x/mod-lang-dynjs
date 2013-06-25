@@ -36,7 +36,7 @@ var reply = {
 }
 
 function assertSent(msg) {
-  vassert.assertEquals(sent.price, msg.price);
+  vassert.assertTrue(sent.price === msg.price);
   vassert.assertEquals(sent.name, msg.name);
 }
 

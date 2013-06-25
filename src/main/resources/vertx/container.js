@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-if (typeof module === 'undefined') {
+if (typeof __vertxload === 'string') {
   throw "Use require() to load Vert.x API modules"
 }
+
 /** 
  * A DeploymentId is used to identify a specific verticle deployment.
  * @see module:vertx/container

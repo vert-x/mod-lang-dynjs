@@ -20,9 +20,34 @@ var vassert = vertxTest.vassert;
 
 load("script1.js");
 
+function testVertxLoad() {
+  vassert.assertTrue("Expected undefined: " + typeof __vertxload, typeof __vertxload === 'undefined');
+  load('script3.js');
+  vassert.assertTrue(typeof loader === 'string');
+  vassert.testComplete();
+}
+
 function testScriptLoading() {
   vassert.assertTrue(func1() === 'foo');
   vassert.testComplete();
+}
+
+// Test that you can't use load() to load the vert.x CommonJS modules
+function testCantLoadModules() {
+  try {
+    load("vertx.js");
+    vassert.fail("Shouldn't be able to use load() for vertx anymore");
+  } catch (err) {
+    // OK
+  }
+  vassert.testComplete()
+}
+
+var f = require("./mod")
+function testLoadInCommonJSModuleDoesntPolluteGlobal() {
+  vassert.assertTrue(f() == "blah");
+  vassert.assertTrue(typeof foo === 'undefined')
+  vassert.testComplete()
 }
 
 vertxTest.startTests(this);
