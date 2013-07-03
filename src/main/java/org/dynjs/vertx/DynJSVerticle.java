@@ -4,7 +4,9 @@ import java.io.FileNotFoundException;
 
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.InitializationListener;
+import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.Runner;
+import org.dynjs.runtime.Types;
 import org.vertx.java.platform.Verticle;
 
 public class DynJSVerticle extends Verticle {
@@ -32,8 +34,11 @@ public class DynJSVerticle extends Verticle {
         rootContext = initializeRootContext();
         try {
             factory.getRuntime().clearModuleCache();
-            factory.loadScript(this.rootContext, this.scriptName);
-        } catch (FileNotFoundException e) {
+            //factory.loadScript(this.rootContext, this.scriptName);
+            JSFunction loadFn = (JSFunction) this.rootContext.getGlobalObject().get(this.rootContext, "load" );
+            this.rootContext.call( loadFn, Types.UNDEFINED, this.scriptName );
+        //} catch (FileNotFoundException e) {
+        } catch (Exception e) {
             System.err.println("Cannot load script: " + this.scriptName);
             e.printStackTrace();
             throw new RuntimeException("Cannot start verticle", e);

@@ -30,6 +30,7 @@ import org.dynjs.runtime.DynObject;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.GlobalObject;
 import org.dynjs.runtime.GlobalObjectFactory;
+import org.dynjs.runtime.LexicalEnvironment;
 import org.dynjs.runtime.Runner;
 import org.vertx.java.core.Vertx;
 import org.vertx.java.core.logging.Logger;
@@ -104,18 +105,22 @@ public class DynJSVerticleFactory implements VerticleFactory {
         try {
             if (scriptFile.exists()) {
                 context.getGlobalObject().addLoadPath(scriptFile.getParent());
-                context.getGlobalObject().put("__vertxload", this.getClass().getName());
+                //context.getGlobalObject().put("__vertxload", this.getClass().getName());
+                LexicalEnvironment localEnv = context.getVariableEnvironment();
+                localEnv.getRecord().createMutableBinding( context, "__vertxload", true );
+                localEnv.getRecord().setMutableBinding(context, "__vertxload", "true", false );
                 ret = runner.withContext(context).withSource(scriptFile).execute();
-                context.getGlobalObject().remove("__vertxload");
+                //context.getGlobalObject().remove("__vertxload");
             } else {
                 InputStream is = runtime.getConfig().getClassLoader().getResourceAsStream(scriptName);
                 if (is == null) {
                     throw new FileNotFoundException("Cannot find script: " + scriptName);
                 }
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-                context.getGlobalObject().put("__vertxload", this.getClass().getName());
+                LexicalEnvironment localEnv = context.getVariableEnvironment();
+                localEnv.getRecord().createMutableBinding( context, "__vertxload", true );
+                localEnv.getRecord().setMutableBinding(context, "__vertxload", "true", false );
                 ret = runner.withContext(context).withSource(reader).execute();
-                context.getGlobalObject().remove("__vertxload");
                 try {
                     is.close();
                 } catch (IOException e) {
