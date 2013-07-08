@@ -35,160 +35,18 @@ var reply = {
   status: 123
 }
 
-function assertSent(msg) {
+var assertSent = function(msg) {
   vassert.assertTrue(sent.price === msg.price);
   vassert.assertEquals(sent.name, msg.name);
 }
 
 
-function assertReply(rep) {
+var assertReply = function(rep) {
   vassert.assertEquals(reply.desc, rep.desc);
   vassert.assertTrue(reply.status === rep.status);
 }
 
-function testSimple() {
-  var handled = false;
-  var ebus = eb.registerHandler(address, function MyHandler(msg, replier) {
-    vassert.assertTrue(!handled);
-    assertSent(msg);
-    eb.unregisterHandler(address, MyHandler);
-    handled = true;
-    vassert.testComplete();
-  });
-  vassert.assertTrue(ebus === eb);
-  vassert.assertTrue(eb.send(address, sent) === eb);
-}
-
-function testEmptyMessage() {
-
-  var handled = false;
-  var ebus = eb.registerHandler(address, function MyHandler(msg, replier) {
-    vassert.assertTrue(!handled);
-    vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
-    handled = true;
-    vassert.testComplete();
-  });
-  vassert.assertTrue(ebus === eb);
-  vassert.assertTrue(eb.send(address, emptySent) === eb);
-}
-
-
-function testUnregister() {
-
-  var handled = false;
-  var MyHandler = function(msg, replier) {
-    vassert.assertTrue(!handled);
-    assertSent(msg);
-    vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
-    // Unregister again - should do nothing
-    vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
-    handled = true;
-    // Wait a little while to allow any other messages to arrive
-    timers.setTimer(100, function() {
-      vassert.testComplete();
-    });
-  }
-  var ebus = eb.registerHandler(address, MyHandler);
-
-  for (var i = 0; i < 2; i++) {
-    vassert.assertTrue(eb.send(address, sent) === eb);
-  }
-}
-
-function testWithReply() {
-
-  var handled = false;
-  var ebus = eb.registerHandler(address, function MyHandler(msg, replier) {
-    vassert.assertTrue(!handled);
-    assertSent(msg);
-    vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
-    handled = true;
-    replier(reply);
-  });
-  vassert.assertTrue(ebus === eb);
-
-  ebus = eb.send(address, sent, function(reply) {
-    assertReply(reply);
-    vassert.testComplete();
-  });
-  vassert.assertTrue(ebus === eb);
-}
-
-function testReplyOfReplyOfReply() {
-
-  var ebus = eb.registerHandler(address, function MyHandler(msg, replier) {
-    vassert.assertEquals("message", msg);
-    replier("reply", function(reply, replier) {
-      vassert.assertEquals("reply-of-reply", reply);
-      replier("reply-of-reply-of-reply");
-      vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
-    });
-  });
-  vassert.assertTrue(ebus === eb);
-
-  ebus = eb.send(address, "message", function(reply, replier) {
-    vassert.assertEquals("reply", reply);
-    replier("reply-of-reply", function(reply) {
-      vassert.assertEquals("reply-of-reply-of-reply", reply);
-      vassert.testComplete();
-    });
-  });
-  vassert.assertTrue(ebus === eb);
-}
-
-function testEmptyReply() {
-
-  var handled = false;
-  var ebus = eb.registerHandler(address, function MyHandler(msg, replier) {
-    vassert.assertTrue(!handled);
-    assertSent(msg);
-    vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
-    handled = true;
-    replier({});
-  });
-  vassert.assertTrue(ebus === eb);
-
-  ebus = eb.send(address, sent, function(reply) {
-    vassert.testComplete();
-  });
-  vassert.assertTrue(ebus === eb);
-  vassert.assertTrue(eb.send(address, sent) === eb);
-}
-
-function testEchoString() {
-  echo("foo");
-}
-
-function testEchoNumber1() {
-  echo(1234);
-}
-
-function testEchoNumber2() {
-  echo(1.2345);
-}
-
-function testEchoBooleanTrue() {
-  echo(true);
-}
-
-function testEchoBooleanFalse() {
-  echo(false);
-}
-
-function testEchoJson() {
-  echo(sent);
-}
-
-function testEchoBuffer() {
-  echo(new Buffer());
-}
-
-function testEchoNull() {
-  echo(null);
-}
-
-
-function echo(msg) {
+var echo = function(msg) {
   var ebus = eb.registerHandler(address, function MyHandler(received, replier) {
     eb.unregisterHandler(address, MyHandler);
     replier(received);
@@ -206,5 +64,148 @@ function echo(msg) {
   });
 }
 
-vertxTest.startTests(this);
+var EventBusTest = {
+  testSimple: function() {
+    var handled = false;
+    var ebus = eb.registerHandler(address, function MyHandler(msg, replier) {
+      vassert.assertTrue(!handled);
+      assertSent(msg);
+      eb.unregisterHandler(address, MyHandler);
+      handled = true;
+      vassert.testComplete();
+    });
+    vassert.assertTrue(ebus === eb);
+    vassert.assertTrue(eb.send(address, sent) === eb);
+  },
+
+  testEmptyMessage: function() {
+
+    var handled = false;
+    var ebus = eb.registerHandler(address, function MyHandler(msg, replier) {
+      vassert.assertTrue(!handled);
+      vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
+      handled = true;
+      vassert.testComplete();
+    });
+    vassert.assertTrue(ebus === eb);
+    vassert.assertTrue(eb.send(address, emptySent) === eb);
+  },
+
+
+  testUnregister: function() {
+
+    var handled = false;
+    var MyHandler = function(msg, replier) {
+      vassert.assertTrue(!handled);
+      assertSent(msg);
+      vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
+      // Unregister again - should do nothing
+      vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
+      handled = true;
+      // Wait a little while to allow any other messages to arrive
+      timers.setTimer(100, function() {
+        vassert.testComplete();
+      });
+    }
+    var ebus = eb.registerHandler(address, MyHandler);
+
+    for (var i = 0; i < 2; i++) {
+      vassert.assertTrue(eb.send(address, sent) === eb);
+    }
+  },
+
+  testWithReply: function() {
+
+    var handled = false;
+    var ebus = eb.registerHandler(address, function MyHandler(msg, replier) {
+      vassert.assertTrue(!handled);
+      assertSent(msg);
+      vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
+      handled = true;
+      replier(reply);
+    });
+    vassert.assertTrue(ebus === eb);
+
+    ebus = eb.send(address, sent, function(reply) {
+      assertReply(reply);
+      vassert.testComplete();
+    });
+    vassert.assertTrue(ebus === eb);
+  },
+
+  testReplyOfReplyOfReply: function() {
+
+    var ebus = eb.registerHandler(address, function MyHandler(msg, replier) {
+      vassert.assertEquals("message", msg);
+      replier("reply", function(reply, replier) {
+        vassert.assertEquals("reply-of-reply", reply);
+        replier("reply-of-reply-of-reply");
+        vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
+      });
+    });
+    vassert.assertTrue(ebus === eb);
+
+    ebus = eb.send(address, "message", function(reply, replier) {
+      vassert.assertEquals("reply", reply);
+      replier("reply-of-reply", function(reply) {
+        vassert.assertEquals("reply-of-reply-of-reply", reply);
+        vassert.testComplete();
+      });
+    });
+    vassert.assertTrue(ebus === eb);
+  },
+
+  testEmptyReply: function() {
+
+    var handled = false;
+    var ebus = eb.registerHandler(address, function MyHandler(msg, replier) {
+      vassert.assertTrue(!handled);
+      assertSent(msg);
+      vassert.assertTrue(eb.unregisterHandler(address, MyHandler) === eb);
+      handled = true;
+      replier({});
+    });
+    vassert.assertTrue(ebus === eb);
+
+    ebus = eb.send(address, sent, function(reply) {
+      vassert.testComplete();
+    });
+    vassert.assertTrue(ebus === eb);
+    vassert.assertTrue(eb.send(address, sent) === eb);
+  },
+
+  testEchoString: function() {
+    echo("foo");
+  },
+
+  testEchoNumber1: function() {
+    echo(1234);
+  },
+
+  testEchoNumber2: function() {
+    echo(1.2345);
+  },
+
+  testEchoBooleanTrue: function() {
+    echo(true);
+  },
+
+  testEchoBooleanFalse: function() {
+    echo(false);
+  },
+
+  testEchoJson: function() {
+    echo(sent);
+  },
+
+  testEchoBuffer: function() {
+    echo(new Buffer());
+  },
+
+  testEchoNull: function() {
+    echo(null);
+  }
+}
+
+vertxTest.startTests(EventBusTest);
 

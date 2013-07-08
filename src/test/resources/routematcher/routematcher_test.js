@@ -28,94 +28,119 @@ var params = { "name" : "foo", "version" : "v0.1"};
 var re_params = { "param0" : "foo", "param1" :"v0.1"};
 var regex = "\\/([^\\/]+)\\/([^\\/]+)";
 
+RouteMatcherTest = {
+  testGetWithPattern: function() {
+    route('get', false, "/:name/:version", params, "/foo/v0.1")
+  },
 
-function testGetWithPattern() {
-  route('get', false, "/:name/:version", params, "/foo/v0.1")
-}
+  testGetWithRegEx: function() {
+    route('get', true, regex, re_params, "/foo/v0.1");
+  },
 
-function testGetWithRegEx() {
-  route('get', true, regex, re_params, "/foo/v0.1");
-}
+  testPutWithPattern: function() {
+    route('put', false, "/:name/:version", params, "/foo/v0.1");
+  },
 
-function testPutWithPattern() {
-  route('put', false, "/:name/:version", params, "/foo/v0.1");
-}
+  testPutWithRegEx: function() {
+    route('put', true, regex, re_params, "/foo/v0.1");
+  },
 
-function testPutWithRegEx() {
-  route('put', true, regex, re_params, "/foo/v0.1");
-}
+  testPostWithPattern: function() {
+    route('post', false, "/:name/:version", params, "/foo/v0.1");
+  },
 
-function testPostWithPattern() {
-  route('post', false, "/:name/:version", params, "/foo/v0.1");
-}
+  testPostWithRegEx: function() {
+    route('post', true, regex, re_params, "/foo/v0.1");
+  },
 
-function testPostWithRegEx() {
-  route('post', true, regex, re_params, "/foo/v0.1");
-}
+  testDeleteWithPattern: function() {
+    route('delete', false, "/:name/:version", params, "/foo/v0.1");
+  },
 
-function testDeleteWithPattern() {
-  route('delete', false, "/:name/:version", params, "/foo/v0.1");
-}
+  testDeleteWithRegEx: function() {
+    route('delete', true, regex, re_params, "/foo/v0.1");
+  },
 
-function testDeleteWithRegEx() {
-  route('delete', true, regex, re_params, "/foo/v0.1");
-}
+  testOptionsWithPattern: function() {
+    route('options', false, "/:name/:version", params, "/foo/v0.1");
+  },
 
-function testOptionsWithPattern() {
-  route('options', false, "/:name/:version", params, "/foo/v0.1");
-}
+  testOptionsWithRegEx: function() {
+    route('options', true, regex, re_params, "/foo/v0.1");
+  },
 
-function testOptionsWithRegEx() {
-  route('options', true, regex, re_params, "/foo/v0.1");
-}
+  testHeadWithPattern: function() {
+    route('head', false, "/:name/:version", params, "/foo/v0.1");
+  },
 
-function testHeadWithPattern() {
-  route('head', false, "/:name/:version", params, "/foo/v0.1");
-}
+  testHeadWithRegEx: function() {
+    route('head', true, regex, re_params, "/foo/v0.1");
+  },
 
-function testHeadWithRegEx() {
-  route('head', true, regex, re_params, "/foo/v0.1");
-}
+  testTraceWithPattern: function() {
+    route('trace', false, "/:name/:version", params, "/foo/v0.1");
+  },
 
-function testTraceWithPattern() {
-  route('trace', false, "/:name/:version", params, "/foo/v0.1");
-}
+  testTraceWithRegEx: function() {
+    route('trace', true, regex, re_params, "/foo/v0.1");
+  },
 
-function testTraceWithRegEx() {
-  route('trace', true, regex, re_params, "/foo/v0.1");
-}
+  testPatchWithPattern: function() {
+    route('patch', false, "/:name/:version", params, "/foo/v0.1");
+  },
 
-function testPatchWithPattern() {
-  route('patch', false, "/:name/:version", params, "/foo/v0.1");
-}
+  testPatchWithRegEx: function() {
+    route('patch', true, regex, re_params, "/foo/v0.1");
+  },
 
-function testPatchWithRegEx() {
-  route('patch', true, regex, re_params, "/foo/v0.1");
-}
+  testConnectWithPattern: function() {
+    route('connect', false, "/:name/:version", params, "/foo/v0.1");
+  },
 
-function testConnectWithPattern() {
-  route('connect', false, "/:name/:version", params, "/foo/v0.1");
-}
+  testConnectWithRegEx: function() {
+    route('connect', true, regex, re_params, "/foo/v0.1");
+  },
 
-function testConnectWithRegEx() {
-  route('connect', true, regex, re_params, "/foo/v0.1");
-}
+  testAllWithPattern: function() {
+    route('all', false, "/:name/:version", params, "/foo/v0.1");
+  },
 
-function testAllWithPattern() {
-  route('all', false, "/:name/:version", params, "/foo/v0.1");
-}
+  testAllWithRegEx: function() {
+    route('all', true, regex, re_params, "/foo/v0.1");
+  },
 
-function testAllWithRegEx() {
-  route('all', true, regex, re_params, "/foo/v0.1");
-}
+  testRouteNoMatch: function() {
+    server.listen(9999, '0.0.0.0', function(serv) {
+      client.get('some-uri', function(resp) {
+        vassert.assertTrue(404 === resp.statusCode());
+        vassert.testComplete();
+      }).end();
+    });
+  },
 
-function testRouteNoMatch() {
-  server.listen(9999, '0.0.0.0', function(serv) {
-    client.get('some-uri', function(resp) {
-      vassert.assertTrue(404 === resp.statusCode());
-      vassert.testComplete();
-    }).end();
-  });
+  testInterceptAll: function() {
+    var count = 0
+    var handler = function(req) {
+      vassert.assertEquals(1, ++count)
+      // Now call the request handler of the routematcher
+      rm.call(req);
+    }
+
+    server.requestHandler(handler);
+
+    rm.get("/:name/:version", function(req) {
+      vassert.assertEquals(2, ++count);
+      req.response.end();
+    });
+
+    server.listen(9999, '0.0.0.0', function(serv) {
+      client.get("/foo/bar", function(resp) {
+        vassert.assertEquals("200", resp.statusCode().toString())
+        vassert.testComplete();
+      }).end();
+    });
+  }
+
 }
 
 function route(method, regex, pattern, params, uri) {
@@ -145,30 +170,7 @@ function route(method, regex, pattern, params, uri) {
   });
 }
 
-function testInterceptAll() {
-  var count = 0
-  var handler = function(req) {
-    vassert.assertEquals(1, ++count)
-    // Now call the request handler of the routematcher
-    rm.call(req);
-  }
-
-  server.requestHandler(handler);
-
-  rm.get("/:name/:version", function(req) {
-    vassert.assertEquals(2, ++count);
-    req.response.end();
-  });
-
-  server.listen(9999, '0.0.0.0', function(serv) {
-    client.get("/foo/bar", function(resp) {
-      vassert.assertEquals("200", resp.statusCode().toString())
-      vassert.testComplete();
-    }).end();
-  });
-}
-
-vertxTest.startTests(this);
+vertxTest.startTests(RouteMatcherTest);
 
 function vertxStop() {
   server.close(function() {

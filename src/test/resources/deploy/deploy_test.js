@@ -18,74 +18,77 @@ var container = require('vertx/container');
 var vertxTest = require('vertx_tests');
 var vassert = vertxTest.vassert;
 
-function testSimpleDeploy() {
-  container.deployVerticle("deploy/child.js", function(err, deployId) {
-    vassert.assertEquals(null, err);
-    vassert.assertNotNull(deployId);
-    vassert.testComplete();
-  });
-}
-
-function testDeployWithConfig() {
-  var conf = {'foo': 'bar'}
-  container.deployVerticle("deploy/child.js", conf, function(err, deployId) {
-    vassert.assertEquals(null, err);
-    // this should work?
-    //vassert.assertEquals('bar', container.config['foo']);
-    vassert.assertNotNull(deployId);
-    vassert.testComplete();
-  });
-}
-
-function testDeployWithNumInstances() {
-  container.deployVerticle("deploy/child.js", 12, function(err, deployId) {
-    vassert.assertEquals(null, err);
-    vassert.assertNotNull(deployId);
-    vassert.testComplete();
-  });
-}
-
-function testDeployWithConfigAndNumInstances() {
-  var conf = {foo: 'bar'}
-  container.deployVerticle("deploy/child.js", conf, 12, function(err, deployId) {
-    vassert.assertEquals(null, err);
-    vassert.assertNotNull(deployId);
-    vassert.testComplete();
-  });
-}
-
-function testDeployFail() {
-  container.deployVerticle("deploy/notexist.js", function(err, deployId) {
-    vassert.assertFalse(null === err);
-    vassert.assertEquals(null, deployId);
-    vassert.testComplete();
-  });
-}
-
-function testUndeploy() {
-  container.deployVerticle("deploy/child.js", function(err, deployId) {
-    container.undeployVerticle(deployId, function(err) {
-      vassert.assertTrue(null === err);
+DeployTest = {
+  testSimpleDeploy: function() {
+    container.deployVerticle("deploy/child.js", function(err, deployId) {
+      vassert.assertEquals(null, err);
+      vassert.assertTrue(deployId != null);
       vassert.testComplete();
     });
-  });
-}
+  },
 
-function testUndeployFail() {
-  container.deployVerticle("deploy/child.js", function(err, deployId) {
-    container.undeployVerticle('someotherid', function(err) {
+  testDeployWithConfig: function() {
+    var conf = {'foo': 'bar'}
+    container.deployVerticle("deploy/child.js", conf, function(err, deployId) {
+      vassert.assertEquals(null, err);
+      // this should work?
+      //vassert.assertEquals('bar', container.config['foo']);
+      vassert.assertTrue(deployId != null);
+      vassert.testComplete();
+    });
+  },
+
+  testDeployWithNumInstances: function() {
+    container.deployVerticle("deploy/child.js", 12, function(err, deployId) {
+      vassert.assertEquals(null, err);
+      vassert.assertTrue(deployId != null);
+      vassert.testComplete();
+    });
+  },
+
+  testDeployWithConfigAndNumInstances: function() {
+    var conf = {foo: 'bar'}
+    container.deployVerticle("deploy/child.js", conf, 12, function(err, deployId) {
+      vassert.assertEquals(null, err);
+      vassert.assertTrue(deployId != null);
+      vassert.testComplete();
+    });
+  },
+
+  testDeployFail: function() {
+    container.deployVerticle("deploy/notexist.js", function(err, deployId) {
       vassert.assertFalse(null === err);
+      vassert.assertEquals(null, deployId);
       vassert.testComplete();
     });
-  });
+  },
+
+  testUndeploy: function() {
+    container.deployVerticle("deploy/child.js", function(err, deployId) {
+      container.undeployVerticle(deployId, function(err) {
+        vassert.assertTrue(null === err);
+        vassert.testComplete();
+      });
+    });
+  },
+
+  testUndeployFail: function() {
+    container.deployVerticle("deploy/child.js", function(err, deployId) {
+      container.undeployVerticle('someotherid', function(err) {
+        vassert.assertFalse(null === err);
+        vassert.testComplete();
+      });
+    });
+  },
+
+  testDeployWorker: function() {
+    container.deployWorkerVerticle('deploy/child.js', function(err, deployId) {
+      vassert.assertTrue(null === err);
+      vassert.assertTrue(deployId !== null);
+      vassert.testComplete();
+    });
+  }
+
 }
 
-function testDeployWorker() {
-  container.deployWorkerVerticle('deploy/child.js', function(err, deployId) {
-    vassert.assertTrue(null === err);
-    vassert.assertTrue(deployId !== null);
-    vassert.testComplete();
-  });
-}
-
-vertxTest.startTests(this);
+vertxTest.startTests(DeployTest);

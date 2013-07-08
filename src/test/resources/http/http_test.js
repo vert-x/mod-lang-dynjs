@@ -24,237 +24,241 @@ var port = 8080
 var server = vertx.http.createHttpServer();
 var client = vertx.http.createHttpClient().port(port);
 
-function testFormFileUpload() {
-  var content = "Vert.x rocks!";
-  server.requestHandler(function(req) {
-    if (req.uri() === '/form') {
-      req.response.chunked(true);
-      req.uploadHandler(function(event) {
-        event.dataHandler(function(buffer) {
-          vassert.assertEquals(content, buffer.toString());
-        });
-      });
-      req.endHandler(function() {
-        var attrs = req.formAttributes();
-        vassert.assertEquals(attrs.get('name'), "file");
-        vassert.assertEquals(attrs.get('filename'), "tmp-0.txt");
-        vassert.assertEquals(attrs.get('Content-Type'), "image/gif");
-        req.response.end();
-      });
-    }
-  });
-  server.listen(8080, "0.0.0.0", function(err, serv) {
-    vassert.assertEquals(err, null);
-    client.port(8080);
-    var req = client.post("/form", function(resp) {
-      // assert the response
-      vassert.assertTrue(200 === resp.statusCode());
-      resp.bodyHandler(function(body) {
-        vassert.assertTrue(0 === body.length());
-      });
-      vassert.testComplete();
-    });
+HttpTest = {
 
-    var boundary = "dLV9Wyq26L_-JQxk6ferf-RT153LhOO";
-    var buffer = new vertx.Buffer();
-    var b =
-        "--" + boundary + "\r\n" +
-        "Content-Disposition: form-data; name=\"file\"; filename=\"tmp-0.txt\"\r\n" +
-        "Content-Type: image/gif\r\n" +
-        "\r\n" +
-        content + "\r\n" +
-        "--" + boundary + "--\r\n";
-
-    buffer.appendString(b);
-    req.headers().set("content-length", '' + buffer.length());
-    req.headers().set("content-type", "multipart/form-data; boundary=" + boundary);
-    req.write(buffer).end();
-  });
-}
-
-function testFormUploadAttributes() {
+  testFormFileUpload: function() {
     var content = "Vert.x rocks!";
     server.requestHandler(function(req) {
-
-        if (req.uri() === '/form') {
-            req.response.chunked(true);
-            req.uploadHandler(function(event) {
-                event.dataHandler(function(buffer) {
-                    vassert.fail("Data handler should not be called");
-                });
-            });
-            req.endHandler(function() {
-                var attrs = req.formAttributes();
-                vassert.assertEquals(attrs.get('framework'), "vertx");
-                vassert.assertEquals(attrs.get('runson'), "jvm");
-                req.response.end();
-            });
-        }
+      if (req.uri() === '/form') {
+        req.response.chunked(true);
+        req.uploadHandler(function(event) {
+          event.dataHandler(function(buffer) {
+            vassert.assertEquals(content, buffer.toString());
+          });
+        });
+        req.endHandler(function() {
+          var attrs = req.formAttributes();
+          vassert.assertEquals(attrs.get('name'), "file");
+          vassert.assertEquals(attrs.get('filename'), "tmp-0.txt");
+          vassert.assertEquals(attrs.get('Content-Type'), "image/gif");
+          req.response.end();
+        });
+      }
     });
     server.listen(8080, "0.0.0.0", function(err, serv) {
-        vassert.assertEquals(err, null);
-        client.port(8080);
-        var req = client.post("/form", function(resp) {
-            // assert the response
-            vassert.assertTrue(200 === resp.statusCode());
-            resp.bodyHandler(function(body) {
-                vassert.assertTrue(0 === body.length());
-            });
-            vassert.testComplete();
+      vassert.assertEquals(err, null);
+      client.port(8080);
+      var req = client.post("/form", function(resp) {
+        // assert the response
+        vassert.assertTrue(200 === resp.statusCode());
+        resp.bodyHandler(function(body) {
+          vassert.assertTrue(0 === body.length());
         });
+        vassert.testComplete();
+      });
 
-        var buffer = new vertx.Buffer();
-        buffer.appendString("framework=vertx&runson=jvm");
-        req.headers().set("content-length", '' + buffer.length());
-        req.headers().set("content-type", "application/x-www-form-urlencoded");
-        req.write(buffer).end();
+      var boundary = "dLV9Wyq26L_-JQxk6ferf-RT153LhOO";
+      var buffer = new vertx.Buffer();
+      var b =
+          "--" + boundary + "\r\n" +
+          "Content-Disposition: form-data; name=\"file\"; filename=\"tmp-0.txt\"\r\n" +
+          "Content-Type: image/gif\r\n" +
+          "\r\n" +
+          content + "\r\n" +
+          "--" + boundary + "--\r\n";
+
+      buffer.appendString(b);
+      req.headers().set("content-length", '' + buffer.length());
+      req.headers().set("content-type", "multipart/form-data; boundary=" + boundary);
+      req.write(buffer).end();
     });
-}
+  },
+
+  testFormUploadAttributes: function() {
+      var content = "Vert.x rocks!";
+      server.requestHandler(function(req) {
+
+          if (req.uri() === '/form') {
+              req.response.chunked(true);
+              req.uploadHandler(function(event) {
+                  event.dataHandler(function(buffer) {
+                      vassert.fail("Data handler should not be called");
+                  });
+              });
+              req.endHandler(function() {
+                  var attrs = req.formAttributes();
+                  vassert.assertEquals(attrs.get('framework'), "vertx");
+                  vassert.assertEquals(attrs.get('runson'), "jvm");
+                  req.response.end();
+              });
+          }
+      });
+      server.listen(8080, "0.0.0.0", function(err, serv) {
+          vassert.assertEquals(err, null);
+          client.port(8080);
+          var req = client.post("/form", function(resp) {
+              // assert the response
+              vassert.assertTrue(200 === resp.statusCode());
+              resp.bodyHandler(function(body) {
+                  vassert.assertTrue(0 === body.length());
+              });
+              vassert.testComplete();
+          });
+
+          var buffer = new vertx.Buffer();
+          buffer.appendString("framework=vertx&runson=jvm");
+          req.headers().set("content-length", '' + buffer.length());
+          req.headers().set("content-type", "application/x-www-form-urlencoded");
+          req.write(buffer).end();
+      });
+  },
 
 
-// This is just a basic test. Most testing occurs in the Java tests
+  // This is just a basic test. Most testing occurs in the Java tests
 
-function testGET() {
-  httpMethod(false, "GET", false)
-}
+  testGET: function() {
+    httpMethod(false, "GET", false)
+  },
 
-function testGetSSL() {
-  httpMethod(true, "GET", false)
-}
+  testGetSSL: function() {
+    httpMethod(true, "GET", false)
+  },
 
-function testPUT() {
-  httpMethod(false, "PUT", false)
-}
+  testPUT: function() {
+    httpMethod(false, "PUT", false)
+  },
 
-function testPUTSSL() {
-  httpMethod(true, "PUT", false)
-}
+  testPUTSSL: function() {
+    httpMethod(true, "PUT", false)
+  },
 
-function testPOST() {
-  httpMethod(false, "POST", false)
-}
+  testPOST: function() {
+    httpMethod(false, "POST", false)
+  },
 
-function testPOSTSSL() {
-  httpMethod(true, "POST", false)
-}
+  testPOSTSSL: function() {
+    httpMethod(true, "POST", false)
+  },
 
-function testHEAD() {
-  httpMethod(false, "HEAD", false)
-}
+  testHEAD: function() {
+    httpMethod(false, "HEAD", false)
+  },
 
-function testHEADSSL() {
-  httpMethod(true, "HEAD", false)
-}
+  testHEADSSL: function() {
+    httpMethod(true, "HEAD", false)
+  },
 
-function testOPTIONS() {
-  httpMethod(false, "OPTIONS", false)
-}
+  testOPTIONS: function() {
+    httpMethod(false, "OPTIONS", false)
+  },
 
-function testOPTIONSSSL() {
-  httpMethod(true, "OPTIONS", false)
-}
-function testDELETE() {
-  httpMethod(false, "DELETE", false)
-}
+  testOPTIONSSSL: function() {
+    httpMethod(true, "OPTIONS", false)
+  },
 
-function testDELETESSL() {
-  httpMethod(true, "DELETE", false)
-}
+  testDELETE: function() {
+    httpMethod(false, "DELETE", false)
+  },
 
-function testTRACE() {
-  httpMethod(false, "TRACE", false)
-}
+  testDELETESSL: function() {
+    httpMethod(true, "DELETE", false)
+  },
 
-function testTRACESSL() {
-  httpMethod(true, "TRACE", false)
-}
+  testTRACE: function() {
+    httpMethod(false, "TRACE", false)
+  },
 
-function testCONNECT() {
-  httpMethod(false, "CONNECT", false)
-}
+  testTRACESSL: function() {
+    httpMethod(true, "TRACE", false)
+  },
 
-function testCONNECTSSL() {
-  httpMethod(true, "CONNECT", false)
-}
+  testCONNECT: function() {
+    httpMethod(false, "CONNECT", false)
+  },
 
-function testPATCH() {
-  httpMethod(false, "PATCH", false)
-}
+  testCONNECTSSL: function() {
+    httpMethod(true, "CONNECT", false)
+  },
 
-function testPATCHSSL() {
-  httpMethod(true, "PATCH", false)
-}
+  testPATCH: function() {
+    httpMethod(false, "PATCH", false)
+  },
 
-function testGETChunked() {
-  httpMethod(false, "GET", true)
-}
+  testPATCHSSL: function() {
+    httpMethod(true, "PATCH", false)
+  },
 
-function testGetSSLChunked() {
-  httpMethod(true, "GET", true)
-}
+  testGETChunked: function() {
+    httpMethod(false, "GET", true)
+  },
 
-function testPUTChunked() {
-  httpMethod(false, "PUT", true)
-}
+  testGetSSLChunked: function() {
+    httpMethod(true, "GET", true)
+  },
 
-function testPUTSSLChunked() {
-  httpMethod(true, "PUT", true)
-}
+  testPUTChunked: function() {
+    httpMethod(false, "PUT", true)
+  },
 
-function testPOSTChunked() {
-  httpMethod(false, "POST", true)
-}
+  testPUTSSLChunked: function() {
+    httpMethod(true, "PUT", true)
+  },
 
-function testPOSTSSLChunked() {
-  httpMethod(true, "POST", true)
-}
+  testPOSTChunked: function() {
+    httpMethod(false, "POST", true)
+  },
 
-function testHEADChunked() {
-  httpMethod(false, "HEAD", true)
-}
+  testPOSTSSLChunked: function() {
+    httpMethod(true, "POST", true)
+  },
 
-function testHEADSSLChunked() {
-  httpMethod(true, "HEAD", true)
-}
+  testHEADChunked: function() {
+    httpMethod(false, "HEAD", true)
+  },
 
-function testOPTIONSChunked() {
-  httpMethod(false, "OPTIONS", true)
-}
+  testHEADSSLChunked: function() {
+    httpMethod(true, "HEAD", true)
+  },
 
-function testOPTIONSSSLChunked() {
-  httpMethod(true, "OPTIONS", true)
-}
+  testOPTIONSChunked: function() {
+    httpMethod(false, "OPTIONS", true)
+  },
 
-function testDELETEChunked() {
-  httpMethod(false, "DELETE", true)
-}
+  testOPTIONSSSLChunked: function() {
+    httpMethod(true, "OPTIONS", true)
+  },
 
-function testDELETESSLChunked() {
-  httpMethod(true, "DELETE", true)
-}
+  testDELETEChunked: function() {
+    httpMethod(false, "DELETE", true)
+  },
 
-function testTRACEChunked() {
-  httpMethod(false, "TRACE", true)
-}
+  testDELETESSLChunked: function() {
+    httpMethod(true, "DELETE", true)
+  },
 
-function testTRACESSLChunked() {
-  httpMethod(true, "TRACE", true)
-}
+  testTRACEChunked: function() {
+    httpMethod(false, "TRACE", true)
+  },
 
-function testCONNECTChunked() {
-  httpMethod(false, "CONNECT", true)
-}
+  testTRACESSLChunked: function() {
+    httpMethod(true, "TRACE", true)
+  },
 
-function testCONNECTSSLChunked() {
-  httpMethod(true, "CONNECT", true)
-}
+  testCONNECTChunked: function() {
+    httpMethod(false, "CONNECT", true)
+  },
 
-function testPATCHChunked() {
-  httpMethod(false, "PATCH", true)
-}
+  testCONNECTSSLChunked: function() {
+    httpMethod(true, "CONNECT", true)
+  },
 
-function testPATCHSSLChunked() {
-  httpMethod(true, "PATCH", true)
+  testPATCHChunked: function() {
+    httpMethod(false, "PATCH", true)
+  },
+
+  testPATCHSSLChunked: function() {
+    httpMethod(true, "PATCH", true)
+  }
 }
 
 function httpMethod(ssl, method, chunked) {
@@ -345,12 +349,10 @@ function httpMethod(ssl, method, chunked) {
       vassert.assertTrue('vrheader2' === resp.headers().get('rheader2'));
       var body = new vertx.Buffer(0);
       resp.dataHandler(function(data) {
-        tu.checkThread();
         body.appendBuffer(data);
       });
 
       resp.endHandler(function() {
-        tu.checkThread();
         if (method !== 'HEAD' && method !== 'CONNECT') {
           vassert.assertTrue(tu.buffersEqual(sent_buff, body));
           if (chunked) {
@@ -388,7 +390,7 @@ function httpMethod(ssl, method, chunked) {
   });
 }
 
-vertxTest.startTests(this);
+vertxTest.startTests(HttpTest);
 
 function vertxStop() {
   client.close();

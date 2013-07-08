@@ -38,7 +38,6 @@ public class DynJSVerticle extends Verticle {
             this.rootContext.call( loadFn, rootContext.getGlobalObject(), this.scriptName );
         } catch (Exception e) {
             System.err.println("Cannot load script: " + this.scriptName);
-            e.printStackTrace();
             throw new RuntimeException("Cannot start verticle", e);
         }
     }

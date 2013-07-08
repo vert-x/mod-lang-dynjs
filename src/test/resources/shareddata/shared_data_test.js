@@ -18,94 +18,95 @@ var vertx = require('vertx');
 var vertxTest = require("vertx_tests");
 var vassert = vertxTest.vassert;
 
+SharedDataTest = {
+  testMap: function() {
+    var map1 = vertx.sharedData.getMap("foo");
+    vassert.assertTrue(typeof map1 != undefined);
+    var map2 = vertx.sharedData.getMap("foo");
+    vassert.assertTrue(typeof map2 != undefined);
+    vassert.assertTrue(map1 === map2);
+    var map3 = vertx.sharedData.getMap("bar");
+    vassert.assertTrue(typeof map3 != undefined);
+    vassert.assertTrue(map3 != map2);
 
-function testMap() {
-  var map1 = vertx.sharedData.getMap("foo");
-  vassert.assertTrue(typeof map1 != undefined);
-  var map2 = vertx.sharedData.getMap("foo");
-  vassert.assertTrue(typeof map2 != undefined);
-  vassert.assertTrue(map1 === map2);
-  var map3 = vertx.sharedData.getMap("bar");
-  vassert.assertTrue(typeof map3 != undefined);
-  vassert.assertTrue(map3 != map2);
+    var key = "blah";
 
-  var key = "blah";
+    map1.put(key, 123);
+    var val = map1.get(key);
+    vassert.assertTrue(typeof val === 'number');
+    vassert.assertTrue(val === 123);
 
-  map1.put(key, 123);
-  var val = map1.get(key);
-  vassert.assertTrue(typeof val === 'number');
-  vassert.assertTrue(val === 123);
+    map1.put(key, 1.2345);
+    var val = map1.get(key);
+    vassert.assertTrue(typeof val === 'number');
+    vassert.assertTrue(val === 1.2345);
 
-  map1.put(key, 1.2345);
-  var val = map1.get(key);
-  vassert.assertTrue(typeof val === 'number');
-  vassert.assertTrue(val === 1.2345);
+    map1.put(key, "quux");
+    var val = map1.get(key);
+    vassert.assertTrue(typeof val === 'string');
+    vassert.assertTrue(val === "quux");
 
-  map1.put(key, "quux");
-  var val = map1.get(key);
-  vassert.assertTrue(typeof val === 'string');
-  vassert.assertTrue(val === "quux");
+    map1.put(key, true);
+    var val = map1.get(key);
+    vassert.assertTrue(typeof val === 'boolean');
+    vassert.assertTrue(val === true);
 
-  map1.put(key, true);
-  var val = map1.get(key);
-  vassert.assertTrue(typeof val === 'boolean');
-  vassert.assertTrue(val === true);
+    map1.put(key, false);
+    var val = map1.get(key);
+    vassert.assertTrue(typeof val === 'boolean');
+    vassert.assertTrue(val === false);
 
-  map1.put(key, false);
-  var val = map1.get(key);
-  vassert.assertTrue(typeof val === 'boolean');
-  vassert.assertTrue(val === false);
+    //Most testing done in Java tests
 
-  //Most testing done in Java tests
+    vassert.testComplete();
+  },
 
-  vassert.testComplete();
+  testSet: function() {
+
+    var set1 = vertx.sharedData.getSet("foo");
+    vassert.assertTrue(typeof set1 != undefined);
+    var set2 = vertx.sharedData.getSet("foo");
+    vassert.assertTrue(typeof set2 != undefined);
+    vassert.assertTrue(set1 === set2);
+    var set3 = vertx.sharedData.getMap("bar");
+    vassert.assertTrue(typeof set3 != undefined);
+    vassert.assertTrue(set3 != set2);
+
+    var key = "blah";
+
+    set1.add(123);
+    var val = set1.iterator().next();
+    vassert.assertTrue(typeof val === 'number');
+    vassert.assertTrue(val === 123);
+    set1.clear();
+
+    set1.add(1.2345);
+    var val = set1.iterator().next();
+    vassert.assertTrue(typeof val === 'number');
+    vassert.assertTrue(val === 1.2345);
+    set1.clear();
+
+    set1.add("quux");
+    var val = set1.iterator().next();
+    vassert.assertTrue(typeof val === 'string');
+    vassert.assertTrue(val === "quux");
+    set1.clear();
+
+    set1.add(true);
+    var val = set1.iterator().next();
+    vassert.assertTrue(typeof val === 'boolean');
+    vassert.assertTrue(val === true);
+    set1.clear();
+
+    set1.add(false);
+    var val = set1.iterator().next();
+    vassert.assertTrue(typeof val === 'boolean');
+    vassert.assertTrue(val === false);
+
+    //Most testing done in Java tests
+
+    vassert.testComplete();
+  }
 }
 
-function testSet() {
-
-  var set1 = vertx.sharedData.getSet("foo");
-  vassert.assertTrue(typeof set1 != undefined);
-  var set2 = vertx.sharedData.getSet("foo");
-  vassert.assertTrue(typeof set2 != undefined);
-  vassert.assertTrue(set1 === set2);
-  var set3 = vertx.sharedData.getMap("bar");
-  vassert.assertTrue(typeof set3 != undefined);
-  vassert.assertTrue(set3 != set2);
-
-  var key = "blah";
-
-  set1.add(123);
-  var val = set1.iterator().next();
-  vassert.assertTrue(typeof val === 'number');
-  vassert.assertTrue(val === 123);
-  set1.clear();
-
-  set1.add(1.2345);
-  var val = set1.iterator().next();
-  vassert.assertTrue(typeof val === 'number');
-  vassert.assertTrue(val === 1.2345);
-  set1.clear();
-
-  set1.add("quux");
-  var val = set1.iterator().next();
-  vassert.assertTrue(typeof val === 'string');
-  vassert.assertTrue(val === "quux");
-  set1.clear();
-
-  set1.add(true);
-  var val = set1.iterator().next();
-  vassert.assertTrue(typeof val === 'boolean');
-  vassert.assertTrue(val === true);
-  set1.clear();
-
-  set1.add(false);
-  var val = set1.iterator().next();
-  vassert.assertTrue(typeof val === 'boolean');
-  vassert.assertTrue(val === false);
-
-  //Most testing done in Java tests
-
-  vassert.testComplete();
-}
-
-vertxTest.startTests(this);
+vertxTest.startTests(SharedDataTest);

@@ -21,33 +21,48 @@ vassert = vertxTest.vassert;
 load("script1.js");
 
 ScriptLoadingTest = {
-    testVertxLoad: function() {
-      load('script3.js');
-      vassert.testComplete();
+
+  testVertxLoad: function() {
+    load('script3.js');
+    vassert.testComplete();
+  },
+
+  testScriptLoading: function() {
+    vassert.assertTrue(func1() === 'foo');
+    vassert.testComplete();
+  },
+
+  // Test that you can't use load() to load the vert.x CommonJS modules
+  testCantLoadModules: function() {
+    try {
+      load("vertx.js");
+      vassert.fail("Shouldn't be able to use load() for vertx anymore");
+    } catch (err) {
+      // OK
     }
-}
+    vassert.testComplete()
+  },
 
-function DEFERREDtestScriptLoading() {
-  vassert.assertTrue(func1() === 'foo');
-  vassert.testComplete();
-}
+  testLoadInCommonJSModuleDoesntPolluteGlobal: function() {
+    var f = require("./mod");
+    vassert.assertTrue(f() == "blah");
+    vassert.assertTrue(typeof foo === 'undefined')
+    vassert.testComplete()
+  },
 
-// Test that you can't use load() to load the vert.x CommonJS modules
-function DEFERREDtestCantLoadModules() {
-  try {
-    load("vertx.js");
-    vassert.fail("Shouldn't be able to use load() for vertx anymore");
-  } catch (err) {
-    // OK
+  testRequireAll: function() {
+    vassert.assertTrue(typeof vertx.createNetServer === 'function');
+    vassert.assertTrue(typeof vertx.createNetClient === 'function');
+    vassert.assertTrue(typeof vertx.createHttpServer === 'function');
+    vassert.assertTrue(typeof vertx.createHttpClient === 'function');
+    vassert.testComplete()
+  },
+
+  testLoadExecutesInSameScopeAsCaller: function() {
+    load('script4.js');
   }
-  vassert.testComplete()
+
 }
 
-var f = require("./mod")
-function DEFERREDtestLoadInCommonJSModuleDoesntPolluteGlobal() {
-  vassert.assertTrue(f() == "blah");
-  vassert.assertTrue(typeof foo === 'undefined')
-  vassert.testComplete()
-}
 
 vertxTest.startTests(ScriptLoadingTest);

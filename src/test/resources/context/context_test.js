@@ -18,13 +18,22 @@ var vertx = require('vertx');
 var vertxTest = require('vertx_tests');
 var vassert = vertxTest.vassert;
 
-var myglobal;
+vertxTest.startTests( {
 
-vertxTest.startTests({
-  testIsolation: function() {
-    vassert.assertEquals(myglobal, undefined);
-    myglobal = 123;
-    vassert.testComplete();
+  testRunOnContext: function() {
+    vertx.runOnContext(function() {
+      vassert.testComplete();
+    })
+  },
+
+  testGetContext: function() {
+    var ctx = vertx.currentContext();
+    ctx.runOnContext(function() {
+      vassert.testComplete();
+    })
   }
-});
+
+} );
+
+
 

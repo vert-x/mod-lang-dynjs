@@ -18,44 +18,40 @@ var vertx = require('vertx');
 var vertxTest = require("vertx_tests");
 var vassert = vertxTest.vassert;
 
-function testOneOff() {
-  var count = 0;
-  var id = vertx.timer.setTimer(1000, function(timer_id) {
-    vassert.assertTrue(id === timer_id);
-    vassert.assertTrue(count === 0);
-    count++;
-    setEndTimer();
-  });
-}
-
-function testPeriodic() {
-  var numFires = 10;
-  var delay = 100;
-  var count = 0;
-  var id = vertx.timer.setPeriodic(delay, function(timer_id) {
-    vassert.assertTrue(id === timer_id);
-    count++;
-    if (count === numFires) {
-      vertx.timer.cancelTimer(timer_id);
-      setEndTimer();
-    }
-    if (count > numFires) {
-      vassert.fail(false, "Fired too many times");
-    }
-  });
-}
-
-function testRunOnContext() {
-  vertx.runOnContext(function() {
-    vassert.testComplete();
-  });
-}
-
-function setEndTimer() {
+var setEndTimer = function() {
   vertx.timer.setTimer(10, function() {
     vassert.testComplete();
   })
 }
 
-vertxTest.startTests(this);
+var TimerTest = {
+  testOneOff: function() {
+    var count = 0;
+    var id = vertx.timer.setTimer(1000, function(timer_id) {
+      vassert.assertTrue(id === timer_id);
+      vassert.assertTrue(count === 0);
+      count++;
+      setEndTimer();
+    });
+  },
+
+  testPeriodic: function() {
+    var numFires = 10;
+    var delay = 100;
+    var count = 0;
+    var id = vertx.timer.setPeriodic(delay, function(timer_id) {
+      vassert.assertTrue(id === timer_id);
+      count++;
+      if (count === numFires) {
+        vertx.timer.cancelTimer(timer_id);
+        setEndTimer();
+      }
+      if (count > numFires) {
+        vassert.fail(false, "Fired too many times");
+      }
+    });
+  }
+}
+
+vertxTest.startTests(TimerTest);
 

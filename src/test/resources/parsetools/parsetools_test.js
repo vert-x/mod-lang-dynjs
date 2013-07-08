@@ -20,52 +20,42 @@ var vassert = vertxTest.vassert;
 
 var tu = require('test_utils');
 
-function testDelimited() {
-
-  var lineCount = 0;
-
-  var numLines = 3;
-
-  var output = function(line) {
-    if (++lineCount == numLines) {
-      vassert.testComplete();
+ParseToolsTest = {
+  testDelimited: function() {
+    var lineCount = 0;
+    var numLines = 3;
+    var output = function(line) {
+      if (++lineCount == numLines) {
+        vassert.testComplete();
+      }
     }
+
+    var rp = vertx.parseTools.createDelimitedParser('\n', output);
+    var input = "qwdqwdline1\nijijiline2\njline3\n";
+    var buffer = new vertx.Buffer(input);
+    rp.handle(buffer);
+  },
+
+  testFixed: function() {
+    var chunkCount = 0;
+    var numChunks = 3;
+    var chunkSize = 100;
+    var output = function(chunk) {
+      vassert.assertTrue(chunkSize === chunk.length());
+      if (++chunkCount == numChunks) {
+        vassert.testComplete();
+      }
+    }
+
+    var rp = vertx.parseTools.createFixedParser(chunkSize, output);
+    var input = new vertx.Buffer(0);
+    for (var i = 0; i < numChunks; i++) {
+      var buff = tu.generateRandomBuffer(chunkSize);
+      input.appendBuffer(buff);
+    }
+    rp.handle(input);
   }
-
-  var rp = vertx.parseTools.createDelimitedParser('\n', output);
-
-  var input = "qwdqwdline1\nijijiline2\njline3\n";
-
-  var buffer = new vertx.Buffer(input);
-
-  rp.handle(buffer);
 }
 
-function testFixed() {
-
-  var chunkCount = 0;
-
-  var numChunks = 3;
-
-  var chunkSize = 100;
-
-  var output = function(chunk) {
-    vassert.assertTrue(chunkSize === chunk.length());
-    if (++chunkCount == numChunks) {
-      vassert.testComplete();
-    }
-  }
-
-  var rp = vertx.parseTools.createFixedParser(chunkSize, output);
-
-  var input = new vertx.Buffer(0);
-  for (var i = 0; i < numChunks; i++) {
-    var buff = tu.generateRandomBuffer(chunkSize);
-    input.appendBuffer(buff);
-  }
-
-  rp.handle(input);
-}
-
-vertxTest.startTests(this);
+vertxTest.startTests(ParseToolsTest);
 

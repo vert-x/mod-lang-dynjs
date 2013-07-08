@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-var vertx = require('vertx');
+var console = require('vertx/console');
 var vertxTest = require('vertx_tests');
 var vassert = vertxTest.vassert;
 
-var myglobal;
-
 vertxTest.startTests({
-  testIsolation: function() {
-    vassert.assertEquals(myglobal, undefined);
-    myglobal = 123;
+
+  testConsoleFunctionsExist: function() {
+    vassert.assertTrue(typeof console.log === 'function');
+    vassert.assertTrue(typeof console.warn === 'function');
+    vassert.assertTrue(typeof console.error === 'function');
     vassert.testComplete();
   }
+
 });
 

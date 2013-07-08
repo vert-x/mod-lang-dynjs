@@ -21,19 +21,9 @@ var vassert = vertxTest.vassert;
 var tu = require('test_utils');
 
 var server = vertx.http.createHttpServer();
-var client = vertx.http.createHttpClient();
-client.port(8080);
+var client = vertx.http.createHttpClient().port(8080);
 
-
-function testEchoBinary() {
-  echo(true);
-}
-
-function testEchoText() {
-  echo(false);
-}
-
-function echo(binary) {
+var echo = function(binary) {
   server.websocketHandler(function(ws) {
     ws.dataHandler(function(buff) {
       ws.write(buff);
@@ -70,54 +60,65 @@ function echo(binary) {
   });
 }
 
-function testWriteFromConnectHandler() {
 
-  server.websocketHandler(function(ws) {
-    ws.writeTextFrame("foo");
-  });
+WebSocketTest = {
+  testEchoBinary: function() {
+    echo(true);
+  },
 
-  server.listen(8080, "0.0.0.0", function(serv) {
-    client.connectWebsocket("/someurl", function(ws) {
-      ws.dataHandler(function(buff) {
-        vassert.assertTrue("foo" == buff.toString());
-        vassert.testComplete();
-      });
-    });
-  });
-}
+  testEchoText: function() {
+    echo(false);
+  },
 
-function testClose() {
+  testWriteFromConnectHandler: function() {
 
-  server.websocketHandler(function(ws) {
-    ws.dataHandler(function(buff) {
-      ws.close();
-    });
-  });
-
-  server.listen(8080, "0.0.0.0", function(serv) {
-    client.connectWebsocket("/someurl", function(ws) {
-      ws.closeHandler(function() {
-        vassert.testComplete();
-      });
+    server.websocketHandler(function(ws) {
       ws.writeTextFrame("foo");
     });
-  });
-}
 
-function testCloseFromConnectHandler() {
-
-  server.websocketHandler(function(ws) {
-    ws.close();
-  });
-
-  server.listen(8080, "0.0.0.0", function(serv) {
-    client.connectWebsocket("/someurl", function(ws) {
-      ws.closeHandler(function() {
-        vassert.testComplete();
+    server.listen(8080, "0.0.0.0", function(serv) {
+      client.connectWebsocket("/someurl", function(ws) {
+        ws.dataHandler(function(buff) {
+          vassert.assertTrue("foo" == buff.toString());
+          vassert.testComplete();
+        });
       });
     });
-  });
+  },
+
+  testClose: function() {
+
+    server.websocketHandler(function(ws) {
+      ws.dataHandler(function(buff) {
+        ws.close();
+      });
+    });
+
+    server.listen(8080, "0.0.0.0", function(serv) {
+      client.connectWebsocket("/someurl", function(ws) {
+        ws.closeHandler(function() {
+          vassert.testComplete();
+        });
+        ws.writeTextFrame("foo");
+      });
+    });
+  },
+
+  testCloseFromConnectHandler: function() {
+
+    server.websocketHandler(function(ws) {
+      ws.close();
+    });
+
+    server.listen(8080, "0.0.0.0", function(serv) {
+      client.connectWebsocket("/someurl", function(ws) {
+        ws.closeHandler(function() {
+          vassert.testComplete();
+        });
+      });
+    });
+  }
 }
 
-vertxTest.startTests(this);
+vertxTest.startTests(WebSocketTest);
 

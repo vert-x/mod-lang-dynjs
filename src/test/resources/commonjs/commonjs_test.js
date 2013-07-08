@@ -20,9 +20,11 @@ var vassert = vertxTest.vassert;
 
 var func1 = require("module1");
 
-function testScriptLoading() {
-  vassert.assertEquals('foo', func1());
-  vassert.testComplete();
+CommonJSTest = {
+  testScriptLoading: function() {
+    vassert.assertEquals('foo', func1());
+    vassert.testComplete();
+  }
 }
 
-vertxTest.startTests(this);
+vertxTest.startTests(CommonJSTest);

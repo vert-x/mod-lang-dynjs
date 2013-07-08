@@ -34,28 +34,6 @@ By default, vert.x runs Javascript with Rhino. Change this by creating a
     dynjs=org.dynjs~lang-dynjs~1.0.0-SNAPSHOT:org.dynjs.vertx.DynJSVerticleFactory
     .js=dynjs
 
-## Why Use DynJS instead of Rhino
-
-I'd love to tell you that it's faster, but I don't know this for sure yet. We
-have yet to run any performance benchmarks. For now, though, consider some of
-the cool things you can do with Java interop in DynJS that just aren't
-possible. For example, you can bind a Java instance method to a Javascript
-object.
-
-    var internalCache = new java.util.HashMap();
-    internalCache.put('foo', 'bar');
-
-    var publicCache = {};
-    publicCache.lookup = internalCache.get.bind(internalCache);
-
-    publicCache.lookup('foo'); // returns 'bar'
-
-This little bit of code creates a Java `HashMap` instance, and binds
-`HashMap#get` to a plain old javascript object. How cool is that? Imagine the
-possibilities. We use this trick in a few places throught the vert.x API
-implementation. 
-    
-
 Enjoy. And if you have any problems, hit us on on freenode at #dynjs or #vertx.
 And you can file any reproducible issues in our
 [Jira](http://jira.codehaus.org/browse/DYNJS).
