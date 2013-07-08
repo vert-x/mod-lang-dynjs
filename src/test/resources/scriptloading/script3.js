@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-loader = __vertxload
+vassert.assertTrue(typeof __vertxload === 'string');

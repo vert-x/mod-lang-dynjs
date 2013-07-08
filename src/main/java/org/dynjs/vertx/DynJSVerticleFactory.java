@@ -103,23 +103,18 @@ public class DynJSVerticleFactory implements VerticleFactory {
         Object ret = null;
         Runner runner = context.getGlobalObject().getRuntime().newRunner();
         try {
+            LexicalEnvironment localEnv = context.getVariableEnvironment();
+            localEnv.getRecord().createMutableBinding( context, "__vertxload", true );
+            localEnv.getRecord().setMutableBinding(context, "__vertxload", "true", false );
             if (scriptFile.exists()) {
                 context.getGlobalObject().addLoadPath(scriptFile.getParent());
-                //context.getGlobalObject().put("__vertxload", this.getClass().getName());
-                LexicalEnvironment localEnv = context.getVariableEnvironment();
-                localEnv.getRecord().createMutableBinding( context, "__vertxload", true );
-                localEnv.getRecord().setMutableBinding(context, "__vertxload", "true", false );
                 ret = runner.withContext(context).withSource(scriptFile).execute();
-                //context.getGlobalObject().remove("__vertxload");
             } else {
                 InputStream is = runtime.getConfig().getClassLoader().getResourceAsStream(scriptName);
                 if (is == null) {
                     throw new FileNotFoundException("Cannot find script: " + scriptName);
                 }
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-                LexicalEnvironment localEnv = context.getVariableEnvironment();
-                localEnv.getRecord().createMutableBinding( context, "__vertxload", true );
-                localEnv.getRecord().setMutableBinding(context, "__vertxload", "true", false );
                 ret = runner.withContext(context).withSource(reader).execute();
                 try {
                     is.close();

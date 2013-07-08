@@ -30,7 +30,7 @@ import org.vertx.testtools.TestVerticleInfo;
  * The scripts go in src/test/resources.
  */
 @RunWith(ScriptClassRunner.class)
-@TestVerticleInfo(filenameFilter = ".+_test\\.js", funcRegex = "function[\\s]+(test[^\\s(]+)")
+@TestVerticleInfo(filenameFilter = ".+ding_test\\.js", funcRegex = "[\\s]+(test[^\\s(]+):[\\s]+function")
 public class APIIntegrationTests {
 
     @Test

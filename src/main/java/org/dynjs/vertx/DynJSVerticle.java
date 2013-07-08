@@ -34,10 +34,8 @@ public class DynJSVerticle extends Verticle {
         rootContext = initializeRootContext();
         try {
             factory.getRuntime().clearModuleCache();
-            //factory.loadScript(this.rootContext, this.scriptName);
             JSFunction loadFn = (JSFunction) this.rootContext.getGlobalObject().get(this.rootContext, "load" );
-            this.rootContext.call( loadFn, Types.UNDEFINED, this.scriptName );
-        //} catch (FileNotFoundException e) {
+            this.rootContext.call( loadFn, rootContext.getGlobalObject(), this.scriptName );
         } catch (Exception e) {
             System.err.println("Cannot load script: " + this.scriptName);
             e.printStackTrace();
