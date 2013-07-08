@@ -1,6 +1,6 @@
-[![Build Status](https://secure.travis-ci.org/dynjs/dynjs-vertx-module.png) ](http://travis-ci.org/dynjs/dynjs-vertx-module)
+[![Build Status](https://secure.travis-ci.org/vert-x/mod-lang-dynjs.png) ](http://travis-ci.org/vert-x/mod-lang-dynjs)
 
-[![Build Status](https://buildhive.cloudbees.com/job/dynjs/job/dynjs-vertx-module/badge/icon) ](https://buildhive.cloudbees.com/job/dynjs/job/dynjs-vertx-module/)
+[![Build Status](https://buildhive.cloudbees.com/job/vert-x/job/mod-lang-dynjs/badge/icon) ](https://buildhive.cloudbees.com/job/vert-x/job/mod-lang-dynjs/)
 
 # Javascript on Vert.x with DynJS
 
