@@ -16,27 +16,16 @@
 
 package org.dynjs.vertx;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import org.dynjs.Config;
 import org.dynjs.exception.ThrowException;
-import org.dynjs.runtime.AbstractNativeFunction;
-import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.DynObject;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.GlobalObject;
-import org.dynjs.runtime.GlobalObjectFactory;
-import org.dynjs.runtime.LexicalEnvironment;
-import org.dynjs.runtime.Runner;
+import org.dynjs.runtime.*;
 import org.vertx.java.core.Vertx;
 import org.vertx.java.core.logging.Logger;
 import org.vertx.java.platform.Container;
 import org.vertx.java.platform.Verticle;
 import org.vertx.java.platform.VerticleFactory;
+
+import java.io.*;
 
 /**
  * @author Lance Ball lball@redhat.com
@@ -107,8 +96,9 @@ public class DynJSVerticleFactory implements VerticleFactory {
             localEnv.getRecord().createMutableBinding( context, "__vertxload", true );
             localEnv.getRecord().setMutableBinding(context, "__vertxload", "true", false );
             if (scriptFile.exists()) {
-                context.getGlobalObject().addLoadPath(scriptFile.getParent());
+                runner.withContext(context).withSource("require.addLoadPath('" + scriptFile.getParent() + "')").evaluate();
                 ret = runner.withContext(context).withSource(scriptFile).execute();
+                runner.withContext(context).withSource("require.removeLoadPath('" + scriptFile.getParent() + "')").evaluate();
             } else {
                 InputStream is = runtime.getConfig().getClassLoader().getResourceAsStream(scriptName);
                 if (is == null) {
