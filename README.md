@@ -8,10 +8,9 @@ Use [DynJS](http://github.com/dynjs/dynjs) instead of Rhino on vert.x 2.0.
 
 ## API Documentation
 
-While the API is essentially complete, the documentation is still a work in
-progress. You can find our latest 
-[API docs](https://projectodd.ci.cloudbees.com/view/DynJS/job/dynjs-vertx-module/lastSuccessfulBuild/artifact/target/docs/index.html)
-on the CI server.
+The Javascript 
+[API docs](https://projectodd.ci.cloudbees.com/view/DynJS/job/mod-lang-dynjs/lastSuccessfulBuild/artifact/target/docs/index.html)
+are on the CI server.
 
 ## Usage
 
