@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.dynjs</groupId>
+  <groupId>io.vertx</groupId>
   <artifactId>lang-dynjs</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <name>DynJS Vert.x module</name>
@@ -11,9 +11,9 @@
     <version>7</version>
   </parent>
   <scm>
-    <connection>scm:git:git@github.com:dynjs/dynjs-vertx-module.git</connection>
-    <developerConnection>scm:git:git@github.com:dynjs/dynjs-vertx-module.git</developerConnection>
-    <url>git@github.com:dynjs/dynjs-vertx-module.git</url>
+    <connection>scm:git:git@github.com:vert-x/mod-lang-dynjs.git</connection>
+    <developerConnection>scm:git:git@github.com:vert-x/mod-lang-dynjs.git</developerConnection>
+    <url>git@github.com:vert-x/mod-lang-dynjs.git</url>
   </scm>
   <properties>
     <!-- vert.x module name -->
@@ -35,7 +35,7 @@
     <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
 
     <!-- dependency versions -->
-    <version.vertx>2.0.0-beta6-SNAPSHOT</version.vertx>
+    <version.vertx>2.0.0-CR3-SNAPSHOT</version.vertx>
     <version.vertx.testframework>2.0.0-SNAPSHOT</version.vertx.testframework>
     <version.vertx.testtools>1.0.0-SNAPSHOT</version.vertx.testtools>
     <version.dynjs>0.1.2-SNAPSHOT</version.dynjs>
