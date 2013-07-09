@@ -168,6 +168,7 @@ setup(function() {
   vertxTest.startTests(FsTest);
 });
 
+// TODO: why is this not happening
 function vertxStop() {
   fs.deleteSync(fileDir, true);
 }
