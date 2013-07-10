@@ -1,27 +1,25 @@
 package org.dynjs.vertx;
 
-import java.io.FileNotFoundException;
-
+import org.dynjs.runtime.DynJS;
 import org.dynjs.runtime.ExecutionContext;
 import org.dynjs.runtime.InitializationListener;
-import org.dynjs.runtime.JSFunction;
 import org.dynjs.runtime.Runner;
-import org.dynjs.runtime.Types;
 import org.vertx.java.platform.Verticle;
 
+import java.io.*;
+
 public class DynJSVerticle extends Verticle {
+    protected final DynJS runtime;
     protected final String scriptName;
     protected ExecutionContext rootContext;
-    protected DynJSVerticleFactory factory;
 
     public DynJSVerticle(DynJSVerticleFactory factory, String scriptName) {
-        this.factory = factory;
+        this.runtime = factory.getRuntime();
         this.scriptName = scriptName;
     }
 
     protected ExecutionContext initializeRootContext() {
-        return ExecutionContext.createGlobalExecutionContext(factory.getRuntime(), new InitializationListener()
-        {
+        return ExecutionContext.createGlobalExecutionContext(runtime, new InitializationListener() {
             @Override
             public void initialize(ExecutionContext context) {
                 rootContext = context;
@@ -32,13 +30,33 @@ public class DynJSVerticle extends Verticle {
     @Override
     public void start() {
         rootContext = initializeRootContext();
+        runtime.clearModuleCache();
+
+        File scriptFile = new File(scriptName);
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(runtime.getConfig().getClassLoader());
+        Runner runner = runtime.newRunner();
         try {
-            factory.getRuntime().clearModuleCache();
-            JSFunction loadFn = (JSFunction) this.rootContext.getGlobalObject().get(this.rootContext, "load" );
-            this.rootContext.call( loadFn, rootContext.getGlobalObject(), this.scriptName );
+            if (scriptFile.exists()) {
+                runner.withSource(scriptFile).execute();
+            } else {
+                InputStream is = runtime.getConfig().getClassLoader().getResourceAsStream(scriptName);
+                if (is == null) {
+                    throw new FileNotFoundException("Cannot find script: " + scriptName);
+                }
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                runner.withSource(reader).execute();
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
         } catch (Exception e) {
-            System.err.println("Cannot load script: " + this.scriptName);
-            throw new RuntimeException("Cannot start verticle", e);
+            System.err.println("Error loading script: " + scriptName + ". " + e.getLocalizedMessage());
+            throw new RuntimeException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(old);
         }
     }
 

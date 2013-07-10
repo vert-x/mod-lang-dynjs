@@ -93,12 +93,12 @@ public class DynJSVerticleFactory implements VerticleFactory {
         Runner runner = context.getGlobalObject().getRuntime().newRunner();
         try {
             LexicalEnvironment localEnv = context.getVariableEnvironment();
-            localEnv.getRecord().createMutableBinding( context, "__vertxload", true );
+            localEnv.getRecord().createMutableBinding( context, "__vertxload", false );
             localEnv.getRecord().setMutableBinding(context, "__vertxload", "true", false );
             if (scriptFile.exists()) {
-                runner.withContext(context).withSource("require.addLoadPath('" + scriptFile.getParent() + "')").evaluate();
+                runner.withContext(context).withSource("require.addLoadPath('" + scriptFile.getParent() + "')").execute();
                 ret = runner.withContext(context).withSource(scriptFile).execute();
-                runner.withContext(context).withSource("require.removeLoadPath('" + scriptFile.getParent() + "')").evaluate();
+                runner.withContext(context).withSource("require.removeLoadPath('" + scriptFile.getParent() + "')").execute();
             } else {
                 InputStream is = runtime.getConfig().getClassLoader().getResourceAsStream(scriptName);
                 if (is == null) {
