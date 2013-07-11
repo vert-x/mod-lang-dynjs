@@ -37,7 +37,8 @@
     <!-- dependency versions -->
     <version.vertx>2.0.0-CR4-SNAPSHOT</version.vertx>
     <version.vertx.testframework>2.0.0-SNAPSHOT</version.vertx.testframework>
-    <version.vertx.testtools>1.0.0-SNAPSHOT</version.vertx.testtools>
+    <version.vertx.testtools>2.0.0-CR3-SNAPSHOT</version.vertx.testtools>
+    <version.vertx.lang-js>1.0.0-SNAPSHOT</version.vertx.lang-js>
     <version.dynjs>0.1.2-SNAPSHOT</version.dynjs>
   </properties>
   <developers>
@@ -117,6 +118,13 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.8.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>lang-js</artifactId>
+      <type>test-jar</type>
+      <version>${version.vertx.lang-js}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -240,6 +248,36 @@
               <includeScope>runtime</includeScope>
             </configuration>
           </execution>
+          <execution>
+            <id>copy</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>io.vertx</groupId>
+                  <artifactId>lang-js</artifactId>
+                  <version>${version.vertx.lang-js}</version>
+                  <type>zip</type>
+                  <classifier>tests</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>target</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>io.vertx</groupId>
+                  <artifactId>lang-js</artifactId>
+                  <version>${version.vertx.lang-js}</version>
+                  <type>jar</type>
+                  <classifier>tests</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>target/test-classes</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <!-- other configurations here -->
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -269,12 +307,12 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>${maven.failsafe.plugin.version}</version>
         <configuration>
-          <systemProperties>
-            <property>
-              <name>vertx.mods</name>
-              <value>target/mods</value>
-            </property>
-          </systemProperties>
+          <systemPropertyVariables>
+            <vertx.mods>target/mods</vertx.mods>
+            <vertx.test.resources>target/lang-js-${version.vertx.lang-js}/resources</vertx.test.resources>
+            <vertx.langs..coffee>dynjs</vertx.langs..coffee>
+            <vertx.langs..js>dynjs</vertx.langs..js>
+          </systemPropertyVariables>
           <environmentVariables>
             <cheese>Gouda</cheese>
           </environmentVariables>
