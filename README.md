@@ -9,7 +9,7 @@ This language module uses the vert.x Javascript API in [mod-lang-js](https://git
 with the DynJS runtime. The API documentation is the same as for `lang-js` and `lang-rhino`, and can be found 
 on the `lang-js` CI server.
 
-[API Documentation](https://projectodd.ci.cloudbees.com/view/DynJS/job/mod-lang-js/lastSuccessfulBuild/artifact/target/docs/index.html)
+[API Documentation](https://projectodd.ci.cloudbees.com/job/lang-js/lastSuccessfulBuild/artifact/target/docs/index.html)
 
 ## Usage
 
