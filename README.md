@@ -4,28 +4,14 @@
 
 # Javascript on Vert.x with DynJS
 
-Use [DynJS](http://github.com/dynjs/dynjs) instead of Rhino on vert.x 2.0.
+Use [DynJS](http://github.com/dynjs/dynjs) as your Javascript runtime instead of Rhino on vert.x 2.0.
+This language module uses the vert.x Javascript API in [mod-lang-js](https://github.com/vert-x/mod-lang-js)
+with the DynJS runtime. The API documentation is the same as for `lang-js` and `lang-rhino`, and can be found 
+on the `lang-js` CI server.
 
-## API Documentation
-
-The Javascript 
-[API docs](https://projectodd.ci.cloudbees.com/view/DynJS/job/mod-lang-dynjs/lastSuccessfulBuild/artifact/target/docs/index.html)
-are on the CI server.
+[API Documentation](https://projectodd.ci.cloudbees.com/view/DynJS/job/mod-lang-js/lastSuccessfulBuild/artifact/target/docs/index.html)
 
 ## Usage
-
-We intend for DynJS to be the default Javascript runtime in vert.x 2.0, but
-that is not currently the case, and since vert.x 2.0 is not currently released,
-you'll need to build it.
-
-    $ git clone https://github.com/vert-x/vert.x.git
-    $ cd vert.x
-    $ ./gradlew collectDeps
-    $ ./gradelew distTar
-
-This will put the complete vert.x installation in
-`build/vert.x-2.0.0-SNAPSHOT`. Just update your `$PATH` to include
-`/path/to/repo/vert.x/build/vert.x-2.0.0-SNAPSHOT/bin`. 
 
 By default, vert.x runs Javascript with Rhino. Change this by creating a
 `langs.properties` file at the root of your project that looks like this.
@@ -34,5 +20,3 @@ By default, vert.x runs Javascript with Rhino. Change this by creating a
     .js=dynjs
 
 Enjoy. And if you have any problems, hit us on on freenode at #dynjs or #vertx.
-And you can file any reproducible issues in our
-[Jira](http://jira.codehaus.org/browse/DYNJS).
