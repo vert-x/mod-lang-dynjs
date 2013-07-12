@@ -1,6 +1,6 @@
 [![Build Status](https://secure.travis-ci.org/vert-x/mod-lang-dynjs.png) ](http://travis-ci.org/vert-x/mod-lang-dynjs)
 
-[![Build Status](https://buildhive.cloudbees.com/job/vert-x/job/mod-lang-dynjs/badge/icon) ](https://buildhive.cloudbees.com/job/vert-x/job/mod-lang-dynjs/)
+Cloudbees [Build Status](https://projectodd.ci.cloudbees.com/view/DynJS/job/mod-lang-dynjs/)
 
 # Javascript on Vert.x with DynJS
 
