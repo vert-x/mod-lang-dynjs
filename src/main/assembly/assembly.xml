@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <assembly>
-  <id>${project.artifactId}</id>
+  <id>mod</id>
   <formats>
     <format>zip</format>
   </formats>
