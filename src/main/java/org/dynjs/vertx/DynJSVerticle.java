@@ -29,16 +29,17 @@ public class DynJSVerticle extends Verticle {
 
     @Override
     public void start() {
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(runtime.getConfig().getClassLoader());
+
+        File scriptFile = new File(scriptName);
         rootContext = initializeRootContext();
         runtime.clearModuleCache();
 
-        File scriptFile = new File(scriptName);
-        ClassLoader old = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(runtime.getConfig().getClassLoader());
         Runner runner = runtime.newRunner();
         try {
             if (scriptFile.exists()) {
-                runner.withSource(scriptFile).execute();
+                runner.withContext(rootContext).withSource(scriptFile).execute();
             } else {
                 InputStream is = runtime.getConfig().getClassLoader().getResourceAsStream(scriptName);
                 if (is == null) {

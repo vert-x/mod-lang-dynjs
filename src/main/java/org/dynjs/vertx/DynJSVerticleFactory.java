@@ -32,8 +32,8 @@ import java.io.*;
  */
 public class DynJSVerticleFactory implements VerticleFactory {
 
-    public static Container container;
-    public static Vertx vertx;
+    public Container container;
+    public Vertx vertx;
 
     private DynJS runtime;
     private Config config;
@@ -43,8 +43,8 @@ public class DynJSVerticleFactory implements VerticleFactory {
     @Override
     public void init(Vertx vertx, Container container, ClassLoader classloader) {
         this.mcl = classloader;
-        DynJSVerticleFactory.container = container;
-        DynJSVerticleFactory.vertx = vertx;
+        this.container = container;
+        this.vertx = vertx;
         
         this.config = new Config(getClassLoader());
         this.config.setGlobalObjectFactory(getGlobalObjectFactory());
