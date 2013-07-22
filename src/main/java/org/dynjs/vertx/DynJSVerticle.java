@@ -29,24 +29,28 @@ public class DynJSVerticle extends Verticle {
 
     @Override
     public void start() {
+        this.loadResource(this.scriptName);
+    }
+
+    protected void loadResource(String resourceName) {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(runtime.getConfig().getClassLoader());
 
-        File scriptFile = new File(scriptName);
+        File scriptFile = new File(resourceName);
         rootContext = initializeRootContext();
         runtime.clearModuleCache();
 
         Runner runner = runtime.newRunner();
         try {
             if (scriptFile.exists()) {
-                runner.withContext(rootContext).withSource(scriptFile).execute();
+                runner.withContext(rootContext).withSource(scriptFile).evaluate();
             } else {
-                InputStream is = runtime.getConfig().getClassLoader().getResourceAsStream(scriptName);
+                InputStream is = runtime.getConfig().getClassLoader().getResourceAsStream(resourceName);
                 if (is == null) {
-                    throw new FileNotFoundException("Cannot find script: " + scriptName);
+                    throw new FileNotFoundException("Cannot find script: " + resourceName);
                 }
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-                runner.withSource(reader).execute();
+                runner.withSource(reader).evaluate();
                 try {
                     is.close();
                 } catch (IOException e) {
@@ -54,7 +58,7 @@ public class DynJSVerticle extends Verticle {
                 }
             }
         } catch (Exception e) {
-            System.err.println("Error loading script: " + scriptName + ". " + e.getLocalizedMessage());
+            System.err.println("Error loading script: " + resourceName + ". " + e.getLocalizedMessage());
             throw new RuntimeException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
