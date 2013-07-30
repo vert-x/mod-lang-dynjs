@@ -312,6 +312,7 @@
             <vertx.test.resources>target/lang-js-${version.vertx.lang-js}/resources</vertx.test.resources>
             <vertx.langs..coffee>dynjs</vertx.langs..coffee>
             <vertx.langs..js>dynjs</vertx.langs..js>
+            <vertx.test.timeout>15</vertx.test.timeout>
           </systemPropertyVariables>
           <environmentVariables>
             <cheese>Gouda</cheese>
