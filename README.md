@@ -1,6 +1,6 @@
 [![Build Status](https://secure.travis-ci.org/vert-x/mod-lang-dynjs.png) ](http://travis-ci.org/vert-x/mod-lang-dynjs)
 
-Cloudbees [Build Status](https://projectodd.ci.cloudbees.com/view/DynJS/job/mod-lang-dynjs/)
+Cloudbees [Build Status](https://vertx.ci.cloudbees.com/view/Javascript/job/vert.x-mod-lang-dynjs/)
 
 # Javascript on Vert.x with DynJS
 
@@ -9,7 +9,7 @@ This language module uses the vert.x Javascript API in [mod-lang-js](https://git
 with the DynJS runtime. The API documentation is the same as for `lang-js` and `lang-rhino`, and can be found 
 on the `lang-js` CI server.
 
-[API Documentation](https://projectodd.ci.cloudbees.com/job/lang-js/lastSuccessfulBuild/artifact/target/docs/index.html)
+[API Documentation](https://vertx.ci.cloudbees.com/view/Javascript/job/vert.x-mod-lang-js/lastSuccessfulBuild/artifact/target/docs/index.html)
 
 ## Usage
 
