@@ -13,8 +13,8 @@ public class DynJSVerticle extends Verticle {
     protected final String scriptName;
     protected ExecutionContext rootContext;
 
-    public DynJSVerticle(DynJSVerticleFactory factory, String scriptName) {
-        this.runtime = factory.getRuntime();
+    public DynJSVerticle(DynJS runtime, String scriptName) {
+        this.runtime = runtime;
         this.scriptName = scriptName;
     }
 

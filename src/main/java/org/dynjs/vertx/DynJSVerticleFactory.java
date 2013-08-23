@@ -35,25 +35,25 @@ public class DynJSVerticleFactory implements VerticleFactory {
     public Container container;
     public Vertx vertx;
 
-    private DynJS runtime;
+    protected DynJS runtime;
     private Config config;
     private ClassLoader mcl;
     private GlobalObjectFactory globalObjectFactory = new DynJSGlobalObjectFactory();
     
     @Override
     public void init(Vertx vertx, Container container, ClassLoader classloader) {
-        this.mcl = classloader;
         this.container = container;
         this.vertx = vertx;
-        
-        this.config = new Config(getClassLoader());
-        this.config.setGlobalObjectFactory(getGlobalObjectFactory());
-        this.runtime = new DynJS(this.config);
+        mcl    = classloader;
+        config = new Config(getClassLoader());
+        config.setGlobalObjectFactory(getGlobalObjectFactory());
+
+        runtime = new DynJS(config);
     }
 
     @Override
     public Verticle createVerticle(String main) throws Exception {
-        return new DynJSVerticle(this, main);
+        return new DynJSVerticle(runtime, main);
     }
 
     @Override
@@ -63,14 +63,6 @@ public class DynJSVerticleFactory implements VerticleFactory {
 
     @Override
     public void close() {
-    }
-    
-    public DynJS getRuntime() {
-        return this.runtime;
-    }
-    
-    public Config getConfig() {
-        return this.config;
     }
     
     protected GlobalObjectFactory getGlobalObjectFactory() {
@@ -88,7 +80,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
         }
         File scriptFile = new File(scriptName);
         ClassLoader old = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(runtime.getConfig().getClassLoader());
+        Thread.currentThread().setContextClassLoader(getClassLoader());
         Object ret = null;
         Runner runner = context.getGlobalObject().getRuntime().newRunner();
         try {
@@ -100,7 +92,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
                 ret = runner.withContext(context).withSource(scriptFile).execute();
                 runner.withContext(context).withSource("require.removeLoadPath('" + scriptFile.getParent() + "')").execute();
             } else {
-                InputStream is = runtime.getConfig().getClassLoader().getResourceAsStream(scriptName);
+                InputStream is = getClassLoader().getResourceAsStream(scriptName);
                 if (is == null) {
                     throw new FileNotFoundException("Cannot find script: " + scriptName);
                 }
