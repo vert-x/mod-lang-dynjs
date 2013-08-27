@@ -1,9 +1,6 @@
 package org.dynjs.vertx;
 
-import org.dynjs.runtime.DynJS;
-import org.dynjs.runtime.ExecutionContext;
-import org.dynjs.runtime.InitializationListener;
-import org.dynjs.runtime.Runner;
+import org.dynjs.runtime.*;
 import org.vertx.java.platform.Verticle;
 
 import java.io.*;
@@ -11,6 +8,7 @@ import java.io.*;
 public class DynJSVerticle extends Verticle {
     protected final DynJS runtime;
     protected final String scriptName;
+    protected Object stopFunction;
     protected ExecutionContext rootContext;
 
     public DynJSVerticle(DynJS runtime, String scriptName) {
@@ -51,6 +49,7 @@ public class DynJSVerticle extends Verticle {
                 }
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
                 runner.withSource(reader).evaluate();
+                stopFunction = runner.withSource("(typeof vertxStop == 'function' ? vertxStop : null)").evaluate();
                 try {
                     is.close();
                 } catch (IOException e) {
@@ -68,8 +67,7 @@ public class DynJSVerticle extends Verticle {
     @Override
     public void stop() {
         try {
-            Runner runner = rootContext.getGlobalObject().getRuntime().newRunner();
-            runner.withContext(rootContext).withSource("(vertxStop ? vertxStop() : null)").execute();
+            if (stopFunction instanceof JSFunction) ((JSFunction)stopFunction).call(rootContext);
         } catch (Exception e) {
         }
     }
