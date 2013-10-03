@@ -27,9 +27,6 @@ public class DynJSVerticle extends Verticle {
 
     @Override
     public void start() {
-        ClassLoader old = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(runtime.getConfig().getClassLoader());
-
         File scriptFile = new File(scriptName);
         rootContext = initializeRootContext();
 
@@ -43,8 +40,8 @@ public class DynJSVerticle extends Verticle {
                     throw new FileNotFoundException("Cannot find script: " + scriptName);
                 }
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-                runner.withSource(reader).evaluate();
-                stopFunction = runner.withSource("(typeof vertxStop == 'function' ? vertxStop : null)").evaluate();
+                runner.withContext(rootContext).withSource(reader).evaluate();
+                stopFunction = runner.withContext(rootContext).withSource("(typeof vertxStop == 'function' ? vertxStop : null)").evaluate();
                 try {
                     is.close();
                 } catch (IOException e) {
@@ -54,8 +51,6 @@ public class DynJSVerticle extends Verticle {
         } catch (Exception e) {
             System.err.println("Error loading script: " + scriptName + ". " + e.getLocalizedMessage());
             throw new RuntimeException(e);
-        } finally {
-            Thread.currentThread().setContextClassLoader(old);
         }
     }
 
