@@ -42,6 +42,8 @@ public class DynJSVerticleFactory implements VerticleFactory {
     
     @Override
     public void init(Vertx vertx, Container container, ClassLoader classloader) {
+        // Force DynJS to run in interpreted mode only - for now
+        System.setProperty("dynjs.compile.mode", "off");
         this.container = container;
         this.vertx = vertx;
         mcl    = classloader;
