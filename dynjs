@@ -5,5 +5,5 @@ JS_MAPPING="-Dvertx.langs..js=dynjs"
 
 export JAVA_OPTS="$DYNJS_MOD $JS_MAPPING"
 
-vertx run $*
+vertx run $* 
 
