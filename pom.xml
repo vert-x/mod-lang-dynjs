@@ -39,7 +39,7 @@
     <version.vertx.testframework>2.0.0-final</version.vertx.testframework>
     <version.vertx.testtools>2.0.2-final</version.vertx.testtools>
     <version.vertx.lang-js>1.0.0-Beta1</version.vertx.lang-js>
-    <version.dynjs>0.1.2-SNAPSHOT</version.dynjs>
+    <version.dynjs>0.2.0</version.dynjs>
     <version.apacheds.dns>1.5.7</version.apacheds.dns>
   </properties>
   <developers>
