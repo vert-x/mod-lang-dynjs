@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.vertx</groupId>
   <artifactId>lang-dynjs</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0-Beta1</version>
   <name>DynJS Vert.x module</name>
   <parent>
     <groupId>org.sonatype.oss</groupId>
@@ -413,7 +413,7 @@
     								</goals>
     							</pluginExecutionFilter>
     							<action>
-    								<ignore></ignore>
+    								<ignore />
     							</action>
     						</pluginExecution>
     					</pluginExecutions>
