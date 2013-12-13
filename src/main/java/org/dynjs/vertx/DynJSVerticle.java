@@ -6,8 +6,8 @@ import org.vertx.java.platform.Verticle;
 import java.io.*;
 
 public class DynJSVerticle extends Verticle {
-    protected final DynJS runtime;
-    protected final String scriptName;
+    private final DynJS runtime;
+    private final String scriptName;
     protected Object stopFunction;
     protected ExecutionContext rootContext;
 
@@ -23,6 +23,14 @@ public class DynJSVerticle extends Verticle {
                 rootContext = context;
             }
         });
+    }
+
+    protected DynJS getRuntime() {
+        return runtime;
+    }
+
+    protected String getScriptName() {
+        return scriptName;
     }
 
     @Override
