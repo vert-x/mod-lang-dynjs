@@ -324,6 +324,7 @@
           <environmentVariables>
             <cheese>Gouda</cheese>
           </environmentVariables>
+          <argLine>-Xss2048k</argLine>
           <includes>
             <include>**/integration/**</include>
           </includes>
