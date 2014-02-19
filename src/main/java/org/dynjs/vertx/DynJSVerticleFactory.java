@@ -62,7 +62,7 @@ public class DynJSVerticleFactory implements VerticleFactory {
         return this.classloader;
     }
 
-    protected class DynJSGlobalObjectFactory implements GlobalObjectFactory {
+    public class DynJSGlobalObjectFactory implements GlobalObjectFactory {
 
         @Override
         public GlobalObject newGlobalObject(final DynJS runtime) {
