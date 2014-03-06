@@ -35,10 +35,10 @@
     <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
 
     <!-- dependency versions -->
-    <version.vertx>2.1M5</version.vertx>
+    <version.vertx>2.1RC1</version.vertx>
     <version.vertx.testtools>2.0.3-final</version.vertx.testtools>
-    <version.vertx.lang-js>1.0.0-Beta2</version.vertx.lang-js>
-    <version.dynjs>0.2.2-SNAPSHOT</version.dynjs>
+    <version.vertx.lang-js>1.0.0-RC1</version.vertx.lang-js>
+    <version.dynjs>0.2.1</version.dynjs>
     <version.apacheds.dns>1.5.7</version.apacheds.dns>
   </properties>
   <developers>
