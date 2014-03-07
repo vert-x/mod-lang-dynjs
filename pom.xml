@@ -37,7 +37,7 @@
     <!-- dependency versions -->
     <version.vertx>2.1RC1</version.vertx>
     <version.vertx.testtools>2.0.3-final</version.vertx.testtools>
-    <version.vertx.lang-js>1.0.0-RC2</version.vertx.lang-js>
+    <version.vertx.lang-js>1.0.0</version.vertx.lang-js>
     <version.dynjs>0.2.2</version.dynjs>
     <version.apacheds.dns>1.5.7</version.apacheds.dns>
   </properties>
