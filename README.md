@@ -16,7 +16,7 @@ on the `lang-js` CI server.
 By default, vert.x runs Javascript with Rhino. Change this by creating a
 `langs.properties` file at the root of your project that looks like this.
 
-    dynjs=io.vertx~lang-dynjs~1.0.0-Beta1:org.dynjs.vertx.DynJSVerticleFactory
+    dynjs=io.vertx~lang-dynjs~1.0.0:org.dynjs.vertx.DynJSVerticleFactory
     .js=dynjs
 
 Enjoy. And if you have any problems, hit us on on freenode at #dynjs or #vertx.
