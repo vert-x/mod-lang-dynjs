@@ -37,8 +37,8 @@
     <!-- dependency versions -->
     <version.vertx>2.1RC1</version.vertx>
     <version.vertx.testtools>2.0.3-final</version.vertx.testtools>
-    <version.vertx.lang-js>1.0.0</version.vertx.lang-js>
-    <version.dynjs>0.2.2</version.dynjs>
+    <version.vertx.lang-js>1.1.0-SNAPSHOT</version.vertx.lang-js>
+    <version.dynjs>0.2.3-SNAPSHOT</version.dynjs>
     <version.apacheds.dns>1.5.7</version.apacheds.dns>
   </properties>
   <developers>
@@ -313,6 +313,7 @@
             <vertx.langs..coffee>dynjs</vertx.langs..coffee>
             <vertx.langs..js>dynjs</vertx.langs..js>
             <vertx.test.timeout>15</vertx.test.timeout>
+            <dynjs.compile.mode>OFF</dynjs.compile.mode>
           </systemPropertyVariables>
           <environmentVariables>
             <cheese>Gouda</cheese>
